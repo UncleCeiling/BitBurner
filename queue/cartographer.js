@@ -31,7 +31,7 @@ export async function main(ns) {
     ns.tprint(`WARN - Found ${scanned.length} servers. ${toRoot.length} servers need rooting.`)
     // Root root-able servers
     for (let root of toRoot) {
-        if (ns.getServerRequiredHackingLevel(root) < ns.getHackingLevel()) {
+        if (ns.getServerRequiredHackingLevel(root) <= ns.getHackingLevel()) {
             ns.print(`INFO - Rooting ${root}.`)
             ns.run('../scripts/root.js', 1, root)
             await ns.asleep(1000)

@@ -1,7 +1,11 @@
 /** @param {NS} ns */
 export async function main(ns) {
     let queue_loc = 'queue/' // Location of the files to be run
+    let argument = ns.args[0]
     let break_secs = 60 // How long to wait between cycles
+    if (argument > 0) {
+        break_secs = argument
+    }
     while (true) {
         let scripts = ns.ls('home', queue_loc) // Update queue
         ns.tprint(`INFO - Found ${scripts.length} scripts.`) // Write to log

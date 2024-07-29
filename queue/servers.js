@@ -6,7 +6,7 @@ export async function main(ns) {
     let budget = ns.getServerMoneyAvailable('home')
     // If less than the limit of servers are owned, buy more
     if (servers.length < limit) {
-        let diff = servers.length - limit
+        let diff = limit - servers.length
         let minCost = ns.getPurchasedServerCost(4)
         if ((minCost * diff) > budget) {
             ns.print(`ERROR - ${diff} x $${minCost} = $${minCost * diff}`)
