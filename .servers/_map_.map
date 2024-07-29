@@ -1,0 +1,200 @@
+┗ home
+  ┃   Required hacking skill: 1
+  ┃   Number of open ports required to NUKE: 5
+  ┃   RAM: 32.00GB
+  ┣ n00dles
+  ┃ ┃   Required hacking skill: 1
+  ┃ ┃   Number of open ports required to NUKE: 0
+  ┃ ┃   RAM: 4.00GB
+  ┃ ┣ max-hardware
+  ┃ ┃ ┃   Required hacking skill: 80
+  ┃ ┃ ┃   Number of open ports required to NUKE: 1
+  ┃ ┃ ┃   RAM: 32.00GB
+  ┃ ┃ ┗ neo-net
+  ┃ ┃   ┃   Required hacking skill: 50
+  ┃ ┃   ┃   Number of open ports required to NUKE: 1
+  ┃ ┃   ┃   RAM: 32.00GB
+  ┃ ┃   ┣ johnson-ortho
+  ┃ ┃   ┃ ┃   Required hacking skill: 252
+  ┃ ┃   ┃ ┃   Number of open ports required to NUKE: 2
+  ┃ ┃   ┃ ┃   RAM: 0.00GB
+  ┃ ┃   ┃ ┗ I.I.I.I
+  ┃ ┃   ┃       Required hacking skill: 349
+  ┃ ┃   ┃       Number of open ports required to NUKE: 3
+  ┃ ┃   ┃       RAM: 16.00GB
+  ┃ ┃   ┗ crush-fitness
+  ┃ ┃         Required hacking skill: 225
+  ┃ ┃         Number of open ports required to NUKE: 2
+  ┃ ┃         RAM: 0.00GB
+  ┃ ┗ CSEC
+  ┃   ┃   Required hacking skill: 58
+  ┃   ┃   Number of open ports required to NUKE: 1
+  ┃   ┃   RAM: 8.00GB
+  ┃   ┗ omega-net
+  ┃     ┃   Required hacking skill: 202
+  ┃     ┃   Number of open ports required to NUKE: 2
+  ┃     ┃   RAM: 32.00GB
+  ┃     ┣ the-hub
+  ┃     ┃ ┃   Required hacking skill: 288
+  ┃     ┃ ┃   Number of open ports required to NUKE: 2
+  ┃     ┃ ┃   RAM: 64.00GB
+  ┃     ┃ ┗ catalyst
+  ┃     ┃       Required hacking skill: 446
+  ┃     ┃       Number of open ports required to NUKE: 3
+  ┃     ┃       RAM: 32.00GB
+  ┃     ┗ computek
+  ┃       ┃   Required hacking skill: 353
+  ┃       ┃   Number of open ports required to NUKE: 3
+  ┃       ┃   RAM: 0.00GB
+  ┃       ┗ zb-institute
+  ┃         ┃   Required hacking skill: 748
+  ┃         ┃   Number of open ports required to NUKE: 5
+  ┃         ┃   RAM: 64.00GB
+  ┃         ┣ rho-construction
+  ┃         ┃     Required hacking skill: 491
+  ┃         ┃     Number of open ports required to NUKE: 3
+  ┃         ┃     RAM: 16.00GB
+  ┃         ┗ alpha-ent
+  ┃           ┃   Required hacking skill: 530
+  ┃           ┃   Number of open ports required to NUKE: 4
+  ┃           ┃   RAM: 128.00GB
+  ┃           ┣ galactic-cyber
+  ┃           ┃     Required hacking skill: 833
+  ┃           ┃     Number of open ports required to NUKE: 5
+  ┃           ┃     RAM: 0.00GB
+  ┃           ┣ global-pharm
+  ┃           ┃ ┃   Required hacking skill: 840
+  ┃           ┃ ┃   Number of open ports required to NUKE: 4
+  ┃           ┃ ┃   RAM: 32.00GB
+  ┃           ┃ ┗ unitalife
+  ┃           ┃   ┃   Required hacking skill: 797
+  ┃           ┃   ┃   Number of open ports required to NUKE: 4
+  ┃           ┃   ┃   RAM: 32.00GB
+  ┃           ┃   ┣ icarus
+  ┃           ┃   ┃     Required hacking skill: 871
+  ┃           ┃   ┃     Number of open ports required to NUKE: 5
+  ┃           ┃   ┃     RAM: 0.00GB
+  ┃           ┃   ┗ zeus-med
+  ┃           ┃     ┃   Required hacking skill: 848
+  ┃           ┃     ┃   Number of open ports required to NUKE: 5
+  ┃           ┃     ┃   RAM: 0.00GB
+  ┃           ┃     ┗ zb-def
+  ┃           ┃           Required hacking skill: 802
+  ┃           ┃           Number of open ports required to NUKE: 4
+  ┃           ┃           RAM: 0.00GB
+  ┃           ┗ snap-fitness
+  ┃             ┃   Required hacking skill: 795
+  ┃             ┃   Number of open ports required to NUKE: 4
+  ┃             ┃   RAM: 0.00GB
+  ┃             ┗ deltaone
+  ┃               ┃   Required hacking skill: 879
+  ┃               ┃   Number of open ports required to NUKE: 5
+  ┃               ┃   RAM: 0.00GB
+  ┃               ┗ solaris
+  ┃                     Required hacking skill: 842
+  ┃                     Number of open ports required to NUKE: 5
+  ┃                     RAM: 128.00GB
+  ┣ foodnstuff
+  ┃     Required hacking skill: 1
+  ┃     Number of open ports required to NUKE: 0
+  ┃     RAM: 16.00GB
+  ┣ sigma-cosmetics
+  ┃ ┃   Required hacking skill: 5
+  ┃ ┃   Number of open ports required to NUKE: 0
+  ┃ ┃   RAM: 16.00GB
+  ┃ ┗ zer0
+  ┃   ┃   Required hacking skill: 75
+  ┃   ┃   Number of open ports required to NUKE: 1
+  ┃   ┃   RAM: 32.00GB
+  ┃   ┗ phantasy
+  ┃         Required hacking skill: 100
+  ┃         Number of open ports required to NUKE: 2
+  ┃         RAM: 32.00GB
+  ┣ joesguns
+  ┃     Required hacking skill: 10
+  ┃     Number of open ports required to NUKE: 0
+  ┃     RAM: 16.00GB
+  ┣ hong-fang-tea
+  ┃ ┃   Required hacking skill: 30
+  ┃ ┃   Number of open ports required to NUKE: 0
+  ┃ ┃   RAM: 16.00GB
+  ┃ ┗ nectar-net
+  ┃   ┃   Required hacking skill: 20
+  ┃   ┃   Number of open ports required to NUKE: 0
+  ┃   ┃   RAM: 16.00GB
+  ┃   ┗ silver-helix
+  ┃     ┃   Required hacking skill: 150
+  ┃     ┃   Number of open ports required to NUKE: 2
+  ┃     ┃   RAM: 64.00GB
+  ┃     ┣ netlink
+  ┃     ┃ ┃   Required hacking skill: 385
+  ┃     ┃ ┃   Number of open ports required to NUKE: 3
+  ┃     ┃ ┃   RAM: 128.00GB
+  ┃     ┃ ┣ rothman-uni
+  ┃     ┃ ┃ ┃   Required hacking skill: 392
+  ┃     ┃ ┃ ┃   Number of open ports required to NUKE: 3
+  ┃     ┃ ┃ ┃   RAM: 16.00GB
+  ┃     ┃ ┃ ┗ lexo-corp
+  ┃     ┃ ┃       Required hacking skill: 691
+  ┃     ┃ ┃       Number of open ports required to NUKE: 4
+  ┃     ┃ ┃       RAM: 32.00GB
+  ┃     ┃ ┣ summit-uni
+  ┃     ┃ ┃ ┃   Required hacking skill: 434
+  ┃     ┃ ┃ ┃   Number of open ports required to NUKE: 3
+  ┃     ┃ ┃ ┃   RAM: 64.00GB
+  ┃     ┃ ┃ ┣ aevum-police
+  ┃     ┃ ┃ ┃ ┃   Required hacking skill: 411
+  ┃     ┃ ┃ ┃ ┃   Number of open ports required to NUKE: 4
+  ┃     ┃ ┃ ┃ ┃   RAM: 64.00GB
+  ┃     ┃ ┃ ┃ ┗ aerocorp
+  ┃     ┃ ┃ ┃   ┃   Required hacking skill: 853
+  ┃     ┃ ┃ ┃   ┃   Number of open ports required to NUKE: 5
+  ┃     ┃ ┃ ┃   ┃   RAM: 0.00GB
+  ┃     ┃ ┃ ┃   ┗ omnia
+  ┃     ┃ ┃ ┃     ┃   Required hacking skill: 879
+  ┃     ┃ ┃ ┃     ┃   Number of open ports required to NUKE: 5
+  ┃     ┃ ┃ ┃     ┃   RAM: 16.00GB
+  ┃     ┃ ┃ ┃     ┣ defcomm
+  ┃     ┃ ┃ ┃     ┃ ┃   Required hacking skill: 947
+  ┃     ┃ ┃ ┃     ┃ ┃   Number of open ports required to NUKE: 5
+  ┃     ┃ ┃ ┃     ┃ ┃   RAM: 0.00GB
+  ┃     ┃ ┃ ┃     ┃ ┣ infocomm
+  ┃     ┃ ┃ ┃     ┃ ┃     Required hacking skill: 901
+  ┃     ┃ ┃ ┃     ┃ ┃     Number of open ports required to NUKE: 5
+  ┃     ┃ ┃ ┃     ┃ ┃     RAM: 0.00GB
+  ┃     ┃ ┃ ┃     ┃ ┣ taiyang-digital
+  ┃     ┃ ┃ ┃     ┃ ┃     Required hacking skill: 938
+  ┃     ┃ ┃ ┃     ┃ ┃     Number of open ports required to NUKE: 5
+  ┃     ┃ ┃ ┃     ┃ ┃     RAM: 0.00GB
+  ┃     ┃ ┃ ┃     ┃ ┗ nova-med
+  ┃     ┃ ┃ ┃     ┃       Required hacking skill: 780
+  ┃     ┃ ┃ ┃     ┃       Number of open ports required to NUKE: 4
+  ┃     ┃ ┃ ┃     ┃       RAM: 0.00GB
+  ┃     ┃ ┃ ┃     ┗ univ-energy
+  ┃     ┃ ┃ ┃           Required hacking skill: 851
+  ┃     ┃ ┃ ┃           Number of open ports required to NUKE: 4
+  ┃     ┃ ┃ ┃           RAM: 128.00GB
+  ┃     ┃ ┃ ┗ millenium-fitness
+  ┃     ┃ ┃       Required hacking skill: 516
+  ┃     ┃ ┃       Number of open ports required to NUKE: 3
+  ┃     ┃ ┃       RAM: 128.00GB
+  ┃     ┃ ┗ syscore
+  ┃     ┃       Required hacking skill: 558
+  ┃     ┃       Number of open ports required to NUKE: 4
+  ┃     ┃       RAM: 0.00GB
+  ┃     ┗ avmnite-02h
+  ┃           Required hacking skill: 212
+  ┃           Number of open ports required to NUKE: 2
+  ┃           RAM: 128.00GB
+  ┣ harakiri-sushi
+  ┃     Required hacking skill: 40
+  ┃     Number of open ports required to NUKE: 0
+  ┃     RAM: 16.00GB
+  ┣ iron-gym
+  ┃     Required hacking skill: 100
+  ┃     Number of open ports required to NUKE: 1
+  ┃     RAM: 32.00GB
+  ┗ darkweb
+        Required hacking skill: 1
+        Number of open ports required to NUKE: 5
+        RAM: 0.00GB
