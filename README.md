@@ -22,9 +22,15 @@ scripts/          | Scripts which are called ad-hoc.
     ┣ miner.js    | Runs on "home", deploying scripts to mines.
     ┗ root.js     | Roots hosts then runs "backdoor.js".
 
-tools/                         | Scripts called manually for a purpose.
-    ┣ SF-1/                    | Scripts for SF-1.
-    ┃   ┗prototypeTampering.js | Messes with the Number Prototype
+tools/                                | Scripts called manually for a purpose.
+    ┣ SF-1/                           | Scripts for SF-1.
+    ┃   ┣ bypass.js                   |
+    ┃   ┣ prototypeTampering.js       |
+    ┃   ┣ rainbow.js                  |
+    ┃   ┣ timeCompression.js          |
+    ┃   ┣ trueRecursion.js            |
+    ┃   ┣ unclickable.js              |
+    ┃   ┗ undocumentedFunctionCall.js |
     ┗ lit_scraper.js           | TODO - Scrapes all the ".lit" files on the network.
 
 ### To Build

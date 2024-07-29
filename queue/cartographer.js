@@ -49,7 +49,7 @@ export async function main(ns) {
             ns.print(`Script RAM: ${scriptRam}`)
             if (currentRam >= scriptRam) {
                 let rooted = ns.getServer(server['hostname'])['hasAdminRights']
-                if (rooted) {
+                if (rooted && !server['hostname'].includes('custom-')) {
                     toMine.push(server['hostname'])
                 }
             }
