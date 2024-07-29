@@ -61,6 +61,6 @@ export async function main(ns) {
     // Run miner if miner not running
     if (ns.isRunning('scripts/miner.js', 'home') == false) { // Check to see if the script is still running
         ns.tprint('SUCCESS - Launching Miner')
-        ns.run('scripts/miner.js', 1, 'home')
+        ns.run('scripts/miner.js', 1)
     }
 }
