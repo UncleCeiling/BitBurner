@@ -32,12 +32,16 @@ export async function main(ns) {
     // Root root-able servers
     for (let root of toRoot) {
         if (ns.getServerRequiredHackingLevel(root) <= ns.getHackingLevel()) {
-            ns.print(`INFO - Rooting ${root}.`)
-            ns.run('../scripts/root.js', 1, root)
-            await ns.asleep(1000)
+            if (ns.isRunning('scripts/root.js', 'home', root)) {
+                ns.print(`INFO - Already rooting ${root}`)
+            } else {
+                ns.print(`INFO - Rooting ${root}.`)
+                ns.run('scripts/root.js', 1, root)
+            }
         } else {
             ns.print(`WARN - Skipping ${root}. (Needs hacking level ${ns.getHackingLevel()}))`)
         }
+        // await ns.asleep(1000)
     }
     // Make list of minable servers
     let toMine = []
