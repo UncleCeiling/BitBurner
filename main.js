@@ -4,9 +4,9 @@ export async function main(ns) {
     let break_secs = 60 // How long to wait between cycles
     while (true) {
         let scripts = ns.ls('home', queue_loc) // Update queue
-        ns.print(`INFO - Found ${scripts.length} scripts.`) // Write to log
+        ns.tprint(`INFO - Found ${scripts.length} scripts.`) // Write to log
         for (let x in scripts) {
-            ns.print(`INFO - Running ${scripts[x].replace(queue_loc, '')}`)
+            ns.tprint(`INFO - Running ${scripts[x].replace(queue_loc, '')}`)
             let path = './' + scripts[x] // Make the path string
             await ns.run(path) // Run the script
             await ns.asleep(1000) // Wait

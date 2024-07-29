@@ -9,10 +9,11 @@ export async function main(ns) {
         let diff = servers.length - limit
         let minCost = ns.getPurchasedServerCost(4)
         if ((minCost * diff) > budget) {
-            ns.tprint(`ERROR - ${diff} x $${minCost} = $${minCost * diff}`)
+            ns.print(`ERROR - ${diff} x $${minCost} = $${minCost * diff}`)
         } else {
             for (let server = servers.length; server <= limit; server++) {
                 ns.purchaseServer(`custom-${server}`, 4)
+                ns.tprint(`SUCCESS - Bought server ${server}`)
             }
         }
     }
@@ -23,15 +24,19 @@ export async function main(ns) {
         if (currentRam < ns.getPurchasedServerMaxRam()) {
             let upgradeCost = ns.getPurchasedServerUpgradeCost(server, currentRam ** 2)
             budget = ns.getServerMoneyAvailable('home')
-            if (upgradeCost <= budget) { ns.upgradePurchasedServer(server, currentRam ** 2) }
+            if (upgradeCost <= budget) {
+                ns.upgradePurchasedServer(server, currentRam ** 2)
+                ns.tprint(`SUCCESS - Upgraded ${server} from ${currentRam}GB to ${currentRam ** 2}GB`)
+            }
         }
     }
     // Deploy foreman to each server
     servers = ns.getPurchasedServers()
     for (let server of servers) {
         ns.scp(['scripts/foreman.js', 'scripts/_hack.js', 'scripts/_grow.js', 'scripts/_weaken.js', 'mines.txt'], server, 'home')
-        if (ns.isRunning('scripts.foreman.js', server) !== true) {
+        if (ns.isRunning('scripts/foreman.js', server) !== true) {
             ns.exec('scripts/foreman.js', server)
+            ns.tprint(`SUCCESS - Started Foreman on ${server}`)
         }
     }
 
