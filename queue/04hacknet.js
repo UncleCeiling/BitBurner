@@ -89,7 +89,7 @@ export async function main(ns) {
         counter++
         spent += best[2]
     }
-    ns.tprint(`SUCCESS - Bought ${counter} upgrades ($${spent.toLocaleString()})`)
+    ns.tprint(`SUCCESS - Bought ${counter} upgrades across ${ns.hacknet.numNodes()} nodes($${spent.toLocaleString()})`)
     // Wow, you really messed up huh?
     if (errorOut >= 100) {
         ns.print('ERROR - Not enough funds to continue Hacknet upgrades.')

@@ -44,7 +44,7 @@ export async function main(ns) {
             budget = ns.getServerMoneyAvailable('home') / 2
             if (upgradeCost <= budget) {
                 ns.upgradePurchasedServer(server, currentRam * 2)
-                ns.tprint(`SUCCESS - Upgraded ${server} from ${currentRam}GB to ${currentRam * 2}GB ($${upgradeCost.toLocaleString()})`)
+                ns.tprint(`SUCCESS - Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})`)
             }
         }
     }
