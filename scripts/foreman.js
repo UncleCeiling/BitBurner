@@ -47,6 +47,7 @@ export async function main(ns) {
         if (threads > 0) {
             ns.run(script, threads, remote)
         }
-        await ns.asleep(10)
+        let sleepLength = Math.floor(Math.random() * 10000)
+        await ns.asleep(sleepLength)
     }
 }
