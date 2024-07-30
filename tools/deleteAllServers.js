@@ -4,5 +4,6 @@ export async function main(ns) {
     servers.forEach(function (current) {
         ns.killall(current)
         ns.deleteServer(current)
+        ns.tprint(`Deleted ${current}`)
     })
 }

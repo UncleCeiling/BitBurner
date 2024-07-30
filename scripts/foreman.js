@@ -15,20 +15,23 @@ export async function main(ns) {
                 let remoteSec = (ns.getServerMinSecurityLevel(remote) / ns.getServerSecurityLevel(remote)) * 100
                 let mineSec = (ns.getServerMinSecurityLevel(mine) / ns.getServerSecurityLevel(mine)) * 100
                 let secDiff = mineSec - remoteSec
+                ns.print(`Sec-diff: ${secDiff}`)
                 let remoteMoney = (ns.getServerMoneyAvailable(remote) / ns.getServerMaxMoney(remote)) * 100
                 let mineMoney = (ns.getServerMoneyAvailable(mine) / ns.getServerMaxMoney(mine)) * 100
                 let moneyDiff = mineMoney - remoteMoney
+                ns.print(`Money-diff: ${moneyDiff}`)
                 let totalDiff = secDiff + moneyDiff
-                if (totalDiff < 0) {
+                ns.print(`Money-diff: ${moneyDiff}`)
+                if (totalDiff > 0) {
                     if (secDiff > moneyDiff) {
                         script = 'scripts/_weaken.js'
                     } else if (moneyDiff > secDiff) {
                         script = 'scripts/_grow.js'
-                    } else {
+                    } else if (moneyDiff > 0) {
                         script = 'scripts/_hack.js'
                     }
-                    let mineMaxRam = ns.getServerMaxRam(mine)
-                    let mineFreeRam = mineMaxRam - ns.getServerUsedRam(mine)
+                    let mineMaxRam = ns.getServerMaxRam(host)
+                    let mineFreeRam = mineMaxRam - ns.getServerUsedRam(host)
                     if (mineFreeRam > scriptRam) {
                         remote = mine
                     }
@@ -37,9 +40,12 @@ export async function main(ns) {
         }
         let freeRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
         let threads = Math.floor(freeRam / scriptRam)
-        if (threads > 0) {
+        if (threads > 4) {
+            threads = 4
+            ns.run(script, threads, remote)
+        } else if (threads > 0) {
             ns.run(script, threads, remote)
         }
-        await ns.asleep(100)
+        await ns.asleep(10)
     }
 }

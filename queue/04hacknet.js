@@ -5,7 +5,7 @@ export async function main(ns) {
     let timeStart = Date.now() // Start timer
     let errorOut = 0 // Set error flag
     while (Date.now() <= (timeStart + (secsToRun * 1000)) && errorOut < 100) { // As long as the timer is running and less than 100 errors occur
-        let budget = (ns.getServerMoneyAvailable('home') / 2) // Calculate budget
+        let budget = (ns.getServerMoneyAvailable('home') / 10) // Calculate budget
         // Initialise variable
         let best = []
         let nodeDetails = [ns.hacknet.getPurchaseNodeCost(), ns.hacknet.numNodes()]
@@ -48,7 +48,7 @@ export async function main(ns) {
             best[2] = nodeDetails[0]
         }
         // Check that we have enough cash
-        budget = (ns.getServerMoneyAvailable('home'))
+        budget = (ns.getServerMoneyAvailable('home') / 10)
         // If we have enough, buy the upgrade
         if (nodeDetails[0] <= budget) {
             ns.hacknet.purchaseNode()
