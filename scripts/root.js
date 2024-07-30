@@ -36,8 +36,10 @@ export async function main(ns) {
             ns.tprint(`WARN - Skipping ${target}. (Needs ${ns.getServerNumPortsRequired(target)} ports open)`)
         } else {
             //Nuke.exe
-            ns.nuke(target)
-            ns.tprint(`SUCCESS - Nuked ${target}.`)
+            if (ns.hasRootAccess(target) === false) {
+                ns.nuke(target)
+                ns.tprint(`SUCCESS - Nuked ${target}.`)
+            }
             //Backdoor
             if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
                 ns.print(`WARN - Backdoor already running on ${target}`)
