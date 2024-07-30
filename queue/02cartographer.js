@@ -28,20 +28,24 @@ export async function main(ns) {
             }
         }
     })
-    ns.tprint(`INFO - Found ${scanned.length} servers. ${toRoot.length} servers need rooting.`)
-    // Root root-able servers
-    for (let root of toRoot) {
-        if (ns.getServerRequiredHackingLevel(root) <= ns.getHackingLevel()) {
-            if (ns.isRunning('scripts/root.js', 'home', root)) {
-                ns.print(`INFO - Already rooting ${root}`)
+    if (toRoot.length > 0) {
+        ns.tprint(`INFO - ${Math.floor(((scanned.length - toRoot.length) / scanned.length) * 100)}% of servers rooted.`)
+        // Root root-able servers
+        for (let root of toRoot) {
+            if (ns.getServerRequiredHackingLevel(root) <= ns.getHackingLevel()) {
+                if (ns.isRunning('scripts/root.js', 'home', root)) {
+                    ns.print(`INFO - Already rooting ${root}`)
+                } else {
+                    ns.print(`INFO - Rooting ${root}.`)
+                    ns.run('scripts/root.js', 1, root)
+                }
             } else {
-                ns.print(`INFO - Rooting ${root}.`)
-                ns.run('scripts/root.js', 1, root)
+                ns.print(`WARN - Skipping ${root}. (Needs hacking level ${ns.getHackingLevel()}))`)
             }
-        } else {
-            ns.print(`WARN - Skipping ${root}. (Needs hacking level ${ns.getHackingLevel()}))`)
         }
         // await ns.asleep(1000)
+    } else {
+        ns.print(`INFO - All ${scanned.length} server have been rooted.`)
     }
     // Make list of minable servers
     let toMine = []
