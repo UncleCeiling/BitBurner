@@ -3,7 +3,7 @@ export async function main(ns) {
     // Get info
     let servers = ns.getPurchasedServers()
     let limit = ns.getPurchasedServerLimit()
-    let budget = ns.getServerMoneyAvailable('home') / 10
+    let budget = ns.getServerMoneyAvailable('home') / 2
     // Calculate minRam and how much RAM to buy
     let minRam = ns.getScriptRam('scripts/foreman.js') + Math.max(ns.getScriptRam('scripts/_hack.js'), ns.getScriptRam('scripts/_grow.js'), ns.getScriptRam('scripts/_weaken.js'))
     let buyRam = 1
@@ -25,7 +25,7 @@ export async function main(ns) {
                 while (budget > minCost) {
                     ns.purchaseServer(`custom-${server}`, buyRam)
                     ns.tprint(`SUCCESS - Bought server ${server}`)
-                    budget = ns.getServerMoneyAvailable('home') / 10
+                    budget = ns.getServerMoneyAvailable('home') / 2
                 }
             }
         } else {
@@ -41,10 +41,10 @@ export async function main(ns) {
         let currentRam = ns.getServerMaxRam(server)
         if (currentRam < ns.getPurchasedServerMaxRam()) {
             let upgradeCost = ns.getPurchasedServerUpgradeCost(server, currentRam * 2)
-            budget = ns.getServerMoneyAvailable('home') / 10
+            budget = ns.getServerMoneyAvailable('home') / 2
             if (upgradeCost <= budget) {
                 ns.upgradePurchasedServer(server, currentRam * 2)
-                ns.tprint(`SUCCESS - Upgraded ${server} from ${currentRam}GB to ${currentRam * 2}GB`)
+                ns.tprint(`SUCCESS - Upgraded ${server} from ${currentRam}GB to ${currentRam * 2}GB ($${upgradeCost.toLocaleString()})`)
             }
         }
     }

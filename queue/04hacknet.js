@@ -4,8 +4,10 @@ export async function main(ns) {
     let secsToRun = 30 // Set max run-time
     let timeStart = Date.now() // Start timer
     let errorOut = 0 // Set error flag
+    let counter = 0
+    let spent = 0
     while (Date.now() <= (timeStart + (secsToRun * 1000)) && errorOut < 100) { // As long as the timer is running and less than 100 errors occur
-        let budget = (ns.getServerMoneyAvailable('home') / 10) // Calculate budget
+        let budget = (ns.getServerMoneyAvailable('home') / 2) // Calculate budget
         // Initialise variable
         let best = []
         let nodeDetails = [ns.hacknet.getPurchaseNodeCost(), ns.hacknet.numNodes()]
@@ -48,7 +50,7 @@ export async function main(ns) {
             best[2] = nodeDetails[0]
         }
         // Check that we have enough cash
-        budget = (ns.getServerMoneyAvailable('home') / 10)
+        budget = (ns.getServerMoneyAvailable('home') / 2)
         // If we have enough, buy the upgrade
         if (nodeDetails[0] <= budget) {
             ns.hacknet.purchaseNode()
@@ -80,12 +82,14 @@ export async function main(ns) {
                     ns.print('ERROR - Failed to purchase Node')
                 }
             }
-            // Report success
-            ns.tprint(`SUCCESS - Bought ${best[0]} on ${best[1]} for $ ${Math.floor(best[2])}`)
+            // Increment counter
         }
         // Pause for a millisecond rest
-        await ns.sleep(1)
+        // await ns.sleep(10)
+        counter++
+        spent += best[2]
     }
+    ns.tprint(`SUCCESS - Bought ${counter} upgrades ($${spent.toLocaleString()})`)
     // Wow, you really messed up huh?
     if (errorOut >= 100) {
         ns.print('ERROR - Not enough funds to continue Hacknet upgrades.')
