@@ -28,7 +28,7 @@ export async function main(ns) {
             }
         }
     })
-    ns.tprint(`WARN - Found ${scanned.length} servers. ${toRoot.length} servers need rooting.`)
+    ns.tprint(`INFO - Found ${scanned.length} servers. ${toRoot.length} servers need rooting.`)
     // Root root-able servers
     for (let root of toRoot) {
         if (ns.getServerRequiredHackingLevel(root) <= ns.getHackingLevel()) {
@@ -60,7 +60,7 @@ export async function main(ns) {
         }
     })
     // Create/update the list of mine-able servers
-    ns.tprint(`WARN - Updated 'mines.txt' with ${toMine.length} entries.`)
+    ns.tprint(`INFO - Updated 'mines.txt' with ${toMine.length} entries.`)
     ns.write('mines.txt', toMine.join('\n'), 'w')
     // Run miner if miner not running
     if (ns.isRunning('scripts/miner.js', 'home') == false) { // Check to see if the script is still running

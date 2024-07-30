@@ -40,10 +40,11 @@ export async function main(ns) {
         }
         let freeRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
         let threads = Math.floor(freeRam / scriptRam)
-        if (threads > 4) {
-            threads = 4
-            ns.run(script, threads, remote)
-        } else if (threads > 0) {
+        // if (threads > 4) {
+        //     threads = Math.floor((threads / 4) * 3)
+        //     ns.run(script, threads, remote)
+        // } else
+        if (threads > 0) {
             ns.run(script, threads, remote)
         }
         await ns.asleep(10)
