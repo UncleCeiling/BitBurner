@@ -29,7 +29,7 @@ export async function main(ns) {
                 }
             }
         } else {
-            for (let server = servers.length; server <= limit; server++) {
+            for (let server = servers.length; server < limit; server++) {
                 ns.purchaseServer(`custom-${server}`, buyRam)
                 ns.tprint(`SUCCESS - Bought server ${server}`)
             }
@@ -51,7 +51,9 @@ export async function main(ns) {
     // Deploy foreman to each server
     servers = ns.getPurchasedServers()
     for (let server of servers) {
+        // Copy scripts to servers
         ns.scp(['scripts/foreman.js', 'scripts/_hack.js', 'scripts/_grow.js', 'scripts/_weaken.js', 'mines.txt'], server, 'home')
+        // If foreman isn't running, run it
         if (ns.isRunning('scripts/foreman.js', server) !== true) {
             ns.exec('scripts/foreman.js', server)
             ns.tprint(`SUCCESS - Started Foreman on ${server}`)

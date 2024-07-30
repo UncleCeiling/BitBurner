@@ -63,21 +63,29 @@ export async function main(ns) {
             // Do the actual buying, but error if it fails.
             if (best[0] == 'a core') {
                 if (ns.hacknet.upgradeCore(coreDetails[1], 1)) {
+                    counter++
+                    spent += best[2]
                 } else {
                     ns.print('ERROR - Failed to upgrade Cores')
                 }
             } else if (best[0] == 'some RAM') {
                 if (ns.hacknet.upgradeRam(ramDetails[1], 1)) {
+                    counter++
+                    spent += best[2]
                 } else {
                     ns.print('ERROR - Failed to upgrade RAM')
                 }
             } else if (best[0] == 'a level') {
                 if (ns.hacknet.upgradeLevel(levelDetails[1], 1)) {
+                    counter++
+                    spent += best[2]
                 } else {
                     ns.print('ERROR - Failed to upgrade level')
                 }
             } else {
                 if (ns.hacknet.purchaseNode() !== -1) {
+                    counter++
+                    spent += best[2]
                 } else {
                     ns.print('ERROR - Failed to purchase Node')
                 }
@@ -86,8 +94,6 @@ export async function main(ns) {
         }
         // Pause for a millisecond rest
         // await ns.sleep(10)
-        counter++
-        spent += best[2]
     }
     ns.tprint(`SUCCESS - Bought ${counter} upgrades across ${ns.hacknet.numNodes()} nodes($${spent.toLocaleString()})`)
     // Wow, you really messed up huh?
