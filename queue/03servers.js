@@ -21,17 +21,18 @@ export async function main(ns) {
         let minCost = ns.getPurchasedServerCost(buyRam)
         if ((minCost * diff) > budget) {
             let server = servers.length
-            let serverName = `custom-${string(server).padStart(2, '0')}`
+            let serverName = `custom-${String(server).padStart(2, '0')}`
             if (budget > minCost) {
                 while (budget > minCost) {
-                    ns.purchaseServer(`custom-${serverName}`, buyRam)
+                    ns.purchaseServer(serverName, buyRam)
                     ns.tprint(`SUCCESS - Bought server ${serverName}`)
                     budget = ns.getServerMoneyAvailable('home') / 2
                 }
             }
         } else {
             for (let server = servers.length; server < limit; server++) {
-                ns.purchaseServer(`custom-${serverName}`, buyRam)
+                let serverName = `custom-${String(server).padStart(2, '0')}`
+                ns.purchaseServer(serverName, buyRam)
                 ns.tprint(`SUCCESS - Bought server ${server}`)
             }
         }
