@@ -17,23 +17,15 @@ export async function main(ns) {
     }
     // If less than the limit of servers are owned, buy more
     if (servers.length < limit) {
-        let diff = limit - servers.length
         let minCost = ns.getPurchasedServerCost(buyRam)
-        if ((minCost * diff) > budget) {
-            let server = servers.length
-            let serverName = `custom-${String(server).padStart(2, '0')}`
-            if (budget > minCost) {
-                while (budget > minCost) {
-                    ns.purchaseServer(serverName, buyRam)
-                    ns.tprint(`SUCCESS - Bought server ${serverName}`)
-                    budget = ns.getServerMoneyAvailable('home') / 2
-                }
-            }
-        } else {
-            for (let server = servers.length; server < limit; server++) {
+        let server = servers.length
+        if (budget > minCost) {
+            while (budget > minCost && server <= limit) {
                 let serverName = `custom-${String(server).padStart(2, '0')}`
                 ns.purchaseServer(serverName, buyRam)
-                ns.tprint(`SUCCESS - Bought server ${server}`)
+                ns.tprint(`SUCCESS - Bought ${buyRam}GB server: ${serverName} ($${minCost})`)
+                server++
+                budget = ns.getServerMoneyAvailable('home') / 2
             }
         }
     }
@@ -61,5 +53,4 @@ export async function main(ns) {
             ns.tprint(`SUCCESS - Started Foreman on ${server}`)
         }
     }
-
 }

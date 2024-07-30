@@ -1,6 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tprint('INFO - Purchasing Hacknet upgrades.')
+    // ns.tprint('INFO - Purchasing Hacknet upgrades.')
     let secsToRun = 30 // Set max run-time
     let timeStart = Date.now() // Start timer
     let errorOut = 0 // Set error flag

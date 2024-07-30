@@ -33,14 +33,14 @@ export async function main(ns) {
         min = Math.min(...programCosts) // Find the lowest price item
         cheapestIndex = programCosts.indexOf(min)
         buyChoice = programList[cheapestIndex] // Find the corresponding Program
-        ns.tprint('INFO - Browsing the Darkweb.')
+        // ns.tprint('INFO - Browsing the Darkweb.')
         if (ns.getServerMoneyAvailable('home') > Math.min(...programCosts)) { // If we have enough money
             ns.singularity.purchaseProgram(buyChoice) // Buy the program
             ns.tprint(`SUCCESS - Purchased ${buyChoice}`) // Report the success
         } else if (programCosts[0] == Infinity) { // If all products are owned
             ns.print('SUCCESS - All Darkweb Products owned.') // Say so
         } else {
-            ns.tprint(`ERROR - Not enough funds to purchase ${buyChoice} - Need $${Math.min(programCosts).toLocaleString()}`) // Otherwise we are out of cash
+            ns.tprint(`ERROR - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
         }
     }
 }
