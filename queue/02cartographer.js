@@ -68,8 +68,13 @@ export async function main(ns) {
     ns.tprint(`INFO - Updated 'mines.txt' with ${toMine.length} entries.`)
     // Run miner if miner not running
     if (ns.isRunning('scripts/miner.js', 'home') == false) { // Check to see if the script is still running
-        ns.tprint('SUCCESS - Launching Miner')
+        ns.tprint('SUCCESS - Launching Miner on `home')
         ns.run('scripts/miner.js', 1)
+    }
+    // Run `home` foreman if note running
+    if (ns.isRunning('scripts/foreman.js', 'home') == false) { // Check to see if the script is still running
+        ns.tprint('SUCCESS - Launching Foreman on `home`')
+        ns.run('scripts/foreman.js', 1)
     }
     ns.run('scripts/mapper.js', 1)
 }
