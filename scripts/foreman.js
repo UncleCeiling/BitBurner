@@ -1,8 +1,11 @@
 /** @param {NS} ns */
 export async function main(ns) {
     while (true) {
+        // sleep a little
+        let sleepLength = Math.floor(Math.random() * 10000)
+        await ns.asleep(sleepLength)
         let host = ns.getHostname()
-        if (host == 'home' && ns.getServerMaxRam <= 64) { return }
+        if (host == 'home' && ns.getServerMaxRam('home') <= 64) { ns.asleep(5000); return }
         let scriptRam = Math.max(ns.getScriptRam('scripts/_grow.js', host), ns.getScriptRam('scripts/_hack.js', host), ns.getScriptRam('scripts/_weaken.js', host))
         // Calculate area of most need
         let mines = ns.read('mines.txt').split('\n')
@@ -53,8 +56,5 @@ export async function main(ns) {
         if (threads > 0) {
             ns.run(script, threads, remote)
         }
-        // sleep a little
-        let sleepLength = Math.floor(Math.random() * 10000)
-        await ns.asleep(sleepLength)
     }
 }
