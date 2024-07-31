@@ -15,7 +15,7 @@ export async function main(ns) {
         await ns.singularity.installBackdoor()
         ns.tprint(`SUCCESS - Installed Backdoor on ${target}`)
     } else {
-        ns.tprint(`WARN - Skipping Backdoor on ${target}. No adjacent backdoors:\n                            ${ns.scan(target).join(' | ')})`)
+        ns.tprint(`WARN - Skipping Backdoor on ${target}. No adjacent backdoors:\n\t\t\t${ns.scan(target).join(' | ')}`)
     }
     ns.singularity.connect('home')
 }
