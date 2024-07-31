@@ -21,7 +21,7 @@ export async function main(ns) {
     // Build list of servers to root
     let toRoot = []
     scanned.forEach(function (server) {
-        if (server['hasAdminRights'] == false || server['backdoorInstalled'] == false) {
+        if (server['hasAdminRights'] == false) {
             if (server['purchasedByPlayer'] == undefined || server['purchasedByPlayer'] == false) {
                 toRoot.push(server['hostname'])
             }
@@ -44,7 +44,24 @@ export async function main(ns) {
         }
         // await ns.asleep(1000)
     } else {
-        ns.print(`INFO - All ${scanned.length} server have been rooted.`)
+        ns.print(`INFO - All ${scanned.length} servers have been rooted.`)
+    }
+    // Build list of servers to backdoor
+    let toBackdoor = []
+    scanned.forEach(function (server) {
+        if (!server['backdoorInstalled'] && server['asAdminRights']) {
+            if (server['purchasedByPlayer'] == undefined || server['purchasedByPlayer'] == false) {
+                toBackdoor.push(server)
+            }
+        }
+    })
+    // Deploy backdoor
+    for (let target in toBackdoor) {
+        if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
+            ns.print(`WARN - Backdoor already running on ${target}`)
+        } else {
+            ns.run('./backdoor.js', 1, target)
+        }
     }
     // Make list of minable servers
     let toMine = []

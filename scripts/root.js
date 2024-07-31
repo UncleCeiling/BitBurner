@@ -40,13 +40,6 @@ export async function main(ns) {
                 ns.nuke(target)
                 ns.tprint(`SUCCESS - Nuked ${target}.`)
             }
-            //Backdoor
-            if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
-                ns.print(`WARN - Backdoor already running on ${target}`)
-                return
-            } else {
-                ns.run('./backdoor.js', 1, target)
-            }
         }
     }
 }
