@@ -7,7 +7,7 @@ export async function main(ns) {
     let counter = 0
     let spent = 0
     while (Date.now() <= (timeStart + (secsToRun * 1000)) && errorOut < 100) { // As long as the timer is running and less than 100 errors occur
-        let budget = (ns.getServerMoneyAvailable('home') / 2) // Calculate budget
+        let budget = (ns.getServerMoneyAvailable('home')) // Calculate budget
         // Initialise variable
         let best = []
         let nodeDetails = [ns.hacknet.getPurchaseNodeCost(), ns.hacknet.numNodes()]
