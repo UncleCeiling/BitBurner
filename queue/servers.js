@@ -53,5 +53,5 @@ export async function main(ns) {
             ns.tprint(`SUCCESS - Started Foreman on ${server}`)
         }
     }
-    ns.run('tools/serverstats.js')
+    ns.run('scripts/serverstats.js')
 }
