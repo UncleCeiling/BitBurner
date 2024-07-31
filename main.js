@@ -15,10 +15,9 @@ export async function main(ns) {
                 continue
             }
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
-            let path = './' + script // Make the path string
-            await ns.run(path) // Run the script
+            await ns.run(script) // Run the script
             await ns.asleep(1000) // Wait
-            while (ns.isRunning(path)) { // Check to see if the script is still running
+            while (ns.isRunning(script)) { // Check to see if the script is still running
                 await ns.asleep(1000) // Wait
             }
         }
