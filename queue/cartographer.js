@@ -49,6 +49,7 @@ export async function main(ns) {
     }
     // Build list of servers to backdoor
     let toBackdoor = []
+    ns.asleep(500)
     for (let server of scanned) {
         if (!server['backdoorInstalled'] && (server['hasAdminRights'])) {
             if (server['purchasedByPlayer'] == undefined || server['purchasedByPlayer'] == false) {

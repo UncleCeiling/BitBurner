@@ -1,6 +1,5 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.asleep(500)
     let target = ns.args[0]
     let nearby = ns.scan(target)
     let precursor = []
