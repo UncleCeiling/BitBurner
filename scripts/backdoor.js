@@ -3,7 +3,6 @@ export async function main(ns) {
     let target = ns.args[0]
     let nearby = ns.scan(target)
     let precursor = []
-    ns.tprint(`SUCCESS - Starting backdoor on ${target}`)
     nearby.forEach(function (backdoorCheck) {
         if (ns.getServer(backdoorCheck).backdoorInstalled == true) {
             precursor.push(backdoorCheck)
@@ -12,6 +11,7 @@ export async function main(ns) {
     if (precursor.length >= 1) {
         ns.singularity.connect(precursor[0])
         ns.singularity.connect(target)
+        ns.tprint(`SUCCESS - Starting backdoor on ${target}`)
         await ns.singularity.installBackdoor()
         ns.tprint(`SUCCESS - Installed Backdoor on ${target}`)
     } else {
