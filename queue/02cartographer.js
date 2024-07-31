@@ -56,13 +56,15 @@ export async function main(ns) {
         }
     })
     // Deploy backdoor
-    for (let target in toBackdoor) {
-        if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
-            ns.print(`WARN - Backdoor already running on ${target}`)
-        } else {
-            ns.run('./backdoor.js', 1, target)
+    if (toBackdoor.length > 0) {
+        for (let target in toBackdoor) {
+            if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
+                ns.print(`WARN - Backdoor already running on ${target}`)
+            } else {
+                ns.run('./backdoor.js', 1, target)
+            }
         }
-    }
+    } else { ns.print('INFO - All available servers backdoored.') }
     // Make list of minable servers
     let toMine = []
     scanned.forEach(function (server) {
