@@ -1,23 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tprint('INFO - Mapping network.')
-    // Build list of servers
-    let serverList = new Set(['home'])
-    // Populate serverList
-    let prevListLength = 0
     let data = []
-    while (serverList.size != prevListLength) {
-        prevListLength = serverList.size
-        serverList.forEach(function (remote) {
-            let scanResult = ns.scan(remote)
-            for (let result of scanResult) {
-                if (!result.includes("custom-")) {
-                    serverList.add(result)
-                }
-            }
-        })
-        ns.print(`INFO - ${prevListLength} => ${serverList.size}`)
-    }
     var servers = new Set()
     function print_server(server, depth) {
         let current = ns.getServer(server)

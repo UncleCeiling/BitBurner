@@ -9,9 +9,13 @@ export async function main(ns) {
     while (true) {
         let scripts = ns.ls('home', queue_loc) // Update queue
         ns.tprint(`INFO - Found ${scripts.length} scripts.`) // Write to log
-        for (let x in scripts) {
-            ns.tprint(`INFO - Running ${scripts[x].replace(queue_loc, '')}`)
-            let path = './' + scripts[x] // Make the path string
+        for (let script of scripts) {
+            if (script == 'queue/01darkweb.js' && ns.fileExists('Formulas.exe', 'home')) {
+                ns.tprint('INFO - Skipping 01darkweb.js')
+                continue
+            }
+            ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
+            let path = './' + script // Make the path string
             await ns.run(path) // Run the script
             await ns.asleep(1000) // Wait
             while (ns.isRunning(path)) { // Check to see if the script is still running

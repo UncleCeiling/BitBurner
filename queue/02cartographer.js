@@ -1,6 +1,5 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tprint('INFO - Mapping network.')
     // Build list of servers
     let scannedList = []
     let toScan = ['home']
@@ -72,4 +71,5 @@ export async function main(ns) {
         ns.tprint('SUCCESS - Launching Miner')
         ns.run('scripts/miner.js', 1)
     }
+    ns.run('scripts/mapper.js', 1)
 }
