@@ -42,7 +42,9 @@ export async function main(ns) {
         // calc free ram
         let freeRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
         // -64 for home
-        if (host == 'home') {
+        if (remote == '') {
+            continue
+        } else if (host == 'home') {
             freeRam = (ns.getServerMaxRam(host) - 64) - ns.getServerUsedRam(host)
         }
         // calc threads

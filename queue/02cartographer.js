@@ -72,7 +72,7 @@ export async function main(ns) {
         ns.run('scripts/miner.js', 1)
     }
     // Run `home` foreman if note running
-    if (ns.isRunning('scripts/foreman.js', 'home') == false) { // Check to see if the script is still running
+    if (ns.isRunning('scripts/foreman.js', 'home') == false && ns.getServerMaxRam('home') > 64) { // Check to see if the script is still running
         ns.tprint('SUCCESS - Launching Foreman on `home`')
         ns.run('scripts/foreman.js', 1)
     }
