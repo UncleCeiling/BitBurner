@@ -14,5 +14,5 @@ export async function main(ns) {
     }
     ns.rm('servers.txt')
     ns.write('servers.txt', data.join('\n'), 'w')
-    ns.tprint('\n' + data.join('\n'))
+    // ns.tprint('\n' + data.join('\n'))
 }
