@@ -8,10 +8,11 @@ export async function main(ns) {
     }
     while (true) {
         let scripts = ns.ls('home', queue_loc) // Update queue
+        scripts.sort(() => Math.random() - 0.5)
         ns.tprint(`INFO - Found ${scripts.length} scripts.`) // Write to log
         for (let script of scripts) {
-            if (script == 'queue/01darkweb.js' && ns.fileExists('Formulas.exe', 'home')) {
-                ns.tprint('INFO - Skipping 01darkweb.js')
+            if (script == 'queue/darkweb.js' && ns.fileExists('Formulas.exe', 'home')) {
+                ns.tprint('INFO - Skipping darkweb.js')
                 continue
             }
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
