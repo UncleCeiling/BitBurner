@@ -54,7 +54,7 @@ export async function main(ns) {
         // If we have enough, buy the upgrade
         if (nodeDetails[0] <= budget) {
             ns.hacknet.purchaseNode()
-            ns.print('Bought new node')
+            ns.tprint('SUCCESS - Bought new Hacknet node')
         } else if (best[2] > budget) {
             // If we somehow messed up, increment the error counter
             errorOut++

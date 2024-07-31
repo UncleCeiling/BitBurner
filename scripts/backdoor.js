@@ -3,19 +3,19 @@ export async function main(ns) {
     let target = ns.args[0]
     let nearby = ns.scan(target)
     let precursor = []
-    nearby.forEach(function (backdoorCheck) {
-        if (ns.getServer(backdoorCheck).backdoorInstalled == true) {
-            precursor.push(backdoorCheck)
+    for (let server of nearby) {
+        if (ns.getServer(server)['backdoorInstalled'] == true) {
+            precursor.push(server)
         }
-    })
+    }
     if (precursor.length >= 1) {
         ns.singularity.connect(precursor[0])
         ns.singularity.connect(target)
         ns.tprint(`SUCCESS - Starting backdoor on ${target}`)
         await ns.singularity.installBackdoor()
         ns.tprint(`SUCCESS - Installed Backdoor on ${target}`)
+        ns.singularity.connect('home')
     } else {
         ns.tprint(`WARN - Skipping Backdoor on ${target}. No adjacent backdoors:\n\t\t\t${ns.scan(target).join(' | ')}`)
     }
-    ns.singularity.connect('home')
 }

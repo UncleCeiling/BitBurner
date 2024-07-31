@@ -37,7 +37,7 @@ export async function main(ns) {
                 } else {
                     ns.print(`INFO - Rooting ${root}.`)
                     ns.run('scripts/root.js', 1, root)
-                    ns.asleep(200)
+                    // ns.asleep(200)
                 }
             } else {
                 ns.print(`WARN - Skipping ${root}. (Needs hacking level ${ns.getHackingLevel()}))`)
@@ -48,6 +48,7 @@ export async function main(ns) {
         ns.print(`INFO - All ${scanned.length} servers have been rooted.`)
     }
     // Build list of servers to backdoor
+    ns.asleep(500)
     let toBackdoor = []
     scannedList.forEach(function (add) {
         scanned.push(ns.getServer(add))
