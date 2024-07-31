@@ -15,11 +15,11 @@ export async function main(ns) {
             } else {
                 let remoteSec = (ns.getServerMinSecurityLevel(remote) / ns.getServerSecurityLevel(remote)) * 100
                 let mineSec = (ns.getServerMinSecurityLevel(mine) / ns.getServerSecurityLevel(mine)) * 100
-                let secDiff = mineSec - remoteSec
+                let secDiff = math.floor(mineSec - remoteSec)
                 ns.print(`Sec-diff: ${secDiff}`)
                 let remoteMoney = (ns.getServerMoneyAvailable(remote) / ns.getServerMaxMoney(remote)) * 100
                 let mineMoney = (ns.getServerMoneyAvailable(mine) / ns.getServerMaxMoney(mine)) * 100
-                let moneyDiff = mineMoney - remoteMoney
+                let moneyDiff = Math.floor(mineMoney - remoteMoney)
                 ns.print(`Money-diff: ${moneyDiff}`)
                 let totalDiff = secDiff + moneyDiff
                 ns.print(`Money-diff: ${moneyDiff}`)
@@ -28,7 +28,7 @@ export async function main(ns) {
                         script = 'scripts/_weaken.js'
                     } else if (moneyDiff > secDiff) {
                         script = 'scripts/_grow.js'
-                    } else if (moneyDiff > 0) {
+                    } else {
                         script = 'scripts/_hack.js'
                     }
                     let mineMaxRam = ns.getServerMaxRam(host)
