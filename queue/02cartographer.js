@@ -48,16 +48,16 @@ export async function main(ns) {
     }
     // Build list of servers to backdoor
     let toBackdoor = []
-    scanned.forEach(function (server) {
-        if (!server['backdoorInstalled'] && server['asAdminRights']) {
+    for (let server of scanned) {
+        if (!server['backdoorInstalled'] && (server['hasAdminRights'])) {
             if (server['purchasedByPlayer'] == undefined || server['purchasedByPlayer'] == false) {
-                toBackdoor.push(server)
+                toBackdoor.push(server['hostname'])
             }
         }
-    })
+    }
     // Deploy backdoor
     if (toBackdoor.length > 0) {
-        for (let target in toBackdoor) {
+        for (let target of toBackdoor) {
             if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
                 ns.print(`WARN - Backdoor already running on ${target}`)
             } else {

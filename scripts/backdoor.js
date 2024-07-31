@@ -3,6 +3,7 @@ export async function main(ns) {
     let target = ns.args[0]
     let nearby = ns.scan(target)
     let precursor = []
+    ns.tprint(`SUCCESS - Starting backdoor on ${target}`)
     nearby.forEach(function (backdoorCheck) {
         if (ns.getServer(backdoorCheck).backdoorInstalled == true) {
             precursor.push(backdoorCheck)
