@@ -61,7 +61,7 @@ export async function main(ns) {
             if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
                 ns.print(`WARN - Backdoor already running on ${target}`)
             } else {
-                ns.run('./backdoor.js', 1, target)
+                ns.run('scripts/backdoor.js', 1, target)
             }
         }
     } else { ns.print('INFO - All available servers backdoored.') }
