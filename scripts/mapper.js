@@ -11,7 +11,7 @@ export async function main(ns) {
         let backdoor = ''
         if (current["hasAdminRights"] == true) { rooted = 'R' } else { rooted = "X" }
         if (current["backdoorInstalled"] == true) { backdoor = 'B' } else { backdoor = "X" }
-        data.push(String('|>'.padStart((depth * 2), ' ') + `${rooted}${backdoor} "${current["hostname"]}" ${current["requiredHackingSkill"]}`))
+        data.push(String('|>'.padStart((depth), '\t') + `${rooted}${backdoor} "${current["hostname"]}" ${current["requiredHackingSkill"]}`))
         let children = new Set(ns.scan(current["hostname"]))
         for (let server of servers) {
             children.delete(server)
