@@ -20,7 +20,7 @@ export async function main(ns) {
         let minCost = ns.getPurchasedServerCost(buyRam)
         let server = servers.length
         if (budget > minCost) {
-            while (budget > minCost && server <= limit) {
+            while (budget > minCost && server < limit) {
                 let serverName = `custom-${String(server).padStart(2, '0')}`
                 ns.purchaseServer(serverName, buyRam)
                 ns.tprint(`SUCCESS - Bought ${buyRam}GB server: ${serverName} ($${minCost})`)
