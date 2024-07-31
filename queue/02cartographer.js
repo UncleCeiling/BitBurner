@@ -37,6 +37,7 @@ export async function main(ns) {
                 } else {
                     ns.print(`INFO - Rooting ${root}.`)
                     ns.run('scripts/root.js', 1, root)
+                    ns.asleep(200)
                 }
             } else {
                 ns.print(`WARN - Skipping ${root}. (Needs hacking level ${ns.getHackingLevel()}))`)
@@ -62,6 +63,7 @@ export async function main(ns) {
                 ns.print(`WARN - Backdoor already running on ${target}`)
             } else {
                 ns.run('scripts/backdoor.js', 1, target)
+                ns.asleep(200)
             }
         }
     } else { ns.print('INFO - All available servers backdoored.') }
