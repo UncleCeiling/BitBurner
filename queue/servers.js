@@ -29,12 +29,13 @@ export async function main(ns) {
             ns.tprint(`SUCCESS - Bought ${buyRam}GB server: ${serverName} ($${cost})`)
             // Refresh the budget & increment the server num
             budget = ns.getServerMoneyAvailable('home')
-            server++
+            serverNum++
         }
     }
 
     // Upgrade each server
     servers = ns.getPurchasedServers()
+    if (servers.length == 0) { return }
     for (let server of servers) {
         // Find out how much RAM the server has
         let currentRam = ns.getServerMaxRam(server)
