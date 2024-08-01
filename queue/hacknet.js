@@ -1,105 +1,95 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    // ns.tprint('INFO - Purchasing Hacknet upgrades.')
-    let secsToRun = 30 // Set max run-time
-    let timeStart = Date.now() // Start timer
-    let errorOut = 0 // Set error flag
-    let counter = 0
-    let spent = 0
-    while (Date.now() <= (timeStart + (secsToRun * 1000)) && errorOut < 100) { // As long as the timer is running and less than 100 errors occur
-        let budget = (ns.getServerMoneyAvailable('home')) // Calculate budget
-        // Initialise variable
-        let best = []
-        let nodeDetails = [ns.hacknet.getPurchaseNodeCost(), ns.hacknet.numNodes()]
-        let levelsDist = []
-        let ramDist = []
-        let coresDist = []
-        let levelDetails = []
-        let ramDetails = []
-        let coreDetails = []
-        // For each node; find costs and add to lists
-        for (let i = 0; i < nodeDetails[1]; i++) {
-            levelsDist.push(ns.hacknet.getLevelUpgradeCost(i, 1))
-            ramDist.push(ns.hacknet.getRamUpgradeCost(i, 1))
-            coresDist.push(ns.hacknet.getCoreUpgradeCost(i, 1))
+    // Make functions for getting budget and nodeCost
+    function get_budget() { return ns.getServerMoneyAvailable('home') }
+    function get_node_cost() { return ns.hacknet.getPurchaseNodeCost() }
+
+    // Buy nodes
+    while (get_budget() > get_node_cost()) {
+        ns.purchaseNode()
+        ns.tprint('SUCCESS - Bought new Hacknet node')
+    }
+
+    // Get number of nodes
+    let numNodes = ns.hacknet.numNodes()
+    // Get the upgrade and history variables ready
+    let upgrade = { 'type': '', 'node': 0, 'cost': 0 }
+    let history = { 'items': 0, 'spent': 0, 'errors': 0 }
+
+    // Buy upgrades until we break
+    while (true) {
+        let level = { 'node': 0, 'cost': Infinity }
+        let ram = { 'node': 0, 'cost': Infinity }
+        let core = { 'node': 0, 'cost': Infinity }
+        // Find the cheapest of each type of upgrade
+        for (let node = 0; node < numNodes; node++) {
+            // Get cost for this node
+            let levelCost = ns.hacknet.getLevelUpgradeCost(node, 1)
+            let ramCost = ns.hacknet.getRamUpgradeCost(node, 1)
+            let coreCost = ns.hacknet.getCoreUpgradeCost(node, 1)
+            // Compare to current best prices
+            if (levelCost < level["cost"]) { level = { 'node': node, 'cost': levelCost } }
+            if (ramCost < ram["cost"]) { ram = { 'node': node, 'cost': ramCost } }
+            if (coreCost < core["cost"]) { core = { 'node': node, 'cost': coreCost } }
         }
-        // Find cheapest for each list
-        levelDetails[0] = Math.min(...levelsDist);
-        ramDetails[0] = Math.min(...ramDist);
-        coreDetails[0] = Math.min(...coresDist);
-        // Match to the correct node
-        levelDetails[1] = levelsDist.indexOf(levelDetails[0]);
-        ramDetails[1] = ramDist.indexOf(ramDetails[0]);
-        coreDetails[1] = coresDist.indexOf(coreDetails[0]);
-        // Decide which to buy
-        if (coreDetails[0] <= ramDetails[0] && coreDetails[0] <= levelDetails[0] && coreDetails[0] <= nodeDetails[0]) {
-            best[0] = 'a core'
-            best[1] = 'Node' + coreDetails[1]
-            best[2] = coreDetails[0]
-        } else if (ramDetails[0] <= levelDetails[0] && ramDetails[0] <= nodeDetails[0]) {
-            best[0] = 'some RAM'
-            best[1] = 'Node ' + ramDetails[1]
-            best[2] = ramDetails[0]
-        } else if (levelDetails[0] <= nodeDetails[0]) {
-            best[0] = 'a level'
-            best[1] = 'Node ' + levelDetails[1]
-            best[2] = levelDetails[0]
+        // Find the cheapest upgrade overall
+        if (level['cost'] < ram['cost'] && level['cost'] < core['cost']) {
+            upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] }
+        } else if (ram['cost'] < level['cost'] && ram['cost'] < core['cost']) {
+            upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
         } else {
-            best[0] = 'a new node'
-            best[1] = 'the Hacknet'
-            best[2] = nodeDetails[0]
+            upgrade = { 'type': 'core', 'node': core['node'], 'cost': core['cost'] }
         }
-        // Check that we have enough cash
-        budget = (ns.getServerMoneyAvailable('home') / 2)
-        // If we have enough, buy the upgrade
-        if (nodeDetails[0] <= budget) {
-            ns.hacknet.purchaseNode()
-            ns.tprint('SUCCESS - Bought new Hacknet node')
-        } else if (best[2] > budget) {
-            // If we somehow messed up, increment the error counter
-            errorOut++
-            ns.print(`Failures = ${errorOut}`)
-        } else {
-            // Do the actual buying, but error if it fails.
-            if (best[0] == 'a core') {
-                if (ns.hacknet.upgradeCore(coreDetails[1], 1)) {
-                    counter++
-                    spent += best[2]
-                } else {
-                    ns.print('ERROR - Failed to upgrade Cores')
-                }
-            } else if (best[0] == 'some RAM') {
-                if (ns.hacknet.upgradeRam(ramDetails[1], 1)) {
-                    counter++
-                    spent += best[2]
-                } else {
-                    ns.print('ERROR - Failed to upgrade RAM')
-                }
-            } else if (best[0] == 'a level') {
-                if (ns.hacknet.upgradeLevel(levelDetails[1], 1)) {
-                    counter++
-                    spent += best[2]
-                } else {
-                    ns.print('ERROR - Failed to upgrade level')
-                }
-            } else {
-                if (ns.hacknet.purchaseNode() !== -1) {
-                    counter++
-                    spent += best[2]
-                } else {
-                    ns.print('ERROR - Failed to purchase Node')
-                }
+        // Buy the upgrade if we can afford it
+        if (get_budget() > upgrade['cost']) {
+            switch (upgrade['type']) {
+                // Buy a level
+                case 'level':
+                    if (ns.hacknet.upgradeLevel(upgrade['node'], 1)) {
+                        // Success! Add it to the history
+                        history['items'] += 1
+                        history['spent'] = history['spent'] + upgrade['cost']
+                    } else {
+                        // Fail! add it to the errors
+                        history['errors'] += 1
+                        ns.print(`ERROR - Failed to upgrade Level on node ${upgrade['node']}`)
+                    } break;
+                // Buy some RAM
+                case 'ram':
+                    // Success! Add it to the history
+                    if (ns.hacknet.upgradeRam(upgrade['node'], 1)) {
+                        history['items'] += 1
+                        history['spent'] = history['spent'] + upgrade['cost']
+                    } else {
+                        // Fail! add it to the errors
+                        history['errors'] += 1
+                        ns.print(`ERROR - Failed to upgrade Ram on node ${upgrade['node']}`)
+                    } break;
+                // Buy a core
+                case 'core':
+                    // Success! Add it to the history
+                    if (ns.hacknet.upgradeCore(upgrade['node'], 1)) {
+                        history['items'] += 1
+                        history['spent'] = history['spent'] + upgrade['cost']
+                    } else {
+                        history['errors'] += 1
+                        // Fail! add it to the errors
+                        ns.print(`ERROR - Failed to upgrade Core on node ${upgrade['node']}`)
+                    } break;
+                // Fail! Add it to the tally
+                default:
+                    ns.print(`ERROR - Upgrade ${upgrade} failed`)
+                    history['errors'] += 1
             }
-            // Increment counter
         }
-        // Pause for a millisecond rest
-        // await ns.sleep(10)
+        // If we can't afford it, break
+        else { ns.print('ERROR - Ran out of funds'); break }
+        // Break if too many errors
+        if (history['errors'] >= 100) { ns.print('ERROR - Too many errors occurred'); break }
     }
-    if (counter > 0) {
-        ns.tprint(`SUCCESS - Bought ${counter} upgrades across ${ns.hacknet.numNodes()} nodes($${spent.toLocaleString()})`)
-    }
-    // Wow, you really messed up huh?
-    if (errorOut >= 100) {
-        ns.print('ERROR - Not enough funds to continue Hacknet upgrades.')
+
+    // Check the history and report what we spent
+    if (history['items'] > 0) {
+        ns.tprint(`SUCCESS - Bought ${history['items']} items for $${history['spent'].toLocaleString()})`)
     }
 }
