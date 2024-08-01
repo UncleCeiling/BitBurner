@@ -6,7 +6,7 @@ export async function main(ns) {
 
     // Buy nodes
     while (get_budget() > get_node_cost()) {
-        ns.purchaseNode()
+        ns.hacknet.purchaseNode()
         ns.tprint('SUCCESS - Bought new Hacknet node')
     }
 
