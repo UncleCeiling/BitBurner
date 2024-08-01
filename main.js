@@ -19,9 +19,10 @@ export async function main(ns) {
             ns.tprint('INFO - Skipping darkweb.js')
         }
         // Shuffle scripts
-        scripts.sort(() => Math.random() - 0.5)
+        let scriptList = Array(scripts)
+        scriptList.sort(() => Math.random() - 0.5)
         // Check each script and run it
-        for (let script of scripts) {
+        for (let script of scriptList) {
             // Run the script
             await ns.run(script)
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
