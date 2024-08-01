@@ -90,6 +90,6 @@ export async function main(ns) {
 
     // Check the history and report what we spent
     if (history['items'] > 0) {
-        ns.tprint(`SUCCESS - Bought ${history['items']} items for $${history['spent'].toLocaleString()})`)
+        ns.tprint(`SUCCESS - Bought ${history['items']} items for $${history['spent'].toLocaleString()}`)
     }
 }
