@@ -11,7 +11,7 @@ export async function main(ns) {
     }
 
     // Get number of nodes
-    numNodes = ns.hacknet.numNodes()
+    let numNodes = ns.hacknet.numNodes()
     // Get the upgrade and history variables ready
     let upgrade = { 'type': '', 'node': 0, 'cost': 0 }
     let history = { 'items': 0, 'spent': 0, 'errors': 0 }

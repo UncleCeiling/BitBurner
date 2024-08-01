@@ -11,21 +11,18 @@ export async function main(ns) {
     // Loop forever
     while (true) {
         // Fetch scripts from queue
-        let scripts = new Set(ns.ls('home', queue_loc))
+        let scripts = ns.ls('home', queue_loc)
         ns.tprint(`INFO - Found ${scripts.length} scripts.`)
-        // Remove darkweb.js if all items bought
-        if (ns.fileExists('Formulas.exe', 'home')) {
-            scripts.delete('queue/darkweb.js')
-            ns.tprint('INFO - Skipping darkweb.js')
-        }
         // Shuffle scripts
-        let scriptList = Array(scripts)
-        scriptList.sort(() => Math.random() - 0.5)
+        scripts.sort(() => Math.random() - 0.5)
         // Check each script and run it
-        for (let script of scriptList) {
-            // Run the script
+        for (let script of scripts) {
+            // Skip darkweb.js is everything bought
+            if (ns.fileExists('Formulas.exe', 'home') && scripts.includes('darkweb.js')) { ns.tprint('INFO - Skipping darkweb.js'); continue }
+            // Run script
             await ns.run(script)
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
+            // Give it a second
             await ns.asleep(1000)
             // Don't continue until the script is finished
             while (ns.isRunning(script)) {

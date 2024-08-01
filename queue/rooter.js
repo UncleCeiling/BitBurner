@@ -4,13 +4,17 @@ export async function main(ns) {
     let servers = new Set(['home'])
     for (let server of servers) {
         for (let result of ns.scan(server)) {
-            servers.add(ns.getServer(result))
+            if (result.includes('custom-')) { continue }
+            servers.add(result)
         }
     }
-
+    let serverDetails = []
+    for (let server of servers) {
+        serverDetails.push(ns.getServer(server))
+    }
     // Build list of servers to root
     let toRoot = []
-    for (let server of servers) {
+    for (let server of serverDetails) {
         // Skip rooted and custom servers
         if (server['hasAdminRights'] || server['hostname'].includes('custom-')) { continue }
         // Add the rest to the list
@@ -20,7 +24,7 @@ export async function main(ns) {
     // Root anything in the list
     if (toRoot.length > 0) {
         // Report Progress
-        let total = servers.size()
+        let total = serverDetails.length
         let rooted = total - toRoot.length
         let percent = Math.floor((rooted / total) * 100)
         ns.tprint(`INFO - ${rooted}/${total} (${percent}%) servers rooted so far.`)
@@ -34,16 +38,16 @@ export async function main(ns) {
             ns.run('scripts/root.js', 1, root)
             ns.print(`INFO - Rooting ${root}.`)
             // Give it 0.1 seconds to do it's thing
-            ns.asleep(100)
+            await ns.asleep(100)
         }
     }
     // Otherwise, report all-clear
-    else { ns.print(`INFO - All ${servers.size()} servers have been rooted.`) }
+    else { ns.print(`INFO - All ${serverDetails.length} servers have been rooted.`) }
 
 
     // Make list of minable servers
     let toMine = []
-    for (let server of servers) {
+    for (let server of serverDetails) {
         // Skip 'home'
         if (server['hostname'] == 'home') { continue }
         // Skip unrooted and custom servers

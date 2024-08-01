@@ -4,14 +4,19 @@ export async function main(ns) {
     let servers = new Set(['home'])
     for (let server of servers) {
         for (let result of ns.scan(server)) {
-            servers.add(ns.getServer(result))
+            if (result.includes('custom-')) { continue }
+            servers.add(result)
         }
+    }
+    let serverDetails = []
+    for (let server of servers) {
+        serverDetails.push(ns.getServer(server))
     }
     // Build list of servers to backdoor
     let toBackdoor = []
-    for (let server of servers) {
+    for (let server of serverDetails) {
         // Skip backdoored and unrooted servers
-        if (server['backdoorInstalled'] && !server['hasAdminRights']) { continue }
+        if (server['backdoorInstalled'] || !server['hasAdminRights']) { continue }
         // Skip 'home' and custom servers
         if (server['hostname'] == 'home' || server['hostname'].includes('custom-')) { continue }
         // Backdoor whatever is left
@@ -22,7 +27,7 @@ export async function main(ns) {
     if (toBackdoor.length > 0) {
         for (let server of toBackdoor) {
             // Extract hostname
-            let target = server['hostname']
+            let target = server
             // Skip servers that are already being backdoored
             if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
                 ns.print(`WARN - Backdoor already running on ${target}`)
@@ -30,7 +35,7 @@ export async function main(ns) {
             // Other wise run the backdoor script and take a nap
             else {
                 ns.run('scripts/backdoor.js', 1, target)
-                ns.asleep(200)
+                await ns.asleep(200)
             }
         }
     }
