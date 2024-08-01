@@ -1,28 +1,43 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    let queue_loc = 'queue/' // Location of the files to be run
+    // Location of the files to be run
+    let queue_loc = 'queue/'
     let argument = ns.args[0]
-    let break_secs = 60 // How long to wait between cycles
+    let break_secs = 60
+    // Set break to argument if there is one
     if (argument > 0) {
         break_secs = argument
     }
+    // Loop forever
     while (true) {
-        let scripts = ns.ls('home', queue_loc) // Update queue
+        // Fetch scripts from queue
+        let scripts = new Set(ns.ls('home', queue_loc))
+        ns.tprint(`INFO - Found ${scripts.length} scripts.`)
+        // Remove darkweb.js if all items bought
+        if (ns.fileExists('Formulas.exe', 'home')) {
+            scripts.delete('queue/darkweb.js')
+            ns.tprint('INFO - Skipping darkweb.js')
+        }
+        // Shuffle scripts
         scripts.sort(() => Math.random() - 0.5)
-        ns.tprint(`INFO - Found ${scripts.length} scripts.`) // Write to log
+        // Check each script and run it
         for (let script of scripts) {
-            if (script == 'queue/darkweb.js' && ns.fileExists('Formulas.exe', 'home')) {
-                ns.tprint('INFO - Skipping darkweb.js')
-                continue
-            }
+            // Run the script
+            await ns.run(script)
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
-            await ns.run(script) // Run the script
-            await ns.asleep(1000) // Wait
-            while (ns.isRunning(script)) { // Check to see if the script is still running
-                await ns.asleep(1000) // Wait
+            await ns.asleep(1000)
+            // Don't continue until the script is finished
+            while (ns.isRunning(script)) {
+                await ns.asleep(1000)
             }
         }
+
+        // Run mapping utils
+        ns.run('scripts/mapper.js')
+        ns.run('scripts/serverstats.js')
+
+        // Pause for a bit
         ns.tprint(`INFO - Taking a break for ${break_secs} seconds.`)
-        await ns.asleep(break_secs * 1000) // Pause for a bit
+        await ns.asleep(break_secs * 1000)
     }
 }
