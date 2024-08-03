@@ -3,26 +3,40 @@ export async function main(ns) {
     // Make functions for getting budget and nodeCost
     function get_budget() { return ns.getServerMoneyAvailable('home') }
     function get_node_cost() { return ns.hacknet.getPurchaseNodeCost() }
-
-    // Buy nodes
-    while (get_budget() > get_node_cost()) {
-        ns.hacknet.purchaseNode()
-        ns.tprint('SUCCESS - Bought new Hacknet node')
+    // If SQL exists, create the flag to stop spawning this scrip
+    if (ns.fileExists('SQLInject.exe')) {
+        // Get node details
+        let node_details = []
+        for (let node = 0; node < num_nodes; node++) {
+            node_details.push(ns.hacknet.getNodeStats(node))
+        }
+        // Check details 
+        let no_go = true
+        for (let node of node_details) {
+            if (node['level'] < 200 || node['ram'] < 64 || node['cores'] < 16) { go_check = false }
+        }
+        // If all nodes fully upgraded, make the flag
+        if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
     }
-
+    // Buy nodes
+    let bought = 0
+    while (!ns.fileExists('SQLInject.exe') && get_budget() > get_node_cost()) {
+        ns.hacknet.purchaseNode()
+        bought++
+    }
+    ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
     // Get number of nodes
-    let numNodes = ns.hacknet.numNodes()
+    let num_nodes = ns.hacknet.numNodes()
     // Get the upgrade and history variables ready
-    let upgrade = { 'type': '', 'node': 0, 'cost': 0 }
+    let upgrade = { 'type': 'none', 'node': 0, 'cost': 0 }
     let history = { 'items': 0, 'spent': 0, 'errors': 0 }
-
     // Buy upgrades until we break
     while (true) {
         let level = { 'node': 0, 'cost': Infinity }
         let ram = { 'node': 0, 'cost': Infinity }
         let core = { 'node': 0, 'cost': Infinity }
         // Find the cheapest of each type of upgrade
-        for (let node = 0; node < numNodes; node++) {
+        for (let node = 0; node < num_nodes; node++) {
             // Get cost for this node
             let levelCost = ns.hacknet.getLevelUpgradeCost(node, 1)
             let ramCost = ns.hacknet.getRamUpgradeCost(node, 1)

@@ -4,21 +4,26 @@ export async function main(ns) {
     let queue_loc = 'queue/'
     let argument = ns.args[0]
     let break_secs = 60
+    // Darkweb function
     // Set break to argument if there is one
     if (argument > 0) {
         break_secs = argument
     }
     // Loop forever
     while (true) {
-        // Fetch scripts from queue
+        // Fetch scripts and flag from queue
         let scripts = ns.ls('home', queue_loc)
-        ns.tprint(`INFO - Found ${scripts.length} scripts.`)
+        // Check for Flags
+        let darkweb_flag = ns.fileExists('flags/darkweb.flag.txt')
+        let hacknet_flag = ns.fileExists('flags/hacknet.flag.txt')
+        ns.print(`INFO - Found ${scripts.length} scripts.`)
         // Shuffle scripts
         scripts.sort(() => Math.random() - 0.5)
         // Check each script and run it
         for (let script of scripts) {
             // Skip darkweb.js is everything bought
-            if (ns.fileExists('Formulas.exe', 'home') && scripts.includes('darkweb.js')) { ns.tprint('INFO - Skipping darkweb.js'); continue }
+            if (darkweb_flag && script.includes('darkweb.js')) { ns.print('INFO - Skipping darkweb.js'); continue }
+            if (hacknet_flag && script.includes('hacknet.js')) { ns.print('INFO - Skipping hacknet.js'); continue }
             // Run script
             await ns.run(script)
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
@@ -32,7 +37,7 @@ export async function main(ns) {
 
         // Run mapping utils
         ns.run('scripts/mapper.js')
-        ns.run('scripts/serverstats.js')
+        ns.run('scripts/server_stats.js')
 
         // Pause for a bit
         ns.tprint(`INFO - Taking a break for ${break_secs} seconds.`)

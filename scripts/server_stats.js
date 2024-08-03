@@ -12,7 +12,7 @@ export async function main(ns) {
         let capacity = Number(server["maxRam"])
         data.push(`${name}: ${capacity.toLocaleString()} GB`)
     }
-    ns.rm('serverStats.txt')
-    ns.write('serverStats.txt', data.join('\n'), 'w')
+    ns.rm('server_stats.txt')
+    ns.write('server_stats.txt', data.join('\n'), 'w')
     ns.print('\n' + data.join('\n'))
 }

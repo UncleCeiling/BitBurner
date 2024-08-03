@@ -60,6 +60,6 @@ export async function main(ns) {
         if (ns.isRunning('scripts/foreman.js', server)) { continue }
         // Run the foreman
         ns.exec('scripts/foreman.js', server)
-        ns.tprint(`SUCCESS - Started Foreman on ${server}`)
+        ns.print(`SUCCESS - Started Foreman on ${server}`)
     }
 }

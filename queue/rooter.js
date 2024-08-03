@@ -36,13 +36,13 @@ export async function main(ns) {
             // Skip if root is already running
             if (ns.isRunning('scripts/root.js', 'home', root)) { ns.print(`INFO - Already rooting ${root}`); continue }
             ns.run('scripts/root.js', 1, root)
-            ns.print(`INFO - Rooting ${root}.`)
+            ns.tprint(`INFO - Rooting ${root}.`)
             // Give it 0.1 seconds to do it's thing
             await ns.asleep(100)
         }
     }
     // Otherwise, report all-clear
-    else { ns.print(`INFO - All ${serverDetails.length} servers have been rooted.`) }
+    else { ns.tprint(`INFO - All ${serverDetails.length} servers have been rooted.`) }
 
 
     // Make list of minable servers
