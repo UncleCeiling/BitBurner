@@ -36,7 +36,7 @@ export async function main(ns) {
             // Skip if root is already running
             if (ns.isRunning('scripts/root.js', 'home', root)) { ns.print(`INFO - Already rooting ${root}`); continue }
             ns.run('scripts/root.js', 1, root)
-            ns.tprint(`INFO - Rooting ${root}.`)
+            ns.print(`INFO - Rooting ${root}.`)
             // Give it 0.1 seconds to do it's thing
             await ns.asleep(100)
         }

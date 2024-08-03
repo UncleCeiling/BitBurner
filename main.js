@@ -25,8 +25,8 @@ export async function main(ns) {
             if (darkweb_flag && script.includes('darkweb.js')) { ns.print('INFO - Skipping darkweb.js'); continue }
             if (hacknet_flag && script.includes('hacknet.js')) { ns.print('INFO - Skipping hacknet.js'); continue }
             // Run script
-            await ns.run(script)
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
+            await ns.run(script)
             // Give it a second
             await ns.asleep(1000)
             // Don't continue until the script is finished

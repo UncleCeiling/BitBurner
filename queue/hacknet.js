@@ -24,7 +24,9 @@ export async function main(ns) {
         ns.hacknet.purchaseNode()
         bought++
     }
-    ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
+    if (bought > 0) {
+        ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
+    }
     // Get number of nodes
     let num_nodes = ns.hacknet.numNodes()
     // Get the upgrade and history variables ready
