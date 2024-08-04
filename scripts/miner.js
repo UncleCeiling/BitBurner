@@ -7,6 +7,7 @@ export async function main(ns) {
         return
     }
     while (true) {
+        await ns.asleep(10000)
         ns.print('INFO - Reading `mines.txt`')
         let mines = ns.read('mines.txt').split('\n')
         for (let mine of mines) {
