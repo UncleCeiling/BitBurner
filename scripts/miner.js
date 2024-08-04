@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 export async function main(ns) {
     let enabled = true
-    let delay = 250
+    let delay = 100
     if (enabled == false) {
         ns.tprint('ERROR - Miner is disabled')
         return

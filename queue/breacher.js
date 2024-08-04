@@ -30,12 +30,14 @@ export async function main(ns) {
             let target = server
             // Skip servers that are already being backdoored
             if (ns.isRunning('scripts/backdoor.js', 'home', target)) {
-                ns.print(`WARN - Backdoor already running on ${target}`)
+                ns.print(`WARN - Backdoor already running on ${target}`); break
             }
             // Other wise run the backdoor script and take a nap
-            else {
-                ns.run('scripts/backdoor.js', 1, target)
-                await ns.asleep(200)
+            while (true) {
+                let freeRam = ns.getServerMaxRam('home') - ns.getServerUsedRam('home')
+                let scriptRam = ns.getScriptRam('scripts/backdoor.js', 'home')
+                if (scriptRam <= freeRam) { ns.run('scripts/backdoor.js', 1, target); break }
+                await ns.asleep(100)
             }
         }
     }

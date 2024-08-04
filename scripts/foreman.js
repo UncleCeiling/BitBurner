@@ -2,7 +2,7 @@
 export async function main(ns) {
     while (true) {
         // sleep a little
-        let sleepLength = Math.floor(Math.random() * 10000)
+        let sleepLength = Math.floor(Math.random() * 5000)
         await ns.asleep(sleepLength)
         let host = ns.getHostname()
         if (host == 'home' && ns.getServerMaxRam('home') <= 64) { ns.asleep(5000); return }
