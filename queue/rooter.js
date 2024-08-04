@@ -65,7 +65,7 @@ export async function main(ns) {
     // Create/update the list of mine-able servers
     ns.rm('mines.txt', 'home')
     ns.write('mines.txt', toMine.join('\n'), 'w')
-    ns.tprint(`INFO - Updated 'mines.txt' with ${toMine.length} entries.`)
+    ns.print(`INFO - Updated 'mines.txt' with ${toMine.length} entries.`)
 
     // Run miner if miner not running
     if (!ns.isRunning('scripts/miner.js', 'home')) {
