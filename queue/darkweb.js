@@ -44,5 +44,6 @@ export async function main(ns) {
         } else {
             ns.tprint(`ERROR - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
         }
+        await ns.asleep(100)
     }
 }

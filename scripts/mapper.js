@@ -26,5 +26,5 @@ export async function main(ns) {
     // Create/update the map
     ns.rm('map.txt', 'home')
     ns.write('map.txt', data.join('\n'), 'w')
-    ns.tprint(`INFO - Updated 'map.txt' with ${data.length} entries.`)
+    ns.print(`INFO - Updated 'map.txt' with ${data.length} entries.`)
 }
