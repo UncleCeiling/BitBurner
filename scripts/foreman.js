@@ -20,22 +20,16 @@ export async function main(ns) {
                 // ns.print(mine)
                 let remoteSec = (ns.getServerMinSecurityLevel(remote) / ns.getServerSecurityLevel(remote)) * 100
                 let mineSec = (ns.getServerMinSecurityLevel(mine) / ns.getServerSecurityLevel(mine)) * 100
-                let secDiff = Math.floor(remoteSec - mineSec)
-                // ns.print(`Sec-diff: ${secDiff}`)
                 let remoteMoney = (ns.getServerMoneyAvailable(remote) / ns.getServerMaxMoney(remote)) * 100
                 let mineMoney = (ns.getServerMoneyAvailable(mine) / ns.getServerMaxMoney(mine)) * 100
-                let moneyDiff = Math.floor(remoteMoney - mineMoney)
-                // ns.print(`Money-diff: ${moneyDiff}`)
-                let totalDiff = secDiff + moneyDiff
-                // ns.print(`Total-diff: ${totalDiff}`)
-                if (totalDiff > 0) {
-                    if (secDiff > moneyDiff) {
-                        script = 'scripts/_weaken.js'
-                    } else if (moneyDiff > secDiff) {
-                        script = 'scripts/_grow.js'
-                    } else {
-                        script = 'scripts/_hack.js'
-                    }
+                if (mineSec < remoteSec) {
+                    script = 'scripts/_weaken.js'
+                    remote = mine
+                } else if (mineMoney < remoteMoney) {
+                    script = 'scripts/_grow.js'
+                    remote = mine
+                } else if (ns.getServerMoneyAvailable(mine) > ns.getServerMoneyAvailable(remote)) {
+                    script = 'scripts/_hack.js'
                     remote = mine
                 }
             }
@@ -72,7 +66,7 @@ export async function main(ns) {
             let current_sec = server['hackDifficulty']
             let sec_diff = current_sec - min_sec
             for (threads = 1; threads < max_threads; threads++) {
-                if (ns.weakenAnalyze(threads, ns.getServer(host)['cpuCores']) > sec_diff) { return threads }
+                if (ns.weakenAnalyze(threads, ns.getServer(host)['cpuCores']) > (current_sec - min_sec)) { return threads }
             }
             return max_threads
         }
