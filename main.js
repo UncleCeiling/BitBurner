@@ -9,6 +9,7 @@ export async function main(ns) {
     if (argument > 0) {
         break_secs = argument
     }
+    ns.run('queue/darkweb.js')
     ns.run('queue/hacknet.js')
     // Loop forever
     while (true) {

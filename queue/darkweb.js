@@ -41,9 +41,11 @@ export async function main(ns) {
         } else if (Math.min(programCosts) == Infinity) { // If all products are owned
             ns.tprint('SUCCESS - All Darkweb products are owned.') // Say so
             ns.write('flags/darkweb.flag.txt', 'All Darkweb products are owned.', 'w') // Create Flag
+            return
         } else {
             ns.tprint(`ERROR - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
         }
+        ns.rm('flags/darkweb.flag.txt')
         await ns.asleep(100)
     }
 }
