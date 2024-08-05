@@ -14,7 +14,7 @@ export async function main(ns) {
         // Check details 
         let no_go = true
         for (let node of node_details) {
-            if (node['level'] < 200 || node['ram'] < 64 || node['cores'] < 16) { go_check = false }
+            if (node['level'] < 200 || node['ram'] < 64 || node['cores'] < 16) { no_go = false }
         }
         // If all nodes fully upgraded, make the flag
         if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
