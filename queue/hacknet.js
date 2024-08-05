@@ -4,6 +4,7 @@ export async function main(ns) {
     function get_budget() { return ns.getServerMoneyAvailable('home') }
     function get_node_cost() { return ns.hacknet.getPurchaseNodeCost() }
     // If SQL exists, create the flag to stop spawning this scrip
+    let num_nodes = ns.hacknet.numNodes()
     if (ns.fileExists('SQLInject.exe')) {
         // Get node details
         let node_details = []
@@ -28,7 +29,7 @@ export async function main(ns) {
         ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
     }
     // Get number of nodes
-    let num_nodes = ns.hacknet.numNodes()
+    num_nodes = ns.hacknet.numNodes()
     // Get the upgrade and history variables ready
     let upgrade = { 'type': 'none', 'node': 0, 'cost': 0 }
     let history = { 'items': 0, 'spent': 0, 'errors': 0 }
