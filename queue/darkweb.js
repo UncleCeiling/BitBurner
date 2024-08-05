@@ -11,6 +11,7 @@ export async function main(ns) {
             ns.tprint('SUCCESS - TOR router purchased')
         } else { // Give up if can't afford TOR router
             ns.tprint('ERROR - Not enough Cash to purchase TOR router')
+            ns.rm('flags/darkweb.flag.txt')
             return
         }
     }
