@@ -54,7 +54,7 @@ export async function main(ns) {
             ns.print(`Hack: ${target}`)
             let server = ns.getServer(target)
             let hack_threads = Math.floor(ns.hackAnalyzeThreads(target, server['moneyAvailable']))
-            if (max_threads < hack_threads) { return max_threads } else { return hack_threads }
+            if (max_threads < hack_threads || hack_threads == 0) { return max_threads } else { return hack_threads }
         }
         function get_grow_threads(target) {
             ns.print(`Grow: ${target}`)
@@ -63,7 +63,7 @@ export async function main(ns) {
             // ns.print(`Growth Factor: ${growth_factor}`)
             let grow_threads = ns.growthAnalyze(target, growth_factor, ns.getServer(host)['cpuCores'])
             // ns.print(`Growth Threads: ${grow_threads}`)
-            if (max_threads < grow_threads) { ns.print(`Max Threads: ${max_threads}`); return max_threads } else if (grow_threads == 0) { ns.print(`1 thread`); return 1 } else { ns.print(`Grow Threads: ${grow_threads}`); return grow_threads }
+            if (max_threads < grow_threads || grow_threads == 0) { ns.print(`Max Threads: ${max_threads}`); return max_threads } else { ns.print(`Grow Threads: ${grow_threads}`); return grow_threads }
         }
         function get_weaken_threads(target) {
             ns.print(`Weaken: ${target}`)
