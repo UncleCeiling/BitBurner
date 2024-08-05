@@ -18,7 +18,7 @@ export async function main(ns) {
         }
         // If all nodes fully upgraded, make the flag
         if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
-    }
+    } else { ns.rm('flags/hacknet.flag.txt') }
     // Buy nodes
     let bought = 0
     while (!ns.fileExists('SQLInject.exe') && get_budget() > get_node_cost()) {
