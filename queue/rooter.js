@@ -48,8 +48,9 @@ export async function main(ns) {
     // Make list of minable servers
     let toMine = []
     for (let server of serverDetails) {
-        // Skip 'home'
+        // Skip 'home' and servers with no money
         if (server['hostname'] == 'home') { continue }
+        if (server['moneyMax'] == 0) { continue }
         // Skip unrooted and custom servers
         let rooted = server['hasAdminRights']
         let isCustom = server['hostname'].includes('custom-')
