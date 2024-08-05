@@ -14,9 +14,9 @@ export async function main(ns) {
             if (mine != '') {
                 let ram = ns.getServerMaxRam(mine) - ns.getServerUsedRam(mine)
                 let script = 'scripts/'
-                if (((ns.getServerMinSecurityLevel(mine) / ns.getServerSecurityLevel(mine)) * 100) <= 90) {
+                if (((ns.getServerMinSecurityLevel(mine) / ns.getServerSecurityLevel(mine)) * 100) <= 99) {
                     script += '_weaken.js'
-                } else if (((ns.getServerMoneyAvailable(mine) / ns.getServerMaxMoney(mine)) * 100) <= 90) {
+                } else if (((ns.getServerMoneyAvailable(mine) / ns.getServerMaxMoney(mine)) * 100) <= 99) {
                     script += '_grow.js'
                 } else {
                     script += '_hack.js'
