@@ -22,12 +22,13 @@ export async function main(ns) {
     // Get number of nodes
     // Get the upgrade and history variables ready
     let upgrade = { 'type': 'none', 'node': 0, 'cost': 0 }
-    let history = { 'items': 0, 'spent': 0, 'errors': 0 }
+    let history = { 'ram': 0, 'cores': 0, 'levels': 0, 'nodes': 0, 'spent': 0, 'errors': 0 }
     // Buy upgrades until we break
     while (true) {
         let level = { 'node': 0, 'cost': 0 }
         let ram = { 'node': 0, 'cost': 0 }
         let core = { 'node': 0, 'cost': 0 }
+        num_nodes = ns.hacknet.numNodes()
         // Find the cheapest of each type of upgrade
         for (let node = 0; node < num_nodes; node++) {
             // Get cost for this node
@@ -39,10 +40,14 @@ export async function main(ns) {
             if (ramCost > ram["cost"] && ramCost < get_budget()) { ram = { 'node': node, 'cost': ramCost } }
             if (coreCost > core["cost"] && coreCost < get_budget()) { core = { 'node': node, 'cost': coreCost } }
         }
+        let nodeCost = get_budget()
+        if (!ns.fileExists('SQLInject.exe') || nodeCost > get_budget()) { nodeCost = 0 }
         // Find the best upgrade
-        if (ram['cost'] > core['cost'] && ram['cost'] > level['cost']) {
+        if (nodeCost > Math.max(ram['cost'], core['cost'], ram['cost'])) {
+            upgrade = { 'type': 'node', 'node': 0, 'cost': nodeCost }
+        } else if (ram['cost'] > Math.max(core['cost'], level['cost'])) {
             upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
-        } else if (core['cost'] > ram['cost'] && core['cost'] > level['cost']) {
+        } else if (core['cost'] > Math.max(ram['cost'], level['cost'])) {
             upgrade = { 'type': 'core', 'node': core['node'], 'cost': core['cost'] }
         } else {
             upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] }
@@ -55,7 +60,7 @@ export async function main(ns) {
                 case 'level':
                     if (ns.hacknet.upgradeLevel(upgrade['node'], 1)) {
                         // Success! Add it to the history
-                        history['items'] += 1
+                        history['levels'] += 1
                         history['spent'] = history['spent'] + upgrade['cost']
                     } else {
                         // Fail! add it to the errors
@@ -66,7 +71,7 @@ export async function main(ns) {
                 case 'ram':
                     // Success! Add it to the history
                     if (ns.hacknet.upgradeRam(upgrade['node'], 1)) {
-                        history['items'] += 1
+                        history['ram'] += 1
                         history['spent'] = history['spent'] + upgrade['cost']
                     } else {
                         // Fail! add it to the errors
@@ -77,13 +82,19 @@ export async function main(ns) {
                 case 'core':
                     // Success! Add it to the history
                     if (ns.hacknet.upgradeCore(upgrade['node'], 1)) {
-                        history['items'] += 1
+                        history['cores'] += 1
                         history['spent'] = history['spent'] + upgrade['cost']
                     } else {
                         history['errors'] += 1
                         // Fail! add it to the errors
                         ns.print(`ERROR - Failed to upgrade Core on node ${upgrade['node']}`)
                     } break;
+                // Buy a node
+                case 'node':
+                    ns.hacknet.purchaseNode()
+                    history['nodes'] += 1
+                    history['spent'] = history['spent'] + upgrade['cost']
+                    break;
                 // Fail! Add it to the tally
                 default:
                     ns.print(`ERROR - Upgrade ${upgrade} failed`)
@@ -97,17 +108,15 @@ export async function main(ns) {
     }
 
     // Check the history and report what we spent
-    if (history['items'] > 0) {
-        ns.tprint(`SUCCESS - Bought ${history['items']} items for $${history['spent'].toLocaleString()}`)
-    }
-    num_nodes = ns.hacknet.numNodes()
-    // Buy nodes
-    let bought = 0
-    while (!ns.fileExists('SQLInject.exe') && get_budget() > get_node_cost()) {
-        ns.hacknet.purchaseNode()
-        bought++
-    }
-    if (bought > 0) {
-        ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
+    if (history.spent > 0) {
+        let list = []
+        if (history.nodes > 0) { list.push(`${history.nodes} nodes`) }
+        if (history.cores > 0) { list.push(`${history.cores} cores`) }
+        if (history.ram > 0) { list.push(`${history.ram} ram upgrades`) }
+        if (history.levels > 0) { list.push(`${history.levels} levels`) }
+        let data = list.join(', ')
+        let comma = data.lastIndexOf(',')
+        if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
+        ns.tprint(`SUCCESS - Bought ${data}.\n${''.padEnd((ns.getScriptName()))}  Total: $${history.spent.toLocaleString()}`)
     }
 }
