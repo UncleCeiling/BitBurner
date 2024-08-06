@@ -40,7 +40,7 @@ export async function main(ns) {
             if (ramCost > ram["cost"] && ramCost < get_budget()) { ram = { 'node': node, 'cost': ramCost } }
             if (coreCost > core["cost"] && coreCost < get_budget()) { core = { 'node': node, 'cost': coreCost } }
         }
-        let nodeCost = get_budget()
+        let nodeCost = get_node_cost()
         if (!ns.fileExists('SQLInject.exe') || nodeCost > get_budget()) { nodeCost = 0 }
         // Find the best upgrade
         if (nodeCost > Math.max(ram['cost'], core['cost'], ram['cost'])) {
@@ -49,9 +49,7 @@ export async function main(ns) {
             upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
         } else if (core['cost'] > Math.max(ram['cost'], level['cost'])) {
             upgrade = { 'type': 'core', 'node': core['node'], 'cost': core['cost'] }
-        } else {
-            upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] }
-        }
+        } else { upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] } }
         ns.print(upgrade)
         // Buy the upgrade if we can afford it
         if (get_budget() > upgrade['cost']) {
