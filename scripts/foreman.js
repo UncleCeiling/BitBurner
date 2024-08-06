@@ -54,7 +54,7 @@ export async function main(ns) {
             ns.print(`Grow: ${target}`)
             let server = ns.getServer(target)
             let growth_factor = server['moneyMax'] / server['moneyAvailable']
-            if (!growth_factor > 1 || growth_factor == Infinity()) { return 1 }
+            if (!growth_factor > 1 || growth_factor == Infinity) { return 1 }
             // ns.print(`Growth Factor: ${growth_factor}`)
             let grow_threads = ns.growthAnalyze(target, growth_factor, ns.getServer(host)['cpuCores'])
             // ns.print(`Growth Threads: ${grow_threads}`)
