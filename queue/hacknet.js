@@ -41,9 +41,9 @@ export async function main(ns) {
             if (coreCost > core["cost"] && coreCost < get_budget()) { core = { 'node': node, 'cost': coreCost } }
         }
         let nodeCost = get_node_cost()
-        if (!ns.fileExists('SQLInject.exe') || nodeCost > get_budget()) { nodeCost = 0 }
+        if (!ns.fileExists('SQLInject.exe') || nodeCost > get_budget()) { nodeCost = Infinity }
         // Find the best upgrade
-        if (nodeCost > Math.max(ram['cost'], core['cost'], ram['cost'])) {
+        if (nodeCost != Infinity && nodeCost > Math.max(ram['cost'], core['cost'], ram['cost'])) {
             upgrade = { 'type': 'node', 'node': 0, 'cost': nodeCost }
         } else if (ram['cost'] > Math.max(core['cost'], level['cost'])) {
             upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
@@ -83,16 +83,19 @@ export async function main(ns) {
                         history['cores'] += 1
                         history['spent'] = history['spent'] + upgrade['cost']
                     } else {
-                        history['errors'] += 1
                         // Fail! add it to the errors
+                        history['errors'] += 1
                         ns.print(`ERROR - Failed to upgrade Core on node ${upgrade['node']}`)
                     } break;
                 // Buy a node
                 case 'node':
-                    if (!ns.fileExists('SQLInject.exe')) {
-                        ns.hacknet.purchaseNode()
+                    if (ns.hacknet.purchaseNode() != -1) {
                         history['nodes'] += 1
                         history['spent'] = history['spent'] + upgrade['cost']
+                    } else {
+                        // Fail! add it to the errors
+                        history['errors'] += 1
+                        ns.print(`ERROR - Failed to buy node.`)
                     }
                     break;
                 // Fail! Add it to the tally
