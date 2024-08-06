@@ -1,9 +1,9 @@
 /** @param {NS} ns */
 export async function main(ns) {
     var servers = ns.getPurchasedServers()
-    servers.forEach(function (current) {
-        ns.killall(current)
-        ns.deleteServer(current)
-        ns.tprint(`Deleted ${current}`)
-    })
+    for (let server of servers) {
+        ns.killall(server)
+        ns.deleteServer(server)
+        ns.tprint(`Deleted ${server}`)
+    }
 }
