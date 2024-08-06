@@ -19,17 +19,7 @@ export async function main(ns) {
         // If all nodes fully upgraded, make the flag
         if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
     } else { ns.rm('flags/hacknet.flag.txt') }
-    // Buy nodes
-    let bought = 0
-    while (!ns.fileExists('SQLInject.exe') && get_budget() > get_node_cost()) {
-        ns.hacknet.purchaseNode()
-        bought++
-    }
-    if (bought > 0) {
-        ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
-    }
     // Get number of nodes
-    num_nodes = ns.hacknet.numNodes()
     // Get the upgrade and history variables ready
     let upgrade = { 'type': 'none', 'node': 0, 'cost': 0 }
     let history = { 'items': 0, 'spent': 0, 'errors': 0 }
@@ -109,5 +99,15 @@ export async function main(ns) {
     // Check the history and report what we spent
     if (history['items'] > 0) {
         ns.tprint(`SUCCESS - Bought ${history['items']} items for $${history['spent'].toLocaleString()}`)
+    }
+    num_nodes = ns.hacknet.numNodes()
+    // Buy nodes
+    let bought = 0
+    while (!ns.fileExists('SQLInject.exe') && get_budget() > get_node_cost()) {
+        ns.hacknet.purchaseNode()
+        bought++
+    }
+    if (bought > 0) {
+        ns.tprint(`SUCCESS - Bought ${bought} Hacknet node(s).`)
     }
 }
