@@ -49,13 +49,13 @@ export async function main(ns) {
             if (ramCost < ram["cost"]) { ram = { 'node': node, 'cost': ramCost } }
             if (coreCost < core["cost"]) { core = { 'node': node, 'cost': coreCost } }
         }
-        // Find the cheapest upgrade overall
-        if (level['cost'] < ram['cost'] && level['cost'] < core['cost']) {
-            upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] }
-        } else if (ram['cost'] < level['cost'] && ram['cost'] < core['cost']) {
+        // Find the best upgrade
+        if (ram['cost'] < get_budget()) {
             upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
-        } else {
+        } else if (core['cost'] < get_budget()) {
             upgrade = { 'type': 'core', 'node': core['node'], 'cost': core['cost'] }
+        } else {
+            upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] }
         }
         // Buy the upgrade if we can afford it
         if (get_budget() > upgrade['cost']) {
