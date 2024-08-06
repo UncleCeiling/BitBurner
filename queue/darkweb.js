@@ -47,6 +47,6 @@ export async function main(ns) {
             ns.tprint(`ERROR - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
         }
         ns.rm('flags/darkweb.flag.txt')
-        await ns.asleep(100)
+        await ns.asleep(10)
     }
 }

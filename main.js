@@ -10,8 +10,10 @@ export async function main(ns) {
         break_secs = argument
     }
     ns.run('queue/darkweb.js')
+    await ns.asleep(1000)
     ns.run('queue/hacknet.js')
     // Loop forever
+    await ns.asleep(1000)
     while (true) {
         // Fetch scripts and flag from queue
         let scripts = ns.ls('home', queue_loc)

@@ -1,6 +1,5 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.asleep(1000)
     let data = []
     var servers = new Set()
     function print_server(server, depth) {
