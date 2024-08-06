@@ -89,9 +89,11 @@ export async function main(ns) {
                     } break;
                 // Buy a node
                 case 'node':
-                    ns.hacknet.purchaseNode()
-                    history['nodes'] += 1
-                    history['spent'] = history['spent'] + upgrade['cost']
+                    if (!ns.fileExists('SQLInject.exe')) {
+                        ns.hacknet.purchaseNode()
+                        history['nodes'] += 1
+                        history['spent'] = history['spent'] + upgrade['cost']
+                    }
                     break;
                 // Fail! Add it to the tally
                 default:
