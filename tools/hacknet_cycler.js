@@ -9,9 +9,9 @@ export async function main(ns) {
     while (Date.now() <= finish) {
         ns.run('queue/hacknet.js')
         let estimate = Math.floor((finish - Date.now()) / 1000)
-        ns.tprint(`INFO - ${estimate} seconds until cycler ends`)
+        if (estimate % 10 == 0) { ns.tprint(`INFO - ${estimate} seconds until cycler ends`) }
         while (ns.isRunning('queue/hacknet.js')) {
-            await ns.asleep(1000)
+            await ns.asleep(10)
         }
     }
     ns.tprint(`SUCCESS - Hacknet Cycler complete`)
