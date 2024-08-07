@@ -30,26 +30,32 @@ export async function main(ns) {
         let core = { 'node': 0, 'cost': 0 }
         num_nodes = ns.hacknet.numNodes()
         // Find the cheapest of each type of upgrade
-        for (let node = 0; node < num_nodes; node++) {
-            // Get cost for this node
-            let levelCost = ns.hacknet.getLevelUpgradeCost(node, 1)
-            let ramCost = ns.hacknet.getRamUpgradeCost(node, 1)
-            let coreCost = ns.hacknet.getCoreUpgradeCost(node, 1)
-            // Compare to current best prices
-            if (levelCost > level["cost"] && levelCost < get_budget()) { level = { 'node': node, 'cost': levelCost } }
-            if (ramCost > ram["cost"] && ramCost < get_budget()) { ram = { 'node': node, 'cost': ramCost } }
-            if (coreCost > core["cost"] && coreCost < get_budget()) { core = { 'node': node, 'cost': coreCost } }
+        if (num_nodes > 0) {
+            for (let node = 0; node < num_nodes; node++) {
+                // Get cost for this node
+                let levelCost = ns.hacknet.getLevelUpgradeCost(node, 1)
+                let ramCost = ns.hacknet.getRamUpgradeCost(node, 1)
+                let coreCost = ns.hacknet.getCoreUpgradeCost(node, 1)
+                // Compare to current best prices
+                if (levelCost > level["cost"] && levelCost < get_budget()) { level = { 'node': node, 'cost': levelCost } }
+                if (ramCost > ram["cost"] && ramCost < get_budget()) { ram = { 'node': node, 'cost': ramCost } }
+                if (coreCost > core["cost"] && coreCost < get_budget()) { core = { 'node': node, 'cost': coreCost } }
+            }
+            let nodeCost = get_node_cost()
+            if (ns.fileExists('SQLInject.exe') || nodeCost > get_budget()) { nodeCost = Infinity }
+            // Find the best upgrade
+            if (nodeCost != Infinity && nodeCost > Math.max(ram['cost'], core['cost'], ram['cost'])) {
+                upgrade = { 'type': 'node', 'node': 0, 'cost': nodeCost }
+            } else if (ram['cost'] > Math.max(core['cost'], level['cost'])) {
+                upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
+            } else if (core['cost'] > Math.max(ram['cost'], level['cost'])) {
+                upgrade = { 'type': 'core', 'node': core['node'], 'cost': core['cost'] }
+            } else if (level['cost'] > Math.max(ram['cost'], core['cost'])) {
+                upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] }
+            }
+        } else {
+            upgrade = { 'type': 'node', 'node': 0, 'cost': get_node_cost() }
         }
-        let nodeCost = get_node_cost()
-        if (!ns.fileExists('SQLInject.exe') || nodeCost > get_budget()) { nodeCost = Infinity }
-        // Find the best upgrade
-        if (nodeCost != Infinity && nodeCost > Math.max(ram['cost'], core['cost'], ram['cost'])) {
-            upgrade = { 'type': 'node', 'node': 0, 'cost': nodeCost }
-        } else if (ram['cost'] > Math.max(core['cost'], level['cost'])) {
-            upgrade = { 'type': 'ram', 'node': ram['node'], 'cost': ram['cost'] }
-        } else if (core['cost'] > Math.max(ram['cost'], level['cost'])) {
-            upgrade = { 'type': 'core', 'node': core['node'], 'cost': core['cost'] }
-        } else { upgrade = { 'type': 'level', 'node': level['node'], 'cost': level['cost'] } }
         ns.print(upgrade)
         // Buy the upgrade if we can afford it
         if (get_budget() > upgrade['cost']) {
@@ -107,7 +113,7 @@ export async function main(ns) {
         // If we can't afford it, break
         else { ns.print('ERROR - Ran out of funds'); break }
         // Break if too many errors
-        if (history['errors'] >= 100) { ns.print('ERROR - Too many errors occurred'); break }
+        if (history['errors'] >= 10) { ns.print('ERROR - Too many errors occurred'); break }
     }
 
     // Check the history and report what we spent
