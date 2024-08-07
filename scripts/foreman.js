@@ -48,7 +48,7 @@ export async function main(ns) {
             ns.print(`Hack: ${target}`)
             let server = ns.getServer(target)
             let hack_threads = Math.floor(ns.hackAnalyzeThreads(target, server['moneyAvailable']))
-            if (max_threads < hack_threads || hack_threads == 0) { return max_threads } else { return hack_threads }
+            if (max_threads < hack_threads || hack_threads <= 0) { return max_threads } else { return hack_threads }
         }
         function get_grow_threads(target) {
             ns.print(`Grow: ${target}`)
