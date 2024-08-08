@@ -33,6 +33,7 @@ export async function main(ns) {
 
         // If all nodes fully upgraded, make the flag
         if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
+        else { ns.rm('flags/hacknet.flag.txt') }
 
         // Else remove the flag
     } else { ns.rm('flags/hacknet.flag.txt') }
