@@ -1,42 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // Variables
-    let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'spent': 0 }
-    const max_levels = 200
-    const max_ram = 64
-    const max_cores = 16
-
-    // Get num of nodes
-    let num_nodes = ns.hacknet.numNodes()
-
-    // If no nodes, buy node
-    if (num_nodes <= 0) {
-        buy_node()
-        num_nodes = ns.hacknet.numNodes()
-    }
-
-    // Make or remove flag
-    if (ns.fileExists('SQLInject.exe')) {
-
-        // Get node details
-        let node_details = []
-        for (let node = 0; node < num_nodes; node++) {
-            node_details.push(ns.hacknet.getNodeStats(node))
-        }
-
-        // Check details 
-        let no_go = true
-        for (let node of node_details) {
-            if (node['level'] < max_levels || node['ram'] < max_ram || node['cores'] < max_cores) { no_go = false }
-        }
-
-        // If all nodes fully upgraded, make the flag
-        if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
-        else { ns.rm('flags/hacknet.flag.txt') }
-
-        // Else remove the flag
-    } else { ns.rm('flags/hacknet.flag.txt') }
 
     // Get Budget
     function get_budget() { return ns.getServerMoneyAvailable('home') }
@@ -44,12 +8,17 @@ export async function main(ns) {
     // Get node cost
     function get_node_cost() { return ns.hacknet.getPurchaseNodeCost() }
 
+    // Get num of nodes
+    function get_num_nodes() { return ns.hacknet.numNodes() }
+
     // Buy node or return `false`
     function buy_node() {
         let budget = get_budget()
         let cost = get_node_cost()
+        if (num_nodes >= max_nodes) { return false }
         if (budget > cost) {
             ns.hacknet.purchaseNode()
+            num_nodes = get_num_nodes()
             history['nodes']++
             history['spent'] += cost
             return true
@@ -64,7 +33,7 @@ export async function main(ns) {
         let budget = get_budget()
         let levels = ns.hacknet.getNodeStats(node).level
         let cost = ns.hacknet.getLevelUpgradeCost(node, 1)
-        if (levels == max_levels) { return false }
+        if (levels >= max_levels) { return false }
         if (budget > cost) {
             if (ns.hacknet.upgradeLevel(node, 1)) {
                 history['levels']++
@@ -85,7 +54,7 @@ export async function main(ns) {
         let budget = get_budget()
         let ram = ns.hacknet.getNodeStats(node).ram
         let cost = ns.hacknet.getRamUpgradeCost(node, 1)
-        if (ram == max_ram) { return false }
+        if (ram >= max_ram) { return false }
         if (budget > cost) {
             if (ns.hacknet.upgradeRam(node, 1)) {
                 history['ram']++
@@ -106,7 +75,7 @@ export async function main(ns) {
         let budget = get_budget()
         let cores = ns.hacknet.getNodeStats(node).cores
         let cost = ns.hacknet.getCoreUpgradeCost(node, 1)
-        if (cores == max_cores) { return false }
+        if (cores >= max_cores) { return false }
         if (budget > cost) {
             if (ns.hacknet.upgradeCore(node, 1)) {
                 history['cores']++
@@ -121,6 +90,43 @@ export async function main(ns) {
             return false
         }
     }
+    // Variables
+    let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'spent': 0 }
+    const max_nodes = 21
+    const max_levels = 200
+    const max_ram = 64
+    const max_cores = 16
+
+    // Get num of nodes
+    let num_nodes = get_num_nodes()
+
+    // If no nodes, buy node
+    if (num_nodes <= 0) {
+        buy_node()
+        num_nodes = get_num_nodes()
+    }
+
+    // Make or remove flag
+    if (ns.fileExists('SQLInject.exe')) {
+
+        // Get node details
+        let node_details = []
+        for (let node = 0; node < num_nodes; node++) {
+            node_details.push(ns.hacknet.getNodeStats(node))
+        }
+
+        // Check details 
+        let no_go = true
+        for (let node of node_details) {
+            if (node['level'] < max_levels || node['ram'] < max_ram || node['cores'] < max_cores || num_nodes < max_nodes) { no_go = false }
+        }
+
+        // If all nodes fully upgraded, make the flag
+        if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
+        else { ns.rm('flags/hacknet.flag.txt') }
+
+        // Else remove the flag
+    } else { ns.rm('flags/hacknet.flag.txt') }
 
     // For each node
     for (let node = 0; node < num_nodes; node++) {
@@ -130,7 +136,7 @@ export async function main(ns) {
     }
 
     // If SQL Inject doesn't exist, buy nodes
-    while ((!ns.fileExists('SQLInject.exe')) && (get_budget() > get_node_cost())) { buy_node() }
+    while ((!ns.fileExists('SQLInject.exe')) && (get_budget() > get_node_cost()) && get_num_nodes() < max_nodes) { buy_node(); num_nodes = get }
 
     // Check the history and report what we spent
     if (history.spent > 0) {
