@@ -1,6 +1,42 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
+    // Variables
+    let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'spent': 0 }
+    const max_levels = 200
+    const max_ram = 64
+    const max_cores = 16
+
+    // Get num of nodes
+    let num_nodes = ns.hacknet.numNodes()
+
+    // If no nodes, buy node
+    if (num_nodes <= 0) {
+        buy_node()
+        num_nodes = ns.hacknet.numNodes()
+    }
+
+    // Make or remove flag
+    if (ns.fileExists('SQLInject.exe')) {
+
+        // Get node details
+        let node_details = []
+        for (let node = 0; node < num_nodes; node++) {
+            node_details.push(ns.hacknet.getNodeStats(node))
+        }
+
+        // Check details 
+        let no_go = true
+        for (let node of node_details) {
+            if (node['level'] < max_levels || node['ram'] < max_ram || node['cores'] < max_cores) { no_go = false }
+        }
+
+        // If all nodes fully upgraded, make the flag
+        if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
+
+        // Else remove the flag
+    } else { ns.rm('flags/hacknet.flag.txt') }
+
     // Get Budget
     function get_budget() { return ns.getServerMoneyAvailable('home') }
 
@@ -83,21 +119,6 @@ export async function main(ns) {
             ns.print(`ERROR - Not enough cash to buy core on node ${node}. ($${cost.toLocaleString()})`)
             return false
         }
-    }
-
-    // Constants
-    let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'spent': 0 }
-    let max_levels = 200
-    let max_ram = 64
-    let max_cores = 16
-
-    // Get num of nodes
-    let num_nodes = ns.hacknet.numNodes()
-
-    // If no nodes, buy node
-    if (num_nodes <= 0) {
-        buy_node()
-        num_nodes = ns.hacknet.numNodes()
     }
 
     // For each node
