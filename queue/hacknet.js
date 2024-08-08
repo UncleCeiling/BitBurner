@@ -148,6 +148,6 @@ export async function main(ns) {
         let data = list.join(', ')
         let comma = data.lastIndexOf(',')
         if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
-        ns.tprint(`SUCCESS - Bought ${data}.\n${''.padEnd((ns.getScriptName()), ' ')}  Total: $${history.spent.toLocaleString()}`)
+        ns.tprint(`SUCCESS - Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Total: $${history.spent.toLocaleString()}`)
     }
 }
