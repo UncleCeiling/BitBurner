@@ -136,7 +136,10 @@ export async function main(ns) {
     }
 
     // If SQL Inject doesn't exist, buy nodes
-    while ((!ns.fileExists('SQLInject.exe')) && (get_budget() > get_node_cost()) && get_num_nodes() < max_nodes) { buy_node() }
+    while ((get_budget() > get_node_cost())) {
+        if (ns.fileExists('SQLInject.exe') && get_num_nodes() >= max_nodes) { continue }
+        buy_node()
+    }
 
     // Check the history and report what we spent
     if (history.spent > 0) {
