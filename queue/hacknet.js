@@ -130,14 +130,14 @@ export async function main(ns) {
 
     // For each node
     for (let node = 0; node < num_nodes; node++) {
-        while (buy_ram(node)) { }
-        while (buy_core(node)) { }
-        while (buy_level(node)) { }
+        while (buy_ram(node)) { continue }
+        while (buy_core(node)) { continue }
+        while (buy_level(node)) { continue }
     }
 
     // If SQL Inject doesn't exist, buy nodes
-    while ((get_budget() > get_node_cost())) {
-        if (ns.fileExists('SQLInject.exe') && get_num_nodes() >= max_nodes) { continue }
+    while (get_budget() > get_node_cost()) {
+        if (get_num_nodes() >= max_nodes) { break }
         buy_node()
     }
 
