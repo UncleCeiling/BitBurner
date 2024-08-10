@@ -20,7 +20,7 @@ export async function main(ns) {
     let cheapestIndex = 0
     let buyChoice = ''
     programList = ns.singularity.getDarkwebPrograms()
-    while ((min != Infinity) && (min < ns.getServerMoneyAvailable('home'))) { // As long as I have the money
+    while ((min < ns.getServerMoneyAvailable('home'))) { // As long as I have the money
         programList = ns.singularity.getDarkwebPrograms() // Update Program list
         programCosts = []
         ns.print('Programs: ' + programList)
@@ -39,7 +39,7 @@ export async function main(ns) {
         if (ns.getServerMoneyAvailable('home') > Math.min(...programCosts)) { // If we have enough money
             ns.singularity.purchaseProgram(buyChoice) // Buy the program
             ns.tprint(`SUCCESS - Purchased ${buyChoice}`) // Report the success
-        } else if (Math.min(programCosts) == Infinity) { // If all products are owned
+        } else if (min == Infinity) { // If all products are owned
             ns.tprint('SUCCESS - All Darkweb products are owned.') // Say so
             ns.write('flags/darkweb.flag.txt', 'All Darkweb products are owned.', 'w') // Create Flag
             return
