@@ -82,7 +82,6 @@ export async function main(ns) {
                     queue.shift()
                     run_job(job, miner, job.threads)
                 }
-                ns.print(`SUCCESS - ${miner} running ${job.script} against ${job.host}.`)
             }
         }
         await ns.asleep(DELAY * 1000)
@@ -90,7 +89,7 @@ export async function main(ns) {
     }
 
     function run_job(job, miner, threads) {
-        ns.print(`${miner} running ${job.script} on ${job.host} (t=${threads})`)
+        ns.print(`SUCCESS - ${miner} running ${job.script} on ${job.host} (t=${threads})`)
         ns.scp(job.script, HOST, miner)
         ns.exec(job.script, miner, threads, job.host)
     }
