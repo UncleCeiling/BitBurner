@@ -4,7 +4,7 @@ export async function main(ns) {
     let servers = ns.getPurchasedServers()
     let limit = ns.getPurchasedServerLimit()
     let budget = ns.getServerMoneyAvailable('home')
-    let minRam = ns.getScriptRam('scripts/foreman.js') + Math.max(ns.getScriptRam('scripts/_hack.js'), ns.getScriptRam('scripts/_grow.js'), ns.getScriptRam('scripts/_weaken.js'))
+    let minRam = Math.max(ns.getScriptRam('scripts/_hack.js'), ns.getScriptRam('scripts/_grow.js'), ns.getScriptRam('scripts/_weaken.js'))
     let buyRam = 1
     let maxRam = ns.getPurchasedServerMaxRam()
     // Recursively multiply buyRam by 2 until larger than minRam
@@ -12,7 +12,7 @@ export async function main(ns) {
         buyRam *= 2
         // If we somehow top out then something is very wrong
         if (buyRam > maxRam) {
-            ns.tprint(`ERROR - minRam too large: reduce size of foreman/mining scripts`)
+            ns.tprint(`ERROR - minRam too large: reduce size of mining scripts`)
             break
         }
     }
@@ -55,11 +55,6 @@ export async function main(ns) {
     // Deploy foreman to each server
     for (let server of servers) {
         // Copy scripts to servers
-        ns.scp(['scripts/foreman.js', 'scripts/_hack.js', 'scripts/_grow.js', 'scripts/_weaken.js', 'mines.txt'], server, 'home')
-        // If foreman is running on this machine, skip this server
-        if (ns.isRunning('scripts/foreman.js', server)) { continue }
-        // Run the foreman
-        ns.exec('scripts/foreman.js', server)
-        ns.print(`SUCCESS - Started Foreman on ${server}`)
+        ns.scp(['scripts/_hack.js', 'scripts/_grow.js', 'scripts/_weaken.js'], server, 'home')
     }
 }
