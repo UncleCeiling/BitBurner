@@ -9,6 +9,9 @@ export async function main(ns) {
         // Read mines.txt
         let mines = ns.read('mines.txt').split('\n')
 
+        // If empty, break
+        if (mines.length == 0) { return }
+
 
         // Build Queue
         let queue = []
