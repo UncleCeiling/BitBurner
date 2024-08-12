@@ -75,8 +75,8 @@ export async function main(ns) {
     }
 
     // Run `home` foreman if not running and have more than 64GB of RAM
-    if (!ns.isRunning('scripts/foreman.js', 'home') && ns.getServerMaxRam('home') > 64) {
+    if (!ns.isRunning('scripts/foreman.js', 'home') && ns.getServerMaxRam('home') >= 32) {
         ns.run('scripts/foreman.js', 1)
-        // ns.tprint('SUCCESS - Launching Foreman on `home`')
+        ns.tprint('SUCCESS - Launching Foreman on `home`')
     }
 }

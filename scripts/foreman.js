@@ -2,7 +2,7 @@
 export async function main(ns) {
     ns.disableLog("ALL")
     const HOST = 'home'
-    if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`) }
+    if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`); return }
 
     while (true) {
 
@@ -10,6 +10,7 @@ export async function main(ns) {
         let mines = ns.read('mines.txt').split('\n')
 
         // If empty, break
+        ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
         if (mines.length == 0) { return }
 
 
@@ -17,6 +18,7 @@ export async function main(ns) {
         let queue = []
         for (let mine of mines) {
             let server = ns.getServer(mine)
+            if (mine == '') { return }
             if (server.minDifficulty < server.hackDifficulty) {
                 queue.push({
                     'host': server.hostname,
@@ -40,6 +42,7 @@ export async function main(ns) {
                 })
             } else { continue }
         }
+        ns.print(`INFO - ${queue.length} items in Queue`)
 
         // Make Resources list
         let miners = new Set()
@@ -48,8 +51,10 @@ export async function main(ns) {
             for (let item of custom) {
                 miners.add(item)
             }
-            if (ns.getServerMaxRam(HOST) > 64) { miners.add(HOST) }
         }
+        if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
+        ns.print(`INFO - ${miners.size} Miners in pool`)
+
 
         // Take items off the list and give them to resources until they're full
         while (miners.size > 0 && queue.length > 0) {
@@ -57,6 +62,7 @@ export async function main(ns) {
             for (let miner of miners.values()) {
                 // Find free RAM on resource
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner)
+                if (miner == HOST) { free_ram -= 8 }
                 // Pull the first job
                 if (queue.length <= 0) { continue }
                 let job = queue[0]
@@ -75,9 +81,11 @@ export async function main(ns) {
                     queue.shift()
                     run_job(job, miner, job.threads)
                 }
+                ns.print(`SUCCESS - ${miner} running ${job.script} against ${job.host}.`)
             }
         }
-        break
+        await ns.asleep(60 * 1000)
+        // break
     }
 
     function run_job(job, miner, threads) {

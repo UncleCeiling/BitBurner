@@ -1,5 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
+    if (ns.args[0] != 'live') { ns.tprint('ERROR - Gang function being written'); return }
     ns.disableLog('ALL')
     const GANG_FACTION = "Slum Snakes" // My Chosen Faction
     const EQUIPMENT = { // List of possible equipment
@@ -58,6 +59,4 @@ export async function main(ns) {
     const MAX_MEMBERS = 12 // Max num of gang members
     const TRAINING_PERCENT = 0.2 // Proportion of gang-members to 
     const MIN_WIN_PERCENT = 0.8
-
-
 }
