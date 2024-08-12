@@ -2,6 +2,7 @@
 export async function main(ns) {
     ns.disableLog("ALL")
     const HOST = 'home'
+    const DELAY = 10
     if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`); return }
 
     while (true) {
@@ -84,7 +85,7 @@ export async function main(ns) {
                 ns.print(`SUCCESS - ${miner} running ${job.script} against ${job.host}.`)
             }
         }
-        await ns.asleep(60 * 1000)
+        await ns.asleep(DELAY * 1000)
         // break
     }
 
