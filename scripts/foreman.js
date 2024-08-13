@@ -45,22 +45,22 @@ export async function main(ns) {
         }
         ns.print(`INFO - ${queue.length} items in Queue`)
 
-        // Make Resources list
+        // Make list of miners (smallest to largest)
         let miners = new Set()
         let custom = ns.getPurchasedServers()
         if (custom.length > 0) {
-            for (let item of custom) {
-                miners.add(item)
+            for (let i = custom.length - 1; i >= 0; i--) {
+                miners.add(custom[i])
             }
         }
+        // If HOST has enough RAM, add it to the list
         if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
         ns.print(`INFO - ${miners.size} Miners in pool`)
-
 
         // Take items off the list and give them to resources until they're full
         while (miners.size > 0 && queue.length > 0) {
             // For resource in miners, take a job from the queue
-            for (let miner of miners.values()) {
+            for (let miner of miners) {
                 // If queue is empty, move on
                 if (queue.length <= 0) { continue }
                 // If too many things running, skip this server
