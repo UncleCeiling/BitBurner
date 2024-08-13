@@ -64,9 +64,13 @@ export async function main(ns) {
                 if (queue.length <= 0) { continue }
                 // If too many things running, skip this server
                 if (ns.ps(miner).length >= 4) {
-                    ns.print(`WARN - Too many Scripts sleeping for ${DELAY * 1000 / 2} seconds.`)
-                    await ns.asleep(DELAY * 1000 / 2)
-                    continue
+                    if (miner != HOST) {
+                        ns.print(`WARN - ${miner} - Too many processes (4).`)
+                        continue
+                    } else if (ns.ps(miner).length >= 7) {
+                        ns.print(`WARN - ${miner} - Too many processes (7).`)
+                        continue
+                    }
                 }
 
                 // Find free RAM on resource
@@ -79,8 +83,7 @@ export async function main(ns) {
                 // Check that the resource has enough RAM to run the job, if not, remove it from the resource list
                 let job_ram = ns.getScriptRam(job.script, HOST)
                 if (free_ram < job_ram) {
-                    ns.print(`WARN - Not enough ram, sleeping for ${DELAY * 1000 / 2} seconds.`)
-                    await ns.asleep(DELAY * 1000 / 2)
+                    ns.print(`WARN - ${miner} - Not enough RAM.`)
                     continue
                 }
 
@@ -96,8 +99,8 @@ export async function main(ns) {
                 }
             }
             if (queue.length > 0) {
-                ns.print(`WARN - ${queue.length} items in Queue, looping in ${DELAY} seconds.`)
-                await ns.asleep(DELAY)
+                ns.print(`WARN - ${queue.length} items in Queue.`)
+                await ns.asleep(DELAY * 1000)
             }
         }
         // break
