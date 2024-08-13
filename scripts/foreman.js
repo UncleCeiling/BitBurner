@@ -18,8 +18,8 @@ export async function main(ns) {
         // Build Queue
         let queue = []
         for (let mine of mines) {
+            if (mine == '') { continue }
             let server = ns.getServer(mine)
-            if (mine == '') { return }
             if (server.minDifficulty < server.hackDifficulty) {
                 queue.push({
                     'host': server.hostname,
@@ -61,11 +61,15 @@ export async function main(ns) {
         while (miners.size > 0 && queue.length > 0) {
             // For resource in miners, take a job from the queue
             for (let miner of miners.values()) {
+                // If queue is empty, move on
+                if (queue.length <= 0) { continue }
+                // If too many things running, skip this server
+                if (ns.ps(miner).length >= 4) { miners.delete(miner); continue }
                 // Find free RAM on resource
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner)
-                if (miner == HOST) { free_ram -= 8 }
+                // If running on HOST, leave 12 GB of RAM free
+                if (miner == HOST) { free_ram -= 12 }
                 // Pull the first job
-                if (queue.length <= 0) { continue }
                 let job = queue[0]
                 // Check that the resource has enough RAM to run the job, if not, remove it from the resource list
                 let job_ram = ns.getScriptRam(job.script, HOST)
@@ -84,7 +88,7 @@ export async function main(ns) {
                 }
             }
         }
-        await ns.asleep(DELAY * 1000)
+        await ns.asleep(DELAY)
         // break
     }
 

@@ -40,8 +40,8 @@ export async function main(ns) {
         // Find out how much RAM the server has
         let currentRam = ns.getServerMaxRam(server)
         let usedRam = ns.getServerUsedRam(server)
-        // If not using more than half the ram, skip
-        if (usedRam <= currentRam / 2) { continue }
+        // If not using more than half the ram AND too many things running, skip this server
+        if (usedRam <= currentRam / 2 && ns.ps(server).length >= 4) { continue }
         // If at max RAM, skip this server
         if (currentRam >= ns.getPurchasedServerMaxRam()) { continue }
         // Find how much it will cost to get the next upgrade
