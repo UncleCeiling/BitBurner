@@ -11,7 +11,7 @@ export async function main(ns) {
 
         // If empty, break
         ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
-        if (mines.length == 0) { return }
+        if (mines.length == 0) { await ns.asleep(DELAY * 1000); return }
 
 
         // Build Queue
@@ -55,6 +55,8 @@ export async function main(ns) {
         // If HOST has enough RAM, add it to the list
         if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
         ns.print(`INFO - ${miners.size} Miners in pool`)
+        // If no miners, stop
+        if (miners.size <= 0) { return }
 
         // Take items off the list and give them to resources until they're full
         while (queue.length > 0) {
@@ -100,10 +102,10 @@ export async function main(ns) {
             }
             if (queue.length > 0) {
                 ns.print(`WARN - ${queue.length} items in Queue.`)
-                await ns.asleep(DELAY * 1000)
             }
+            await ns.asleep(DELAY * 1000)
         }
-        // break
+        await ns.asleep(DELAY * 1000)
     }
 
     function run_job(job, miner, threads) {

@@ -1,11 +1,12 @@
 /** @param {NS} ns */
 export async function main(ns) {
     let enabled = true
-    let delay = 10
+    const DELAY = 500
     if (enabled == false) {
         ns.tprint('ERROR - Miner is disabled')
         return
     }
+    if (ns.fileExists('mines.txt') == false) { return }
     while (true) {
         ns.print('INFO - Reading `mines.txt`')
         let mines = ns.read('mines.txt').split('\n')
@@ -34,7 +35,7 @@ export async function main(ns) {
                     }
                 }
             }
-            await ns.asleep(delay)
+            await ns.asleep(DELAY)
         }
     }
 }
