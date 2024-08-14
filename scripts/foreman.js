@@ -48,9 +48,12 @@ export async function main(ns) {
         let miners = new Set()
         let custom = ns.getPurchasedServers()
         if (custom.length > 0) {
-            for (let i = custom.length - 1; i >= 0; i--) {
-                miners.add(custom[i])
+            for (let resource of custom) {
+                miners.add(resource)
             }
+            // for (let i = custom.length - 1; i >= 0; i--) { // Reverse order
+            //     miners.add(custom[i])
+            // }
         }
         // If HOST has enough RAM, add it to the list
         if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
@@ -65,12 +68,12 @@ export async function main(ns) {
                 // If queue is empty, move on
                 if (queue.length <= 0) { continue }
                 // If too many things running, skip this server
-                if (ns.ps(miner).length >= 4) {
+                if (ns.ps(miner).length >= 2) {
                     if (miner != HOST) {
-                        ns.print(`WARN - ${miner} - Too many processes (4).`)
+                        ns.print(`WARN - ${miner} - Too many processes (2).`)
                         continue
-                    } else if (ns.ps(miner).length >= 7) {
-                        ns.print(`WARN - ${miner} - Too many processes (7).`)
+                    } else if (ns.ps(miner).length >= 5) {
+                        ns.print(`WARN - ${miner} - Too many processes (5).`)
                         continue
                     }
                 }
@@ -133,6 +136,6 @@ export async function main(ns) {
     }
 
     function get_hack_threads(server) {
-        return Math.ceil(ns.hackAnalyzeThreads(server.hostname, server.moneyAvailable / 2))
+        return Math.ceil(ns.hackAnalyzeThreads(server.hostname, server.moneyAvailable / 4))
     }
 }
