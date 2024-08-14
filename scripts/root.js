@@ -2,9 +2,12 @@
 export async function main(ns) {
     let target = ns.args[0]
     let currentPorts = 0
+
     //Check level
-    if (ns.getServerRequiredHackingLevel(target) > ns.getHackingLevel()) {
-        ns.print('ERROR - Not high enough Level for ' + target)
+    let req_level = ns.getServerRequiredHackingLevel(target)
+    let player_level = ns.getHackingLevel()
+    if (req_level > player_level) {
+        ns.print(`ERROR - Hacking level not high enough to hack ${target} - ${player_level}/${req_level}`)
     } else {
         //Check ports
         if (ns.fileExists('BruteSSH.exe')) {
@@ -28,12 +31,13 @@ export async function main(ns) {
             currentPorts++
         }
         if (ns.fileExists('relaySMTP.exe')) {
-            ns.print(`SUCCESS - Redirected SMTP data for ${target}`)
             ns.relaysmtp(target)
+            ns.print(`SUCCESS - Redirected SMTP data for ${target}`)
             currentPorts++
         }
+        // ns.tprint(`SUCCESS - Opened ${currentPorts} ports on ${target}.`)
         if (ns.getServerNumPortsRequired(target) > currentPorts) {
-            ns.tprint(`WARN - Skipping ${target}. (Needs ${ns.getServerNumPortsRequired(target)} ports open)`)
+            ns.tprint(`WARN - Opened ${currentPorts}/${ns.getServerNumPortsRequired(target)} ports on ${target}.`)
         } else {
             //Nuke.exe
             if (ns.hasRootAccess(target) === false) {

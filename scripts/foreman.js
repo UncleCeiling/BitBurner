@@ -4,7 +4,7 @@ export async function main(ns) {
     const HOST = 'home'
     const DELAY = 10
     if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`); return }
-
+    ns.tail()
     while (true) {
         // Read mines.txt
         let mines = ns.read('mines.txt').split('\n')
@@ -101,7 +101,11 @@ export async function main(ns) {
                 }
             }
             if (queue.length > 0) {
-                ns.print(`WARN - ${queue.length} items in Queue.`)
+                let message = ''
+                for (let item of queue) {
+                    message = message.concat(`${item.host} - t=${item.threads}\n`)
+                }
+                ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
             }
             await ns.asleep(DELAY * 1000)
         }
