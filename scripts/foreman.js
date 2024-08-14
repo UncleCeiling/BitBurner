@@ -103,7 +103,7 @@ export async function main(ns) {
             if (queue.length > 0) {
                 let message = ''
                 for (let item of queue) {
-                    message = message.concat(`${item.host} - t=${item.threads}\n`)
+                    message = message.concat(`> ${item.host} --> t=${item.threads}\n`)
                 }
                 ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
             }

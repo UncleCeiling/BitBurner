@@ -67,16 +67,4 @@ export async function main(ns) {
     ns.rm('mines.txt', 'home')
     ns.write('mines.txt', toMine.join('\n'), 'w')
     ns.print(`INFO - Updated 'mines.txt' with ${toMine.length} entries.`)
-
-    // Run miner if miner not running
-    if (!ns.isRunning('scripts/miner.js', 'home')) {
-        ns.run('scripts/miner.js', 1)
-        ns.tprint('SUCCESS - Launching Miner on `home`')
-    }
-
-    // Run `home` foreman if not running and have more than 64GB of RAM
-    if (!ns.isRunning('scripts/foreman.js', 'home') && ns.getServerMaxRam('home') >= 32) {
-        ns.run('scripts/foreman.js', 1)
-        ns.tprint('SUCCESS - Launching Foreman on `home`')
-    }
 }
