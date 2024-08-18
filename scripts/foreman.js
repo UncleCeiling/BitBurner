@@ -6,16 +6,14 @@ export async function main(ns) {
     if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`); return }
     ns.tail()
     while (true) {
-        // Read mines.txt
-        let mines = ns.read('mines.txt').split('\n')
-
-        // If empty, break
-        ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
-        if (mines.length == 0) { await ns.asleep(DELAY * 1000); return }
-
-
         // Build Queue
         let queue = []
+        // Read mines.txt
+        let mines = ns.read('mines.txt').split('\n')
+        ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
+
+        // If empty, break
+        if (mines.length == 0) { await ns.asleep(DELAY * 1000); return }
         for (let mine of mines) {
             if (mine == '') { continue }
             let server = ns.getServer(mine)
@@ -43,26 +41,26 @@ export async function main(ns) {
             } else { continue }
         }
         ns.print(`INFO - ${queue.length} items in Queue`)
-
-        // Make list of miners (smallest to largest)
-        let miners = new Set()
-        let custom = ns.getPurchasedServers()
-        // If HOST has enough RAM, add it to the list
-        if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
-        if (custom.length > 0) {
-            for (let resource of custom) {
-                miners.add(resource)
-            }
-            // for (let i = custom.length - 1; i >= 0; i--) { // Reverse order
-            //     miners.add(custom[i])
-            // }
-        }
-        ns.print(`INFO - ${miners.size} Miners in pool`)
-        // If no miners, stop
-        if (miners.size <= 0) { return }
-
         // Take items off the list and give them to resources until they're full
         while (queue.length > 0) {
+
+            // Make list of miners (smallest to largest)
+            let miners = new Set()
+            let custom = ns.getPurchasedServers()
+            // If HOST has enough RAM, add it to the list
+            if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
+            if (custom.length > 0) {
+                for (let resource of custom) {
+                    miners.add(resource)
+                }
+                // for (let i = custom.length - 1; i >= 0; i--) { // Reverse order
+                //     miners.add(custom[i])
+                // }
+            }
+            ns.print(`INFO - ${miners.size} Miners in pool`)
+            // If no miners, stop
+            if (miners.size <= 0) { return }
+
             // For resource in miners, take a job from the queue
             for (let miner of miners) {
                 // If queue is empty, move on

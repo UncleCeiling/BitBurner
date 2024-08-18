@@ -53,7 +53,9 @@ export async function main(ns) {
         }
 
         // Run mapping utils
+        await ns.asleep(1000)
         ns.run('scripts/mapper.js')
+        await ns.asleep(1000)
         ns.run('scripts/server_stats.js')
 
         // Pause for a bit
