@@ -5,6 +5,7 @@ export async function main(ns) {
     // Set Constants
     const HOST = 'home'
     const DELAY = 10
+    const PROCESSES = 4
     // Create Working variable
     let working = {}
     // If not running on home, say so and return
@@ -14,9 +15,7 @@ export async function main(ns) {
     // Repeat ad-nauseam
     while (true) {
         // Clean working list of any 
-        ns.tprint(working)
         working = clean_working_list(working)
-        ns.tprint(working)
         // Get list of jobs as queue
         let queue = get_queue()
 
@@ -159,12 +158,12 @@ export async function main(ns) {
 
     function too_many_processes(miner) {
         // If too many things running, skip this server
-        if (ns.ps(miner).length >= 2) {
+        if (ns.ps(miner).length >= PROCESSES) {
             if (miner != HOST) {
-                ns.print(`WARN - ${miner} - Too many processes (2).`)
+                ns.print(`WARN - ${miner} - Too many processes (${PROCESSES}).`)
                 return true
-            } else if (ns.ps(miner).length >= 5) {
-                ns.print(`WARN - ${miner} - Too many processes (5).`)
+            } else if (ns.ps(miner).length >= PROCESSES + 3) {
+                ns.print(`WARN - ${miner} - Too many processes (${PROCESSES + 3}).`)
                 return true
             }
         } else { return false }
