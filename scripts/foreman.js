@@ -1,111 +1,70 @@
 /** @param {NS} ns */
 export async function main(ns) {
+    // Disable logs
     ns.disableLog("ALL")
+    // Set Constants
     const HOST = 'home'
     const DELAY = 10
+    // Create Working variable
+    let working = {}
+    // If not running on home, say so and return
     if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`); return }
     ns.tail()
-    while (true) {
-        // Build Queue
-        let queue = []
-        // Read mines.txt
-        let mines = ns.read('mines.txt').split('\n')
-        ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
 
-        // If empty, break
-        if (mines.length == 0) { await ns.asleep(DELAY * 1000); return }
-        for (let mine of mines) {
-            if (mine == '') { continue }
-            let server = ns.getServer(mine)
-            if (server.minDifficulty < server.hackDifficulty) {
-                queue.push({
-                    'host': server.hostname,
-                    'script': 'scripts/_weaken.js',
-                    'threads': get_weaken_threads(server),
-                    'time': ns.getWeakenTime(server.hostname)
-                })
-            } else if (server.moneyAvailable < server.moneyMax && server.moneyMax > 0 && server.moneyAvailable > 0) {
-                queue.push({
-                    'host': server.hostname,
-                    'script': 'scripts/_grow.js',
-                    'threads': get_grow_threads(server),
-                    'time': ns.getGrowTime(server.hostname)
-                })
-            } else if (server.moneyAvailable == server.moneyMax && server.moneyMax > 0 && server.moneyAvailable > 0) {
-                queue.push({
-                    'host': server.hostname,
-                    'script': 'scripts/_hack.js',
-                    'threads': get_hack_threads(server),
-                    'time': ns.getHackTime(server.hostname)
-                })
-            } else { continue }
-        }
-        ns.print(`INFO - ${queue.length} items in Queue`)
-        // Take items off the list and give them to resources until they're full
+    // Repeat ad-nauseam
+    while (true) {
+        // Clean working list of any 
+        ns.tprint(working)
+        working = clean_working_list(working)
+        ns.tprint(working)
+        // Get list of jobs as queue
+        let queue = get_queue()
+
+        // While there are jobs in the queue
         while (queue.length > 0) {
 
-            // Make list of miners (smallest to largest)
-            let miners = new Set()
-            let custom = ns.getPurchasedServers()
-            // If HOST has enough RAM, add it to the list
-            if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
-            if (custom.length > 0) {
-                for (let resource of custom) {
-                    miners.add(resource)
-                }
-                // for (let i = custom.length - 1; i >= 0; i--) { // Reverse order
-                //     miners.add(custom[i])
-                // }
-            }
-            ns.print(`INFO - ${miners.size} Miners in pool`)
+            // Get list of miners
+            let miners = get_miners()
             // If no miners, stop
             if (miners.size <= 0) { return }
 
-            // For resource in miners, take a job from the queue
+            // For each miner, take a job.
             for (let miner of miners) {
-                // If queue is empty, move on
-                if (queue.length <= 0) { continue }
-                // If too many things running, skip this server
-                if (ns.ps(miner).length >= 2) {
-                    if (miner != HOST) {
-                        ns.print(`WARN - ${miner} - Too many processes (2).`)
-                        continue
-                    } else if (ns.ps(miner).length >= 5) {
-                        ns.print(`WARN - ${miner} - Too many processes (5).`)
-                        continue
-                    }
-                }
 
-                // Find free RAM on resource
+                // Pull first job and get details
+                if (queue.length <= 0) { return }
+                let job = get_job_details(queue[0])
+                if (job == false) { continue }
+
+                // If too many processes, skip
+                if (too_many_processes(miner)) { continue }
+                // Get free RAM on miner (-12 if HOST)
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner)
-                // If running on HOST, leave 12 GB of RAM free
                 if (miner == HOST) { free_ram -= 12 }
+                // If not enough RAM, skip
+                if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
 
-                // Pull the first job
-                let job = queue[0]
-                // Check that the resource has enough RAM to run the job, if not, remove it from the resource list
-                let job_ram = ns.getScriptRam(job.script, HOST)
-                if (free_ram < job_ram) {
-                    ns.print(`WARN - ${miner} - Not enough RAM.`)
-                    continue
-                }
-
-                // Find the Max Threads that the resource can do
-                let max_threads = Math.floor(free_ram / job_ram)
-                // If max_threads is lower than job threads, reduce job threads and run
-                if (max_threads < job.threads) {
-                    queue[0].threads -= max_threads
-                    run_job(job, miner, max_threads)
-                } else { // Otherwise, remove the job from the list and run it
-                    queue.shift()
-                    run_job(job, miner, job.threads)
-                }
+                // Find max threads
+                let max_threads = Math.floor(free_ram / job.ram)
+                // If job is already working, subtract those threads
+                if (job.host in Object.keys(working)) { job.threads = job.threads - working[job.host].threads }
+                // If max threads too small for job, make job.threads = max threads , else remove the job from the queue
+                if (max_threads < job.threads) { job.threads = max_threads } else { queue.shift() }
+                // If job already has working threads, update the threads
+                if (job.host in Object.keys(working)) {
+                    // Add threads
+                    working[job.host].threads += job.threads
+                    // If this job will end after the previous, update the time.
+                    let end_time = Date.now() + job.time
+                    if (working[job.host].end < end_time) { working[job.host].end = end_time }
+                } else { working[job.host] = { 'threads': job.threads, 'end': Date.now() + job.time } }
+                // Run the job
+                run_job(job, miner)
             }
+
+            // If still stuff in Queue, tell us
             if (queue.length > 0) {
-                let message = ''
-                for (let item of queue) {
-                    message = message.concat(`> ${item.host} --> t=${item.threads}\n`)
-                }
+                let message = queue.join(' | ')
                 ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
             }
             await ns.asleep(DELAY * 1000)
@@ -113,10 +72,10 @@ export async function main(ns) {
         await ns.asleep(DELAY * 1000)
     }
 
-    function run_job(job, miner, threads) {
-        ns.print(`SUCCESS - ${miner} running ${job.script} on ${job.host} (t=${threads})`)
+    function run_job(job, miner) {
+        ns.print(`SUCCESS - ${miner} running ${job.script} on ${job.host} (t=${job.threads})`)
         ns.scp(job.script, HOST, miner)
-        ns.exec(job.script, miner, threads, job.host)
+        ns.exec(job.script, miner, job.threads, job.host)
     }
 
     function get_weaken_threads(server) {
@@ -135,5 +94,87 @@ export async function main(ns) {
 
     function get_hack_threads(server) {
         return Math.ceil(ns.hackAnalyzeThreads(server.hostname, server.moneyAvailable / 4))
+    }
+
+    function get_job_details(mine) {
+        let server = ns.getServer(mine)
+        let job = {
+            'host': mine,
+            'script': '',
+            'threads': '',
+            'time': 0,
+            'ram': 0
+        }
+        if (server.minDifficulty < server.hackDifficulty) {
+            job.script = 'scripts/_weaken.js'
+            job.threads = get_weaken_threads(server)
+            job.time = ns.getWeakenTime(job.host)
+            job.ram = ns.getScriptRam(job.script, HOST)
+        } else if (server.moneyAvailable < server.moneyMax && server.moneyMax > 0 && server.moneyAvailable > 0) {
+            job.script = 'scripts/_grow.js'
+            job.threads = get_grow_threads(server)
+            job.time = ns.getGrowTime(job.host)
+            job.ram = ns.getScriptRam(job.script, HOST)
+        } else if (server.moneyAvailable == server.moneyMax && server.moneyMax > 0 && server.moneyAvailable > 0) {
+            job.script = 'scripts/_hack.js'
+            job.threads = get_hack_threads(server)
+            job.time = ns.getHackTime(job.host)
+            job.ram = ns.getScriptRam(job.script, HOST)
+        } else { return false }
+        return job
+    }
+
+    function get_miners() {
+        // Make list of miners (smallest to largest)
+        let miners = new Set()
+        // Get list of purchased servers
+        let custom = ns.getPurchasedServers()
+        // If HOST has enough RAM, add it to the list
+        if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
+        // Add each purchased server if any
+        if (custom.length > 0) {
+            for (let resource of custom) {
+                miners.add(resource)
+            }
+        }
+        ns.print(`INFO - ${miners.size} Miners in pool`)
+        return miners
+    }
+
+    function get_queue() {
+        // Create Queue from Mines.txt
+        let mines = ns.read('mines.txt').split('\n')
+        ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
+
+        // Compare to working list
+        let queue = []
+        for (let mine of mines) { if (mine in Object.keys(working)) { continue } else { queue.push(mine) } }
+
+        // If empty, return empty list
+        if (queue.length == 0) { return [] }
+        ns.print(`INFO - ${queue.length} items in Queue`)
+
+        return queue
+    }
+
+    function too_many_processes(miner) {
+        // If too many things running, skip this server
+        if (ns.ps(miner).length >= 2) {
+            if (miner != HOST) {
+                ns.print(`WARN - ${miner} - Too many processes (2).`)
+                return true
+            } else if (ns.ps(miner).length >= 5) {
+                ns.print(`WARN - ${miner} - Too many processes (5).`)
+                return true
+            }
+        } else { return false }
+    }
+
+    function clean_working_list(working) {
+        for (let item of Object.keys(working)) {
+            if (Date.now() > working[item].end) { delete working[item] }
+        }
+        return working
+
     }
 }
