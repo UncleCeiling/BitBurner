@@ -18,6 +18,7 @@ export async function main(ns) {
         working = clean_working_list(working)
         // Get list of jobs as queue
         let queue = get_queue()
+        if (queue[0] == '') { continue }
 
         // While there are jobs in the queue
         while (queue.length > 0) {
@@ -25,7 +26,7 @@ export async function main(ns) {
             // Get list of miners
             let miners = get_miners()
             // If no miners, stop
-            if (miners.size <= 0) { return }
+            if (miners.size <= 0) { ns.closeTail(); return }
 
             // For each miner, take a job.
             for (let miner of miners) {
@@ -39,7 +40,7 @@ export async function main(ns) {
                 if (too_many_processes(miner)) { continue }
                 // Get free RAM on miner (-12 if HOST)
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner)
-                if (miner == HOST) { free_ram -= 12 }
+                if (miner == HOST) { free_ram -= 32 }
                 // If not enough RAM, skip
                 if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
 
@@ -129,7 +130,7 @@ export async function main(ns) {
         // Get list of purchased servers
         let custom = ns.getPurchasedServers()
         // If HOST has enough RAM, add it to the list
-        if (ns.getServerMaxRam(HOST) >= 32) { miners.add(HOST) }
+        if (ns.getServerMaxRam(HOST) >= 64) { miners.add(HOST) }
         // Add each purchased server if any
         if (custom.length > 0) {
             for (let resource of custom) {

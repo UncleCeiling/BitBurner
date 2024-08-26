@@ -1,8 +1,9 @@
 /** @param {NS} ns */
 export async function main(ns) {
     const SCRIPTS = [
-        'darkweb.js',
         'housekeeping.js',
+        'darkweb.js',
+        'gang_equipment.js',
         'hacknet.js',
         'servers.js'
     ]

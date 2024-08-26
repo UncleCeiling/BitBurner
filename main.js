@@ -3,7 +3,7 @@ export async function main(ns) {
     // Location of the files to be run
     let queue_loc = 'queue/'
     let argument = ns.args[0]
-    let break_secs = 60
+    let break_secs = 10
     // Darkweb function
     // Set break to argument if there is one
     if (argument > 0) {
@@ -20,7 +20,7 @@ export async function main(ns) {
         // Check each script and run it
         for (let script of scripts) {
             // Run script
-            ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
+            ns.tprint(`SUCCESS - Running ${script.replace(queue_loc, '')}`)
             await ns.run(script)
             // Give it a second
             await ns.asleep(1000)
