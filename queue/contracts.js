@@ -2,27 +2,42 @@
 export async function main(ns) {
     const SOLUTIONS = [
         'Merge Overlapping Intervals',
-        'Encryption I: Caesar Cipher'
+        'Encryption I: Caesar Cipher',
+        'Find Largest Prime Factor'
     ]
     let contracts = get_contracts()
     for (let server of Object.keys(contracts)) {
         for (let contract of contracts[server]) {
             let type = ns.codingcontract.getContractType(contract, server)
-            if (!SOLUTIONS.includes(type)) { ns.tprint(`ERROR - Solution to "${type}" does not exist for ${server}.`); continue }
+            if (!SOLUTIONS.includes(type)) { ns.tprint(`WARN - Solution to "${type}" does not exist for ${server}.`); continue }
             else {
                 let data_in = ns.codingcontract.getData(contract, server)
-                switch (contract) {
+                let result
+                switch (type) {
                     case 'Merge Overlapping Intervals':
-                        merge_overlap(data_in, contract, server)
+                        result = merge_overlap(data_in, contract, server)
+                        ns.tprint(`SUCCESS - Attempting ${contract} on ${server}`)
                         break;
 
                     case 'Encryption I: Caesar Cipher':
-                        encrypt_1(data_in, contract, server)
+                        result = encrypt_1(data_in, contract, server)
+                        ns.tprint(`SUCCESS - Attempting ${contract} on ${server}`)
+                        break;
+
+                    case 'Find Largest Prime Factor':
+                        result = largest_prime_factor(data_in, contract, server)
+                        ns.tprint(`SUCCESS - Attempting ${contract} on ${server}`)
                         break;
 
                     default:
                         ns.print('WARN - How did you get here?')
                         break;
+                }
+                let reward = ns.codingcontract.attempt(result, contract, server)
+                if (reward) {
+                    ns.tprint(`SUCCESS - ${contract} solved on ${server}: ${reward}`)
+                } else {
+                    ns.tprint(`ERROR - Failed to solve ${contract} on ${server} with result: ${result}`)
                 }
             }
         }
@@ -48,17 +63,16 @@ export async function main(ns) {
         return contracts
     }
 
-    function merge_overlap(data_in, contract, server) {
+    function merge_overlap(data_in) {
         // Sort the data, lowest low first.
-        data_in.sort((a, b) => {
-            return Math.min(a) - Math.min(b)
-        })
+        var data = data_in
+        data.sort((a, b) => { return Math.min(...a) - Math.min(...b) })
         // Set output variable
         var results = []
         // Set current interval info
-        let current_interval = data_in[0]
+        let current_interval = data[0]
         // For each interval in the data
-        for (let interval of data_in) {
+        for (let interval of data) {
             // If the smallest value is smaller than the largest value of our current interval
             if (Math.min(...interval) <= Math.max(...current_interval)) {
                 // Combine the intervals
@@ -72,10 +86,11 @@ export async function main(ns) {
             }
         }
         results.push([Math.min(...current_interval), Math.max(...current_interval)])
-        ns.codingcontract.attempt(results, contract, server)
+
+        return results
     }
 
-    function encrypt_1(data_in, contract, server) {
+    function encrypt_1(data_in) {
         // Alphabet in order
         const ALPHABET = [
             'A',
@@ -125,7 +140,39 @@ export async function main(ns) {
         // Turn output array into a string
         var results = output.join('')
         // Hand in your work
-        ns.codingcontract.attempt(results, contract, server)
+        return results
+    }
+
+    function largest_prime_factor(data_in) {
+        let target = data_in
+        let factors = new Set()
+        let prime_factors = new Set()
+
+        // For each possible factor between 2 and sqrt of target, check if it's a factor
+        for (let i = 2; i <= Math.sqrt(target); i++) {
+            if (target % i === 0) {
+                // Add both parts to the factors sets
+                factors.add(i)
+                factors.add(target / i)
+                // If either is a prime, add them to the prime set
+                if (is_prime(i)) { prime_factors.add(i) }
+                if (is_prime(target / i)) { prime_factors.add(target / i) }
+            }
+        }
+
+        // Find the largest of the primes
+        let result = Math.max(...prime_factors)
+        ns.tprint(result)
+        // Hand in your work
+        return result
+
+        // Function to check if a number is a prime
+        function is_prime(number) {
+            for (let i = 2; i < number; i++) {
+                if (number % i === 0) { return false }
+            }
+            return true
+        }
     }
 
 }

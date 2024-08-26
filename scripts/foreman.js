@@ -26,13 +26,13 @@ export async function main(ns) {
             // Get list of miners
             let miners = get_miners()
             // If no miners, stop
-            if (miners.size <= 0) { ns.closeTail(); return }
+            if (miners.size <= 0) { ns.closeTail(); continue }
 
             // For each miner, take a job.
             for (let miner of miners) {
 
                 // Pull first job and get details
-                if (queue.length <= 0) { return }
+                if (queue.length <= 0) { continue }
                 let job = get_job_details(queue[0])
                 if (job == false) { continue }
 

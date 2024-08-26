@@ -2,7 +2,7 @@
 
 ## List
 
-`[
+```[
 "Find Largest Prime Factor",
 "Subarray with Maximum Sum",
 "Total Ways to Sum","Total Ways to Sum II",
@@ -29,7 +29,7 @@
 "Compression III: LZ Compression",
 "Encryption I: Caesar Cipher",
 "Encryption II: Vigenère Cipher"
-]`
+]```
 
 ## API
 
@@ -100,5 +100,11 @@ ___
 ### Proper 2-Coloring of a Graph (WIP - omega-net - contract-468024.cct)
 
 ### Find Largest Prime Factor (WIP - snap-fitness - contract-829165-CyberSec.cct)
+
+You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
+
+A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ### Compression I: RLE Compression (WIP - megacorp - contract-730228.cct)
