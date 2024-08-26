@@ -1,5 +1,7 @@
 /** @param {NS} ns */
 export async function main(ns) {
+    ns.tprint('ERROR - Deprecated')
+    return
     ns.tprint('INFO - Starting Hacknet Cycler')
     let duration = ns.args[0] * 1000
     if (!(duration > 0)) { ns.tprint(`ERROR - "${duration}" is not a valid argument (please enter an integer larger than 1)`); return }

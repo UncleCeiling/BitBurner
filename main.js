@@ -9,25 +9,16 @@ export async function main(ns) {
     if (argument > 0) {
         break_secs = argument
     }
-    ns.run('queue/darkweb.js')
-    await ns.asleep(1000)
-    ns.run('queue/hacknet.js')
     // Loop forever
     await ns.asleep(1000)
     while (true) {
         // Fetch scripts and flag from queue
         let scripts = ns.ls('home', queue_loc)
-        // Check for Flags
-        let darkweb_flag = ns.fileExists('flags/darkweb.flag.txt')
-        let hacknet_flag = ns.fileExists('flags/hacknet.flag.txt')
         ns.print(`INFO - Found ${scripts.length} scripts.`)
         // Shuffle scripts
         scripts.sort(() => Math.random() - 0.5)
         // Check each script and run it
         for (let script of scripts) {
-            // Skip darkweb.js is everything bought
-            if (darkweb_flag && script.includes('darkweb.js')) { ns.print('INFO - Skipping darkweb.js'); continue }
-            if (hacknet_flag && script.includes('hacknet.js')) { ns.print('INFO - Skipping hacknet.js'); continue }
             // Run script
             ns.tprint(`INFO - Running ${script.replace(queue_loc, '')}`)
             await ns.run(script)
