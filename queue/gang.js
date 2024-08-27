@@ -42,13 +42,13 @@ export async function main(ns) {
         }
     }
 
-    async function task(doing_war, member) {
+    function task(doing_war, member) {
         let random = Math.random()
         if (random < TRAINING_PERCENT) { ns.gang.setMemberTask(member, 'Train Combat') }
         else {
             let wanted_rate = ns.gang.getGangInformation().wantedLevelGainRate
-            let wanted_penalty = ns.gang.getGangInformation().wantedPenalty
-            if (wanted_rate > 0 || wanted_penalty < 0.99) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
+            // let wanted_penalty = ns.gang.getGangInformation().wantedPenalty
+            if (wanted_rate > 0) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
             else if (doing_war) { ns.gang.setMemberTask(member, 'Territory Warfare') }
             else if (get_members().length <= 6) { ns.gang.setMemberTask(member, 'Strongarm Civilians') }
             else if (Math.random() < 0.5) { ns.gang.setMemberTask(member, 'Terrorism') }
@@ -85,8 +85,8 @@ export async function main(ns) {
         let doing_war = war()
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
         for (let member of get_members()) {
-            await task(doing_war, member)
-            await ns.gang.nextUpdate()
+            await ns.gang.nextUpdate();
+            task(doing_war, member)
         }
         recruiting()
         ns.tprint(`INFO\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}\nMembers: ${get_members()}`)
