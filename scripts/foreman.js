@@ -23,13 +23,13 @@ export async function main(ns) {
 
         // While there are jobs in the queue
         while (queue.length > 0) {
-
+            await ns.asleep(100)
             // Clear the log
             ns.clearLog()
             // Get list of miners
             let miners = get_miners()
             // If no miners, stop
-            if (miners.size <= 0) { ns.closeTail(); continue }
+            if (miners.size <= 0) { continue }
 
             // For each miner, take a job.
             for (let miner of miners) {
