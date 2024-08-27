@@ -1,37 +1,34 @@
 # Contracts
 
-## List
+## ToDo List
 
-```pseudo
-[
-"Find Largest Prime Factor",
-"Subarray with Maximum Sum",
-"Total Ways to Sum","Total Ways to Sum II",
-"Spiralize Matrix",
-"Array Jumping Game",
-"Array Jumping Game II",
-"Merge Overlapping Intervals",
-"Generate IP Addresses",
-"Algorithmic Stock Trader I",
-"Algorithmic Stock Trader II",
-"Algorithmic Stock Trader III",
-"Algorithmic Stock Trader IV",
-"Minimum Path Sum in a Triangle",
-"Unique Paths in a Grid I",
-"Unique Paths in a Grid II",
-"Shortest Path in a Grid",
-"Sanitize Parentheses in Expression",
-"Find All Valid Math Expressions",
-"HammingCodes: Integer to Encoded Binary",
-"HammingCodes: Encoded Binary to Integer",
-"Proper 2-Coloring of a Graph",
-"Compression I: RLE Compression",
-"Compression II: LZ Decompression",
-"Compression III: LZ Compression",
-"Encryption I: Caesar Cipher",
-"Encryption II: Vigenère Cipher"
-]
-```
+[/] ["Find Largest Prime Factor"](#find-largest-prime-factor)  
+[ ] ["Subarray with Maximum Sum"](#subarray-with-maximum-sum)  
+[ ] ["Total Ways to Sum"](#total-ways-to-sum)  
+[ ] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
+[ ] ["Spiralize Matrix"](#spiralize-matrix)  
+[/] ["Array Jumping Game"](#array-jumping-game)  
+[/] ["Array Jumping Game II"](#array-jumping-game-ii)  
+[/] ["Merge Overlapping Intervals"](#merge-overlapping-intervals)  
+[ ] ["Generate IP Addresses"](#generate-ip-addresses)  
+[ ] ["Algorithmic Stock Trader I"](#algorithmic-stock-trader-i)  
+[ ] ["Algorithmic Stock Trader II"](#algorithmic-stock-trader-ii)  
+[ ] ["Algorithmic Stock Trader III"](#algorithmic-stock-trader-iii)  
+[ ] ["Algorithmic Stock Trader IV"](#algorithmic-stock-trader-iv)  
+[ ] ["Minimum Path Sum in a Triangle"](#minimum-path-sum-in-a-triangle)  
+[ ] ["Unique Paths in a Grid I"](#unique-paths-in-a-grid-i)  
+[ ] ["Unique Paths in a Grid II"](#unique-paths-in-a-grid-ii)  
+[/] ["Shortest Path in a Grid"](#shortest-path-in-a-grid)  
+[ ] ["Sanitize Parentheses in Expression"](#sanitize-parentheses-in-expression)  
+[ ] ["Find All Valid Math Expressions"](#find-all-valid-math-expressions)  
+[ ] ["HammingCodes: Integer to Encoded Binary"](#hammingcodes-integer-to-encoded-binary)  
+[ ] ["HammingCodes: Encoded Binary to Integer"](#hammingcodes-encoded-binary-to-integer)  
+[/] ["Proper 2-Coloring of a Graph"](#proper-2-coloring-of-a-graph)  
+[ ] ["Compression I: RLE Compression"](#compression-i-rle-compression)  
+[ ] ["Compression II: LZ Decompression"](#compression-ii-lz-decompression)  
+[ ] ["Compression III: LZ Compression"](#compression-iii-lz-compression)  
+[/] ["Encryption I: Caesar Cipher"](#encryption-i-caesar-cipher)  
+[ ] ["Encryption II: Vigenère Cipher"](#encryption-ii-vigenère-cipher)  
 
 ## API
 
@@ -49,7 +46,75 @@ Namespace: `ns.codingcontract`
 
 ## Solutions
 
-### Merge Overlapping Intervals
+### "Find Largest Prime Factor"
+
+You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
+
+A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
+1. Check if each possible factor is a factor.
+2. If it's a factor, check if it (and it's compliment) are primes.
+3. If they are, add them to a set.
+4. Check for the largest item in that set by the end.
+
+### "Subarray with Maximum Sum"
+
+### "Total Ways to Sum"
+
+### "Total Ways to Sum II"
+
+### "Spiralize Matrix"
+
+### "Array Jumping Game"
+
+You are attempting to solve a Coding Contract. You have 1 tries remaining, after which the contract will self-destruct.
+
+You are given the following array of integers:
+
+1,9,8,0,3,10,0,5,10,0
+
+Each element in the array represents your MAXIMUM jump length at that position. This means that if you are at position i and your maximum jump length is n, you can jump to any position from i to i+n.
+
+Assuming you are initially positioned at the start of the array, determine whether you are able to reach the last index.
+
+Your answer should be submitted as 1 or 0, representing true and false respectively.
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+___
+
+1. For each jump available to the left-most index, check all the jumps therein, starting from the longest jump.
+2. If any chain of jumps reaches the last index, flag and break.
+3. If all jumps fall short, flag.
+4. Check flag and output accordingly.
+
+### "Array Jumping Game II"
+
+You are attempting to solve a Coding Contract. You have 2 tries remaining, after which the contract will self-destruct.
+
+You are given the following array of integers:
+
+1,2,4,2,7,5,5,3,3,4,0,3,3,4,2,2,1,1
+
+Each element in the array represents your MAXIMUM jump length at that position. This means that if you are at position i and your maximum jump length is n, you can jump to any position from i to i+n.
+
+Assuming you are initially positioned at the start of the array, determine the minimum number of jumps to reach the end of the array.
+
+If it's impossible to reach the end, then the answer should be 0.
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
+1. Make a jump counter
+2. Starting at index 0, look at all possible jumps and try the largest value (if both are the same, pick the one with the furthest reach).
+3. Increment jump counter
+4. Repeat until win or highest index is 0
+
+### "Merge Overlapping Intervals"
 
 You are attempting to solve a Coding Contract. You have 15 tries remaining, after which the contract will self-destruct.
 
@@ -76,30 +141,74 @@ ___
 3. When there are no more comparisons, add the final interval to the results.
 4. Output
 
-### Encryption I: Caesar Cipher
+### "Generate IP Addresses"
+
+### "Algorithmic Stock Trader I"
+
+### "Algorithmic Stock Trader II"
+
+### "Algorithmic Stock Trader III"
+
+### "Algorithmic Stock Trader IV"
+
+### "Minimum Path Sum in a Triangle"
+
+### "Unique Paths in a Grid I"
+
+### "Unique Paths in a Grid II"
+
+### "Shortest Path in a Grid"
 
 You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
 
-Caesar cipher is one of the simplest encryption technique. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet. For example, with a left shift of 3, D would be replaced by A, E would become B, and A would become X (because of rotation).
+You are located in the top-left corner of the following grid:
 
-You are given an array with two elements:
-  ["TABLE DEBUG LOGIN PASTE CLOUD", 1]
-The first element is the plaintext, the second element is the left shift value.
+  [[0,0,0,0,1,1,1,1],
+   [0,0,0,0,1,1,1,0],
+   [0,0,0,0,0,1,1,0],
+   [0,0,0,1,1,0,1,0],
+   [0,1,0,0,0,0,0,0],
+   [1,1,1,0,0,0,0,0],
+   [0,0,0,0,0,0,0,0]]
 
-Return the ciphertext as uppercase string. Spaces remains the same.
+You are trying to find the shortest path to the bottom-right corner of the grid, but there are obstacles on the grid that you cannot move onto. These obstacles are denoted by '1', while empty spaces are denoted by 0.
+
+Determine the shortest path from start to finish, if one exists. The answer should be given as a string of UDLR characters, indicating the moves along the path
+
+NOTE: If there are multiple equally short paths, any of them is accepted as answer. If there is no path, the answer should be an empty string.
+NOTE: The data returned for this contract is an 2D array of numbers representing the grid.
+
+Examples:
+
+  [[0,1,0,0,0],
+   [0,0,0,1,0]]
+
+Answer: 'DRRURRD'
+
+  [[0,1],
+   [1,0]]
+
+Answer: ''
 
 If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ___
 
-1. Create Arrays for Alphabet, Input message and Output message
-2. For each character in Input message, find index position in Alphabet
-3. Index - Left-shift value = new index
-4. New index into output message
-5. Join Output message
-6. Output
+1. Starting from the finish, check for valid squares around the square of interest.
+2. Add the appropriate direction to each valid square and add that square to a queue.
+3. Work through the queue making the same check until you either run out of options (no route) or reach 0,0 (route found)
+4. Read the directions off the grid into a path.
+5. Output the path
 
-### Proper 2-Coloring of a Graph
+### "Sanitize Parentheses in Expression"
+
+### "Find All Valid Math Expressions"
+
+### "HammingCodes: Integer to Encoded Binary"
+
+### "HammingCodes: Encoded Binary to Integer"
+
+### "Proper 2-Coloring of a Graph"
 
 You are given the following data, representing a graph:
 
@@ -126,39 +235,33 @@ ___
 5. If both are coloured the same, the graph is impossible to colour, raise a flag and break.
 6. Output
 
-### Find Largest Prime Factor
+### "Compression I: RLE Compression"
+
+### "Compression II: LZ Decompression"
+
+### "Compression III: LZ Compression"
+
+### "Encryption I: Caesar Cipher"
 
 You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
 
-A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
+Caesar cipher is one of the simplest encryption technique. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet. For example, with a left shift of 3, D would be replaced by A, E would become B, and A would become X (because of rotation).
+
+You are given an array with two elements:
+  ["TABLE DEBUG LOGIN PASTE CLOUD", 1]
+The first element is the plaintext, the second element is the left shift value.
+
+Return the ciphertext as uppercase string. Spaces remains the same.
 
 If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ___
 
-1. Check if each possible factor is a factor.
-2. If it's a factor, check if it (and it's compliment) are primes.
-3. If they are, add them to a set.
-4. Check for the largest item in that set by the end.
+1. Create Arrays for Alphabet, Input message and Output message
+2. For each character in Input message, find index position in Alphabet
+3. Index - Left-shift value = new index
+4. New index into output message
+5. Join Output message
+6. Output
 
-### Array Jumping Game (WIP - nwo - contract-41675-Netburners.cct)
-
-You are attempting to solve a Coding Contract. You have 1 tries remaining, after which the contract will self-destruct.
-
-You are given the following array of integers:
-
-1,9,8,0,3,10,0,5,10,0
-
-Each element in the array represents your MAXIMUM jump length at that position. This means that if you are at position i and your maximum jump length is n, you can jump to any position from i to i+n.
-
-Assuming you are initially positioned at the start of the array, determine whether you are able to reach the last index.
-
-Your answer should be submitted as 1 or 0, representing true and false respectively.
-
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-___
-
-1. For each jump available to the left-most index, check all the jumps therein, starting from the longest jump.
-2. If any chain of jumps reaches the last index, flag and break.
-3. If all jumps fall short, flag.
-4. Check flag and output accordingly.
+### "Encryption II: Vigenère Cipher"

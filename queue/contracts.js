@@ -1,10 +1,13 @@
 /** @param {NS} ns */
 export async function main(ns) {
     const SOLUTIONS = [
-        'Merge Overlapping Intervals',
-        'Encryption I: Caesar Cipher',
         'Find Largest Prime Factor',
-        'Proper 2-Coloring of a Graph'
+        'Array Jumping Game',
+        'Array Jumping Game II',
+        'Merge Overlapping Intervals',
+        'Shortest Path in a Grid',
+        'Proper 2-Coloring of a Graph',
+        'Encryption I: Caesar Cipher',
     ]
     let contracts = get_contracts()
     for (let server of Object.keys(contracts)) {
@@ -17,22 +20,37 @@ export async function main(ns) {
                 switch (type) {
                     case 'Merge Overlapping Intervals':
                         result = merge_overlap(data_in)
-                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Encryption I: Caesar Cipher':
                         result = encrypt_1(data_in)
-                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Find Largest Prime Factor':
                         result = largest_prime_factor(data_in)
-                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Proper 2-Coloring of a Graph':
                         result = proper_2_colour(data_in)
-                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Array Jumping Game':
+                        result = array_jumping(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Array Jumping Game II':
+                        result = array_jumping_2(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Shortest Path in a Grid':
+                        result = shortest_path(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     default:
@@ -241,6 +259,106 @@ export async function main(ns) {
         }
         if (impossible) { results = [] }
         return results
+    }
+
+    function array_jumping(data_in) {
+        // Make constants
+        const array = data_in
+        const target_index = array.length - 1
+        ns.print(target_index)
+        // For each item, update reach if index takes us further than previous reach
+        for (var reach = 0, i = 0; i < target_index && i <= reach; ++i) {
+            reach = Math.max(i + array[i], reach)
+            ns.print(reach)
+            // If our reach is larger than our target index, return 1
+            if (reach >= target_index) { return 1 }
+        }
+        // We didn't reach the target index so return 0
+        return 0
+    }
+
+    function array_jumping_2(data_in) {
+        // Create variables
+        const ARRAY = data_in
+        let target_index = ARRAY.length - 1
+        let current_index = 0 // For tracking our current index
+        let counter = 0 // For counting the jumps we've made
+        // As long as we've not reached the end of our array, keep going
+        while (current_index < target_index && counter <= target_index) {
+            // Value of current index is 0, we can't progress, so return 0
+            if (ARRAY[current_index] === 0) { return 0 }
+            // If the value pf our current index, plus the index, is equal to or larger than our target, increment the counter one last time and return the counter variable
+            if (ARRAY[current_index] + current_index >= target_index) { counter++; return counter }
+            // Reset current options var and populate it
+            let current_options = []
+            for (let i = 1; i <= ARRAY[current_index]; ++i) { current_options.push(current_index + i) }
+            // ns.print(`${current_index} | ${current_options} | ${counter}`)
+            // Set the current index to the index of the largest reach index in the current options
+            current_index = current_options.sort((a, b) => (ARRAY[b] + b) - (ARRAY[a] + a))[0] // This sort sorts the indexs into descending order of (index + value of index)
+            // Increment counter
+            counter++
+        }
+    }
+
+    function shortest_path(data_in) {
+        // Take in data
+        const grid = data_in
+        // Calc number of rows & columns
+        let rows = grid.length
+        let cols = grid[0].length
+        // Initialise flag and queue
+        let pathFound = false
+        let queue = []
+        // Add starting point to the queue
+        queue.push([rows - 1, cols - 1, "F"])
+        // While there are routes to explore, explore them
+        while (queue.length > 0) {
+            // Pull from Queue
+            let next = queue.shift()
+            // Populate values from queue data
+            let row = next[0], col = next[1], command = next[2]
+            // Add the command to the grid
+            grid[row][col] = command
+            // ns.print('\n')
+            // for (let row of grid) { ns.print(row), '\n' }
+            // If we've reached the start, we've pound a path, so flag and break.
+            if (row == 0 && col == 0) { pathFound = true; break }
+            // If direction is inside the grid, and the square is not blocked, and the square is not already in the queue, add it to the queue.
+            if (row - 1 >= 0 && grid[row - 1][col] == "0" && queue.find(e => e[0] == row - 1 && e[1] == col) == undefined) { queue.push([row - 1, col, "D"]) }
+            if (row + 1 < rows && grid[row + 1][col] == "0" && queue.find(e => e[0] == row + 1 && e[1] == col) == undefined) { queue.push([row + 1, col, "U"]) }
+            if (col - 1 >= 0 && grid[row][col - 1] == "0" && queue.find(e => e[0] == row && e[1] == col - 1) == undefined) { queue.push([row, col - 1, "R"]) }
+            if (col + 1 < cols && grid[row][col + 1] == "0" && queue.find(e => e[0] == row && e[1] == col + 1) == undefined) { queue.push([row, col + 1, "L"]) }
+        }
+        // Create path variable
+        let path = []
+        // If we found a path, parse it
+        if (pathFound) {
+            // Start at the top left (the start)
+            let col = 0
+            let row = 0
+            // Add commands until we reach the finish
+            while (grid[row][col] != "F") {
+                // Add command to path
+                path.push(grid[row][col])
+                // Follow command
+                switch (grid[row][col]) {
+                    case "U":
+                        row -= 1
+                        break
+                    case "D":
+                        row += 1
+                        break
+                    case "L":
+                        col -= 1
+                        break
+                    case "R":
+                        col += 1
+                        break
+                }
+            }
+        }
+        // Join list into a string and return it
+        return path.join('')
     }
 
 }
