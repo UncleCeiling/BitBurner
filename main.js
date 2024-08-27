@@ -34,12 +34,12 @@ export async function main(ns) {
         // Run miner if miner not running
         if (!ns.isRunning('scripts/miner.js', 'home')) {
             ns.run('scripts/miner.js', 1)
-            ns.tprint('SUCCESS - Launching Miner on `home`')
+            ns.tprint('Launching Miner on `home`')
         }
 
         // Run `home` foreman if not running and have more than 64GB of RAM
         if (!ns.isRunning('scripts/foreman.js', 'home') && ns.getServerMaxRam('home') >= 32) {
-            ns.tprint(`Running foreman.js`)
+            ns.tprint(`Launching foreman.js on 'home'`)
             await ns.run('scripts/foreman.js', 1)
         }
 

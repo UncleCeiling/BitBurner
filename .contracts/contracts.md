@@ -6,7 +6,7 @@
 [ ] ["Subarray with Maximum Sum"](#subarray-with-maximum-sum)  
 [ ] ["Total Ways to Sum"](#total-ways-to-sum)  
 [/] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
-[ ] ["Spiralize Matrix"](#spiralize-matrix)  
+[-] ["Spiralize Matrix"](#spiralize-matrix)  
 [/] ["Array Jumping Game"](#array-jumping-game)  
 [/] ["Array Jumping Game II"](#array-jumping-game-ii)  
 [/] ["Merge Overlapping Intervals"](#merge-overlapping-intervals)  
@@ -76,6 +76,48 @@ If your solution is an empty string, you must leave the text box empty. Do not u
 ___
 
 ### "Spiralize Matrix"
+
+Given the following array of arrays of numbers representing a 2D matrix, return the elements of the matrix as an array in spiral order:
+
+    [
+        [12,19,12, 2,35,36,18,48,14]
+        [13,27,50,50,14,15, 3,15, 2]
+        [45, 4, 9,15,23,31,37, 1,36]
+        [38,22,42, 1, 9,43, 3,31,48]
+        [ 7,33,31,44,24,48,14,29,31]
+        [33,13,26,16, 5, 8,12, 5,33]
+        [ 5,40,32,16,40,32,36, 2,11]
+        [40, 8, 1, 6,24,37,28,25,38]
+        [10,24,29,18,26, 5,37, 7,39]
+    ]
+
+Here is an example of what spiral order should be:
+
+    [
+        [1, 2, 3]
+        [4, 5, 6]
+        [7, 8, 9]
+    ]
+
+Answer: [1, 2, 3, 6, 9, 8 ,7, 4, 5]
+
+Note that the matrix will not always be square:
+
+    [
+        [1,  2,  3,  4]
+        [5,  6,  7,  8]
+        [9, 10, 11, 12]
+    ]
+
+Answer: [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7]
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
+1. Record the number of rows and columns and make a destructible version of the matrix
+2. Strip the top row, right column, bottom row and left column into an array one by one until matrix is empty
+3. Output
 
 ### "Array Jumping Game"
 
@@ -267,6 +309,22 @@ ___
 6. Output
 
 ### "Compression I: RLE Compression"
+
+Run-length encoding (RLE) is a data compression technique which encodes data as a series of runs of a repeated single character. Runs are encoded as a length, followed by the character itself. Lengths are encoded as a single ASCII digit; runs of 10 characters or more are encoded by splitting them into multiple runs.
+
+You are given the following input string:
+    KKhhhhhr1bbggggggggggg88888888888888bbbbbbbbXuutJJXXXXXXXXX7777777777777jjj44Z
+Encode it using run-length encoding with the minimum possible output length.
+
+Examples:
+    aaaaabccc            ->  5a1b3c
+    aAaAaA               ->  1a1A1a1A1a1A
+    111112333            ->  511233
+    zzzzzzzzzzzzzzzzzzz  ->  9z9z1z  (or 9z8z2z, etc.)
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
 
 ### "Compression II: LZ Decompression"
 
