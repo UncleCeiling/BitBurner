@@ -3,7 +3,7 @@ export async function main(ns) {
     // Location of the files to be run
     let queue_loc = 'queue/'
     let argument = ns.args[0]
-    let break_secs = 30
+    let break_secs = 60
     // Darkweb function
     // Set break to argument if there is one
     if (argument > 0) {

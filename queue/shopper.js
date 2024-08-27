@@ -4,8 +4,8 @@ export async function main(ns) {
         'housekeeping.js',
         'darkweb.js',
         'gang_equipment.js',
-        'hacknet.js',
-        'servers.js'
+        'servers.js',
+        'hacknet.js'
     ]
     const SCRIPT_LOC = 'scripts/'
     for (let script of SCRIPTS) {

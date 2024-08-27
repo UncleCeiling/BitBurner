@@ -99,7 +99,7 @@ ___
 5. Join Output message
 6. Output
 
-### Proper 2-Coloring of a Graph (WIP - omega-net - contract-468024.cct)
+### Proper 2-Coloring of a Graph
 
 You are given the following data, representing a graph:
 
@@ -140,5 +140,3 @@ ___
 2. If it's a factor, check if it (and it's compliment) are primes.
 3. If they are, add them to a set.
 4. Check for the largest item in that set by the end.
-
-### Compression I: RLE Compression (WIP - megacorp - contract-730228.cct)
