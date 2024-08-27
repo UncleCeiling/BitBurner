@@ -10,6 +10,7 @@ export async function main(ns) {
         'Minimum Path Sum in a Triangle',
         'Shortest Path in a Grid',
         'Proper 2-Coloring of a Graph',
+        'Compression I: RLE Compression',
         'Encryption I: Caesar Cipher',
     ]
     let contracts = get_contracts()
@@ -68,6 +69,11 @@ export async function main(ns) {
 
                     case 'Spiralize Matrix':
                         result = spiralize_matrix(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Compression I: RLE Compression':
+                        result = compression_1(data_in)
                         ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
@@ -463,5 +469,25 @@ export async function main(ns) {
 
         // Give the result
         return array
+    }
+
+    function compression_1(data_in) {
+        // Take data and init the answer variable
+        const INPUT = data_in
+        let answer = ''
+        // Starting from the first character and ending at the end of the message
+        for (let i = 0; i < INPUT.length; i) {
+            // What character is it?
+            let char = INPUT[i]
+            // Set count to 1 (we have to include the character we've chosen)
+            let count = 1
+            // As long as we're not over-running the string, the current run isn't longer than 9 characters and there is another character, increase the count
+            while (i + count < INPUT.length && count < 9 && INPUT[i + count] == char) { count++ }
+            // Append count and character to the answer string
+            answer += `${count}${char}`
+            // Move to the start of the next run
+            i += count
+        }
+        return answer
     }
 }

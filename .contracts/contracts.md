@@ -24,7 +24,7 @@
 [ ] ["HammingCodes: Integer to Encoded Binary"](#hammingcodes-integer-to-encoded-binary)  
 [ ] ["HammingCodes: Encoded Binary to Integer"](#hammingcodes-encoded-binary-to-integer)  
 [/] ["Proper 2-Coloring of a Graph"](#proper-2-coloring-of-a-graph)  
-[ ] ["Compression I: RLE Compression"](#compression-i-rle-compression)  
+[/] ["Compression I: RLE Compression"](#compression-i-rle-compression)  
 [ ] ["Compression II: LZ Decompression"](#compression-ii-lz-decompression)  
 [ ] ["Compression III: LZ Compression"](#compression-iii-lz-compression)  
 [/] ["Encryption I: Caesar Cipher"](#encryption-i-caesar-cipher)  
@@ -50,8 +50,6 @@ Namespace: `ns.codingcontract`
 
 A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-
 ___
 
 1. Check if each possible factor is a factor.
@@ -71,9 +69,11 @@ How many different distinct ways can the number 96 be written as a sum of intege
 
 You may use each integer in the set zero or more times.
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-
 ___
+
+1. Check each index for possible combinations recursively
+2. Propagate the result up from the last index's call, returning values all the way to the top
+3. Output
 
 ### "Spiralize Matrix"
 
@@ -111,8 +111,6 @@ Note that the matrix will not always be square:
 
 Answer: [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7]
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-
 ___
 
 1. Record the number of rows and columns and make a destructible version of the matrix
@@ -131,7 +129,6 @@ Assuming you are initially positioned at the start of the array, determine wheth
 
 Your answer should be submitted as 1 or 0, representing true and false respectively.
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 ___
 
 1. For each jump available to the left-most index, check all the jumps therein, starting from the longest jump.
@@ -150,8 +147,6 @@ Each element in the array represents your MAXIMUM jump length at that position. 
 Assuming you are initially positioned at the start of the array, determine the minimum number of jumps to reach the end of the array.
 
 If it's impossible to reach the end, then the answer should be 0.
-
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ___
 
@@ -173,8 +168,6 @@ Example:
 would merge into [[1, 6], [8, 16]].
 
 The intervals must be returned in ASCENDING order. You can assume that in an interval, the first number will always be smaller than the second.
-
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ___
 
@@ -217,8 +210,6 @@ Example: If you are given the following triangle:
 ]
 
 The minimum path sum is 11 (2 -> 3 -> 5 -> 1).
-
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ___
 
@@ -263,8 +254,6 @@ Answer: 'DRRURRD'
 
 Answer: ''
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-
 ___
 
 1. Starting from the finish, check for valid squares around the square of interest.
@@ -297,8 +286,6 @@ Output: [0, 0, 1, 1]
 Input: [3, [[0, 1], [0, 2], [1, 2]]]
 Output: []
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-
 ___
 
 1. Create an empty results array
@@ -322,9 +309,12 @@ Examples:
     111112333            ->  511233
     zzzzzzzzzzzzzzzzzzz  ->  9z9z1z  (or 9z8z2z, etc.)
 
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
-
 ___
+
+1. Until you reach the end of the message, take the first character of a run and set the run length to 1.
+2. Check that the next character after the run is the same, that the run is not longer than 9 and check to see if you've reached the end of the message.
+3. If character is the same and the run is shorter than 9, increment the run length and repeat.
+4. Otherwise, add the length and character to the output and move to the beginning of the next run.
 
 ### "Compression II: LZ Decompression"
 
@@ -339,8 +329,6 @@ You are given an array with two elements:
 The first element is the plaintext, the second element is the left shift value.
 
 Return the ciphertext as uppercase string. Spaces remains the same.
-
-If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
 
 ___
 
