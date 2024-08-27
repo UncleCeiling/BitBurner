@@ -6,7 +6,7 @@
 [ ] ["Subarray with Maximum Sum"](#subarray-with-maximum-sum)  
 [ ] ["Total Ways to Sum"](#total-ways-to-sum)  
 [/] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
-[-] ["Spiralize Matrix"](#spiralize-matrix)  
+[/] ["Spiralize Matrix"](#spiralize-matrix)  
 [/] ["Array Jumping Game"](#array-jumping-game)  
 [/] ["Array Jumping Game II"](#array-jumping-game-ii)  
 [/] ["Merge Overlapping Intervals"](#merge-overlapping-intervals)  
@@ -340,3 +340,13 @@ ___
 6. Output
 
 ### "Encryption II: Vigenère Cipher"
+
+## Sources
+
+[Drakmyth GitHub](https://github.com/Drakmyth/BitburnerScripts/tree/master/src/contracts)
+
+[Cappinator Github](https://github.com/Cappinator/bitburner-scripts/tree/main/contracts)
+
+[Devmount app Github](https://github.com/devmount/bitburner-contract-solver/blob/main/app.js)
+
+[Web Contract Solver](https://devmount.github.io/bitburner-contract-solver/)
