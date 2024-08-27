@@ -2,7 +2,8 @@
 
 ## List
 
-```[
+```pseudo
+[
 "Find Largest Prime Factor",
 "Subarray with Maximum Sum",
 "Total Ways to Sum","Total Ways to Sum II",
@@ -29,7 +30,8 @@
 "Compression III: LZ Compression",
 "Encryption I: Caesar Cipher",
 "Encryption II: Vigenère Cipher"
-]```
+]
+```
 
 ## API
 
@@ -99,12 +101,44 @@ ___
 
 ### Proper 2-Coloring of a Graph (WIP - omega-net - contract-468024.cct)
 
-### Find Largest Prime Factor (WIP - snap-fitness - contract-829165-CyberSec.cct)
+You are given the following data, representing a graph:
+
+[10,[[3,8],[0,6],[0,2],[5,9],[0,5],[3,9],[1,2],[2,3],[1,9],[3,5],[3,4],[1,5]]]
+
+Note that "graph", as used here, refers to the field of graph theory, and has no relation to statistics or plotting. The first element of the data represents the number of vertices in the graph. Each vertex is a unique number between 0 and 9. The next element of the data represents the edges of the graph. Two vertices u,v in a graph are said to be adjacent if there exists an edge [u,v]. Note that an edge [u,v] is the same as an edge [v,u], as order does not matter. You must construct a 2-coloring of the graph, meaning that you have to assign each vertex in the graph a "color", either 0 or 1, such that no two adjacent vertices have the same color. Submit your answer in the form of an array, where element i represents the color of vertex i. If it is impossible to construct a 2-coloring of the given graph, instead submit an empty array.
+
+Examples:
+
+Input: [4, [[0, 2], [0, 3], [1, 2], [1, 3]]]
+Output: [0, 0, 1, 1]
+
+Input: [3, [[0, 1], [0, 2], [1, 2]]]
+Output: []
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
+1. Create an empty results array
+2. Pick an edge
+3. If both vertices on the edge are uncoloured, colour them and add them to the front of the queue
+4. If only 1 is coloured, colour the opposite one the opposite colour and add it to the front of the queue.
+5. If both are coloured the same, the graph is impossible to colour, raise a flag and break.
+6. Output
+
+### Find Largest Prime Factor
 
 You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
 
 A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
 
 If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
+1. Check if each possible factor is a factor.
+2. If it's a factor, check if it (and it's compliment) are primes.
+3. If they are, add them to a set.
+4. Check for the largest item in that set by the end.
 
 ### Compression I: RLE Compression (WIP - megacorp - contract-730228.cct)

@@ -3,7 +3,7 @@ export async function main(ns) {
     // Location of the files to be run
     let queue_loc = 'queue/'
     let argument = ns.args[0]
-    let break_secs = 10
+    let break_secs = 30
     // Darkweb function
     // Set break to argument if there is one
     if (argument > 0) {
@@ -20,7 +20,7 @@ export async function main(ns) {
         // Check each script and run it
         for (let script of scripts) {
             // Run script
-            ns.tprint(`SUCCESS - Running ${script.replace(queue_loc, '')}`)
+            ns.tprint(`Running ${script.replace(queue_loc, '')}`)
             await ns.run(script)
             // Give it a second
             await ns.asleep(1000)
@@ -39,15 +39,18 @@ export async function main(ns) {
 
         // Run `home` foreman if not running and have more than 64GB of RAM
         if (!ns.isRunning('scripts/foreman.js', 'home') && ns.getServerMaxRam('home') >= 32) {
-            ns.run('scripts/foreman.js', 1)
-            ns.tprint('SUCCESS - Launching Foreman on `home`')
+            ns.tprint(`Running foreman.js`)
+            await ns.run('scripts/foreman.js', 1)
         }
 
         // Run mapping utils
         await ns.asleep(1000)
-        ns.run('scripts/mapper.js')
+        ns.tprint(`Running mapper.js`)
+        await ns.run('scripts/mapper.js')
         await ns.asleep(1000)
-        ns.run('scripts/server_stats.js')
+
+        ns.tprint(`Running server_stats.js`)
+        await ns.run('scripts/server_stats.js')
 
         // Pause for a bit
         ns.tprint(`INFO - Taking a break for ${break_secs} seconds.`)

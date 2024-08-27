@@ -14,6 +14,7 @@ export async function main(ns) {
 
     // Repeat ad-nauseam
     while (true) {
+        await ns.asleep(100)
         // Clean working list of any 
         working = clean_working_list(working)
         // Get list of jobs as queue

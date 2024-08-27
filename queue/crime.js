@@ -1,6 +1,8 @@
 /** @param {NS} ns */
 export async function main(ns) {
     // Get Karma
+    ns.tprint('ERROR - Not written yet')
+    return
     // ns.tail()
     let player_stats = ns.getPlayer()
     // stats.skills.

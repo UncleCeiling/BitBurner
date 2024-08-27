@@ -3,7 +3,8 @@ export async function main(ns) {
     const SOLUTIONS = [
         'Merge Overlapping Intervals',
         'Encryption I: Caesar Cipher',
-        'Find Largest Prime Factor'
+        'Find Largest Prime Factor',
+        'Proper 2-Coloring of a Graph'
     ]
     let contracts = get_contracts()
     for (let server of Object.keys(contracts)) {
@@ -15,23 +16,28 @@ export async function main(ns) {
                 let result
                 switch (type) {
                     case 'Merge Overlapping Intervals':
-                        result = merge_overlap(data_in, contract, server)
-                        ns.tprint(`SUCCESS - Attempting ${contract} on ${server}`)
-                        break;
+                        result = merge_overlap(data_in)
+                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        break
 
                     case 'Encryption I: Caesar Cipher':
-                        result = encrypt_1(data_in, contract, server)
-                        ns.tprint(`SUCCESS - Attempting ${contract} on ${server}`)
-                        break;
+                        result = encrypt_1(data_in)
+                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        break
 
                     case 'Find Largest Prime Factor':
-                        result = largest_prime_factor(data_in, contract, server)
-                        ns.tprint(`SUCCESS - Attempting ${contract} on ${server}`)
-                        break;
+                        result = largest_prime_factor(data_in)
+                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        break
+
+                    case 'Proper 2-Coloring of a Graph':
+                        result = proper_2_colour(data_in)
+                        ns.tprint(`INFO - Attempting ${contract} on ${server}`)
+                        break
 
                     default:
                         ns.print('WARN - How did you get here?')
-                        break;
+                        break
                 }
                 let reward = ns.codingcontract.attempt(result, contract, server)
                 if (reward) {
@@ -173,6 +179,68 @@ export async function main(ns) {
             }
             return true
         }
+    }
+
+    function proper_2_colour(data_in) {
+        // Take data
+        let num_vertices = data_in[0]
+        let edges = data_in[1]
+
+        // Sort edges small-to-large in both axes
+        edges.forEach(edge => edge.sort((a, b) => a - b))
+        edges.sort((a, b) => a[0] - b[0])
+
+        // Build empty results array
+        let results = []
+        for (let i = 0; i < num_vertices; i++) { results[i] = null }
+
+        // Init variables
+        let impossible = false
+        let queue = []
+
+        // While there are still things to compare
+        while (edges.length > 0 || queue.length > 0) {
+            // Take a comparison
+            let comparison = []
+            if (queue.length > 0) { comparison = queue.shift() }
+            else if (edges.length > 0) { comparison = edges.shift() }
+
+            // Split the comparison
+            let c0 = comparison[0]
+            let c1 = comparison[1]
+
+            // If first node is not coloured
+            if (results[c0] == null) {
+                // If second node is also not coloured
+                if (results[c1] == null) {
+                    // Set colours
+                    results[c0] = 0 // Set colour to 0
+                    results[c1] = 1 // Set colour to 1
+                    // Add freshly coloured nodes to the queue
+                    queue.push(c0)
+                    queue.push(c1)
+                } else {
+                    // First node is coloured, but second isn't
+                    results[c0] = (results[c1] + 1) % 2 // Set colour of empty first node to opposite of the coloured second node
+                    queue.push(c0) // Add freshly coloured nodes to the queue
+                }
+                // First node is coloured
+            } else {
+                // If second node isn't coloured
+                if (results[c1] == null) {
+                    results[c1] = (results[c0] + 1) % 2 // Set colour of empty second node to opposite of the coloured first node
+                    queue.push(c1) // Add freshly coloured nodes to the queue
+                } else {
+                    // If both nodes are the same colour, set the impossible flag and break.
+                    if (results[c0] == results[c1]) {
+                        impossible = true
+                        break
+                    }
+                }
+            }
+        }
+        if (impossible) { results = [] }
+        return results
     }
 
 }
