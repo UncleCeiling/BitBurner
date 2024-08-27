@@ -2,9 +2,11 @@
 export async function main(ns) {
     const SOLUTIONS = [
         'Find Largest Prime Factor',
+        'Total Ways to Sum II',
         'Array Jumping Game',
         'Array Jumping Game II',
         'Merge Overlapping Intervals',
+        'Minimum Path Sum in a Triangle',
         'Shortest Path in a Grid',
         'Proper 2-Coloring of a Graph',
         'Encryption I: Caesar Cipher',
@@ -50,6 +52,16 @@ export async function main(ns) {
 
                     case 'Shortest Path in a Grid':
                         result = shortest_path(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Minimum Path Sum in a Triangle':
+                        result = min_path_sum_triangle(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Total Ways to Sum II':
+                        result = total_ways_sum_2(data_in)
                         ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
@@ -361,4 +373,59 @@ export async function main(ns) {
         return path.join('')
     }
 
+    function min_path_sum_triangle(data_in) {
+        // Make Triangles
+        const original_tri = data_in
+        const cost_tri = []
+        const tri_height = original_tri.length
+        // Fill empty Tri
+        for (let row in original_tri) {
+            cost_tri.push([])
+            for (let item in original_tri[row]) { cost_tri[row][item] = null }
+        }
+        // Backfill empty Tri with costs
+        original_tri.reverse()
+        cost_tri.reverse()
+        // Fill first row
+        for (let item in original_tri[0]) { cost_tri[0][item] = original_tri[0][item] }
+        for (let row = 0; row < original_tri.length; row++) {
+            for (let i = 0; i < original_tri[row].length; i++) {
+                if (i == original_tri[row].length - 1 && i >= 0) { continue }
+                let pair = [cost_tri[row][i], cost_tri[row][i + 1]]
+                let smallest = Math.min(...pair)
+                cost_tri[row + 1][i] = (original_tri[row + 1][i] + smallest)
+            }
+        }
+        // Re-orient the cost triangle
+        cost_tri.reverse()
+        return cost_tri[0][0]
+    }
+
+    function total_ways_sum_2(data_in) {
+        // Take data
+        const TARGET = data_in[0]
+        const NUMBERS = data_in[1].sort((a, b) => b - a)
+        // Some Voodoo shit
+        let result = check_sums(TARGET, NUMBERS)
+        // Give the result
+        return result
+
+        function check_sums(TARGET, NUMBERS, index = 0) {
+            // If the index value is the last one, if TARGET value is divisible by the value of the index, return 1, otherwise return 0
+            if (NUMBERS.length == index + 1) { if (TARGET % NUMBERS[index] == 0) { return 1 } else { return 0 } }
+            // Set result to 0
+            let result = 0
+            // Calculate how many of the current index value would fit in the target
+            let multiplier = Math.floor(TARGET / NUMBERS[index])
+            // Check each multiple
+            for (let i = multiplier; i >= 0; i--) {
+                // If it's an exact multiple, increment the result
+                if (TARGET == NUMBERS[index] * i) { result++ }
+                // Otherwise, run this function with the next index and add whatever is returned to the result total.
+                else { result += check_sums(TARGET - (NUMBERS[index] * i), NUMBERS, index + 1) }
+            }
+            // Return the final count for this index
+            return result
+        }
+    }
 }

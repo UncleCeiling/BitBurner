@@ -5,7 +5,7 @@
 [/] ["Find Largest Prime Factor"](#find-largest-prime-factor)  
 [ ] ["Subarray with Maximum Sum"](#subarray-with-maximum-sum)  
 [ ] ["Total Ways to Sum"](#total-ways-to-sum)  
-[ ] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
+[/] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
 [ ] ["Spiralize Matrix"](#spiralize-matrix)  
 [/] ["Array Jumping Game"](#array-jumping-game)  
 [/] ["Array Jumping Game II"](#array-jumping-game-ii)  
@@ -15,7 +15,7 @@
 [ ] ["Algorithmic Stock Trader II"](#algorithmic-stock-trader-ii)  
 [ ] ["Algorithmic Stock Trader III"](#algorithmic-stock-trader-iii)  
 [ ] ["Algorithmic Stock Trader IV"](#algorithmic-stock-trader-iv)  
-[ ] ["Minimum Path Sum in a Triangle"](#minimum-path-sum-in-a-triangle)  
+[/] ["Minimum Path Sum in a Triangle"](#minimum-path-sum-in-a-triangle)  
 [ ] ["Unique Paths in a Grid I"](#unique-paths-in-a-grid-i)  
 [ ] ["Unique Paths in a Grid II"](#unique-paths-in-a-grid-ii)  
 [/] ["Shortest Path in a Grid"](#shortest-path-in-a-grid)  
@@ -48,8 +48,6 @@ Namespace: `ns.codingcontract`
 
 ### "Find Largest Prime Factor"
 
-You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
-
 A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
 
 If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
@@ -67,11 +65,19 @@ ___
 
 ### "Total Ways to Sum II"
 
+How many different distinct ways can the number 96 be written as a sum of integers contained in the set:
+
+[4,5,6,8,14,15,17,19]?
+
+You may use each integer in the set zero or more times.
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
 ### "Spiralize Matrix"
 
 ### "Array Jumping Game"
-
-You are attempting to solve a Coding Contract. You have 1 tries remaining, after which the contract will self-destruct.
 
 You are given the following array of integers:
 
@@ -93,8 +99,6 @@ ___
 
 ### "Array Jumping Game II"
 
-You are attempting to solve a Coding Contract. You have 2 tries remaining, after which the contract will self-destruct.
-
 You are given the following array of integers:
 
 1,2,4,2,7,5,5,3,3,4,0,3,3,4,2,2,1,1
@@ -115,8 +119,6 @@ ___
 4. Repeat until win or highest index is 0
 
 ### "Merge Overlapping Intervals"
-
-You are attempting to solve a Coding Contract. You have 15 tries remaining, after which the contract will self-destruct.
 
 Given the following array of arrays of numbers representing a list of intervals, merge all overlapping intervals.
 
@@ -153,13 +155,42 @@ ___
 
 ### "Minimum Path Sum in a Triangle"
 
+Given a triangle, find the minimum path sum from top to bottom. In each step of the path, you may only move to adjacent numbers in the row below. The triangle is represented as a 2D array of numbers:
+
+[
+      [8],
+     [7,9],
+    [3,8,1],
+   [1,1,5,3],
+  [8,5,2,3,2]
+]
+
+Example: If you are given the following triangle:
+
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+
+The minimum path sum is 11 (2 -> 3 -> 5 -> 1).
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+
+___
+
+1. Make an empty Triangle
+2. From the bottom row,for each pair in the row, calculate the lowest possible cost by adding the lowest number to the value above it.
+3. Get the index of the lowest value for each row from the top down
+4. Translate indices to original triangle
+5. Output
+
 ### "Unique Paths in a Grid I"
 
 ### "Unique Paths in a Grid II"
 
 ### "Shortest Path in a Grid"
-
-You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
 
 You are located in the top-left corner of the following grid:
 
@@ -242,8 +273,6 @@ ___
 ### "Compression III: LZ Compression"
 
 ### "Encryption I: Caesar Cipher"
-
-You are attempting to solve a Coding Contract. You have 10 tries remaining, after which the contract will self-destruct.
 
 Caesar cipher is one of the simplest encryption technique. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet. For example, with a left shift of 3, D would be replaced by A, E would become B, and A would become X (because of rotation).
 
