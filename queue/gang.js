@@ -27,7 +27,7 @@ export async function main(ns) {
 
     function create_gang() {
         if (ns.gang.inGang()) { ns.print('WARN - Gang already made'); return true }
-        else if (get_karma() < 54000) { ns.tprint(`ERROR - Not enough karma (${get_karma()}/54000)`); return false }
+        else if (get_karma() < 54000) { ns.tprint(`ERROR - Not enough karma (${Math.floor(get_karma() / 540)}%)`); return false }
         else { ns.gang.createGang(GANG_FACTION); return true }
     }
 
@@ -86,7 +86,7 @@ export async function main(ns) {
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
         for (let member of get_members()) {
             await task(doing_war, member)
-            await ns.asleep(2100)
+            await ns.gang.nextUpdate()
         }
         recruiting()
         ns.tprint(`INFO\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}\nMembers: ${get_members()}`)

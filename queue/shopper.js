@@ -18,6 +18,5 @@ export async function main(ns) {
         while (ns.isRunning(path)) {
             await ns.asleep(1000)
         }
-        await ns.asleep(1000)
     }
 }
