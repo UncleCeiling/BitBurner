@@ -5,7 +5,7 @@ export async function main(ns) {
         'darkweb.js',
         'gang_equipment.js',
         'servers.js',
-        'hacknet.js'
+        'hacknet.js',
     ]
     const SCRIPT_LOC = 'scripts/'
     for (let script of SCRIPTS) {

@@ -24,6 +24,8 @@ export async function main(ns) {
         // While there are jobs in the queue
         while (queue.length > 0) {
 
+            // Clear the log
+            ns.clearLog()
             // Get list of miners
             let miners = get_miners()
             // If no miners, stop
@@ -31,7 +33,6 @@ export async function main(ns) {
 
             // For each miner, take a job.
             for (let miner of miners) {
-
                 // Pull first job and get details
                 if (queue.length <= 0) { continue }
                 let job = get_job_details(queue[0])

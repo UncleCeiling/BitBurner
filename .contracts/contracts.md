@@ -140,3 +140,25 @@ ___
 2. If it's a factor, check if it (and it's compliment) are primes.
 3. If they are, add them to a set.
 4. Check for the largest item in that set by the end.
+
+### Array Jumping Game (WIP - nwo - contract-41675-Netburners.cct)
+
+You are attempting to solve a Coding Contract. You have 1 tries remaining, after which the contract will self-destruct.
+
+You are given the following array of integers:
+
+1,9,8,0,3,10,0,5,10,0
+
+Each element in the array represents your MAXIMUM jump length at that position. This means that if you are at position i and your maximum jump length is n, you can jump to any position from i to i+n.
+
+Assuming you are initially positioned at the start of the array, determine whether you are able to reach the last index.
+
+Your answer should be submitted as 1 or 0, representing true and false respectively.
+
+If your solution is an empty string, you must leave the text box empty. Do not use "", '', or ``.
+___
+
+1. For each jump available to the left-most index, check all the jumps therein, starting from the longest jump.
+2. If any chain of jumps reaches the last index, flag and break.
+3. If all jumps fall short, flag.
+4. Check flag and output accordingly.
