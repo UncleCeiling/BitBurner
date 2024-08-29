@@ -2,7 +2,7 @@
 export async function main(ns) {
     ns.disableLog('ALL')
     // ns.tail()
-    if (!ns.gang.inGang()) { return }
+    if (!ns.gang.inGang()) { ns.tprint('ERROR - Not currently in a gang.'); return }
     const EQUIPMENT = { // List of possible equipment
         'weapons': [
             "Baseball Bat",
@@ -48,16 +48,19 @@ export async function main(ns) {
         ]
     }
     let members = ns.gang.getMemberNames()
-
-    for (let member of members)
+    let bought = 0
+    for (let member of members) {
         for (let group of Object.keys(EQUIPMENT)) {
             for (let item of EQUIPMENT[group]) {
                 let budget = ns.getPlayer().money
                 let cost = ns.gang.getEquipmentCost(item)
                 if (cost > budget) { continue }
                 else {
-                    if (ns.gang.purchaseEquipment(member, item)) { ns.print(`SUCCESS - Bought ${item} for ${member}`) }
+                    if (ns.gang.purchaseEquipment(member, item)) { ns.print(`SUCCESS - Bought ${item} for ${member}.`); bought++ }
                 }
             }
         }
+    }
+    if (bought > 0) { ns.tprint(`SUCCESS - Bought ${bought} pieces of equipment across ${members.length} members.`) }
+    else { ns.tprint('INFO - Nothing bought.') }
 }

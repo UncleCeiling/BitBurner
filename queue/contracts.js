@@ -9,6 +9,7 @@ export async function main(ns) {
         'Merge Overlapping Intervals',
         'Minimum Path Sum in a Triangle',
         'Shortest Path in a Grid',
+        'Sanitize Parentheses in Expression',
         'Proper 2-Coloring of a Graph',
         'Compression I: RLE Compression',
         'Encryption I: Caesar Cipher',
@@ -74,6 +75,11 @@ export async function main(ns) {
 
                     case 'Compression I: RLE Compression':
                         result = compression_1(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
+                    case 'Sanitize Parentheses in Expression':
+                        result = sanitize_parentheses(data_in)
                         ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
@@ -490,4 +496,64 @@ export async function main(ns) {
         }
         return answer
     }
+
+    function sanitize_parentheses(data_in) {
+        // Take data and init the variables
+        const INPUT = data_in
+        let results = []
+        if (check_valid(INPUT)) { return [INPUT] }
+        // Prime the 'current' variable
+        let total_chars = INPUT.length
+        let parenthesis_chars = INPUT.match(/\(|\)/g).length
+        let non_parenthesis_chars = total_chars - parenthesis_chars
+        let variations = new Set()
+        variations.add(INPUT)
+        for (let i = total_chars; i > 0; i--) {
+            let generated = new Set()
+            if (i == non_parenthesis_chars || i <= 2) { return [INPUT.replace(/\(|\)/g, '')] }
+            for (let variant of variations) {
+                variations.delete(variant)
+                let temp = gen_variants(variant)
+                for (let thing of temp) { generated.add(thing) }
+            }
+            for (let item of generated) {
+                if (check_valid(item)) { results.push(item) }
+                else { variations.add(item) }
+            }
+            if (results.length > 0) { return results }
+        }
+
+        function gen_variants(string) {
+            // Create variable to store output 
+            let variations = []
+            // Generate a variant for each possible character
+            for (let char in string) {
+                // Skip stuff that isn't '(' or ')'
+                if (!string[char].includes('(') && !string[char].includes(')')) { continue }
+                // Do some array voodoo to remove the character
+                let array = string.split('')
+                array.splice(char, 1)
+                let variant = array.join('')
+                // Push the resulting variant to the output (joined as a string)
+                variations.push(variant)
+            }
+            return variations
+        }
+
+        function check_valid(string) {
+            // Start a counter for unclosed parenthesis
+            let unclosed = 0
+            // Work through each character from the start
+            for (let char of string) {
+                // +1 for every Parenthesis opened, -1 for every closure.
+                if (char == '(') { unclosed++ }
+                else if (char == ')') { unclosed-- }
+                // If we ever go negative, it means we've closed a non-existant Parenthesis, so automatic fail.
+                if (unclosed < 0) { return false }
+            }
+            // If no Parenthesis are left unclosed, output true
+            if (unclosed == 0) { return true } else { return false }
+        }
+    }
+
 }
