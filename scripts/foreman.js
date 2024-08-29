@@ -69,9 +69,9 @@ export async function main(ns) {
                 let message = queue.join(' | ')
                 ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
             }
-            await ns.asleep(DELAY * 1000)
+            await ns.asleep(((DELAY - 1) * 1000 * Math.random) + 1)
         }
-        await ns.asleep(DELAY * 1000)
+        await ns.asleep(((DELAY - 1) * 1000 * Math.random) + 1)
     }
 
     function run_job(job, miner) {
