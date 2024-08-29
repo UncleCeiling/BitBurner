@@ -21,7 +21,7 @@ export async function main(ns) {
             history['spent'] += cost
             return true
         } else {
-            ns.print(`ERROR - Not enough cash to buy a node ($${cost.toLocaleString()})`)
+            ns.print(`WARN - Not enough cash to buy a node ($${cost.toLocaleString()})`)
             return false
         }
     }
@@ -38,11 +38,11 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`ERROR - Buying level on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`FAIL - Buying level on node ${node} failed. ($${cost.toLocaleString()})`)
                 return false
             }
         } else {
-            ns.print(`ERROR - Not enough cash to buy level on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`WARN - Not enough cash to buy level on node ${node}. ($${cost.toLocaleString()})`)
             return false
         }
     }
@@ -59,11 +59,11 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`ERROR - Buying RAM on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`FAIL - Buying RAM on node ${node} failed. ($${cost.toLocaleString()})`)
                 return false
             }
         } else {
-            ns.print(`ERROR - Not enough cash to buy RAM on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`WARN - Not enough cash to buy RAM on node ${node}. ($${cost.toLocaleString()})`)
             return false
         }
     }
@@ -80,17 +80,17 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`ERROR - Buying core on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`FAIL - Buying core on node ${node} failed. ($${cost.toLocaleString()})`)
                 return false
             }
         } else {
-            ns.print(`ERROR - Not enough cash to buy core on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`WARN - Not enough cash to buy core on node ${node}. ($${cost.toLocaleString()})`)
             return false
         }
     }
 
     function check_last_node_is_full() {
-        let last_node = get_num_nodes()
+        let last_node = get_num_nodes() - 1
         let node_stats = ns.hacknet.getNodeStats(last_node)
         if (node_stats.levels == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
         else { return false }
@@ -110,28 +110,6 @@ export async function main(ns) {
         buy_node()
         num_nodes = get_num_nodes()
     }
-
-    // Make or remove flag
-    if (ns.fileExists('SQLInject.exe')) {
-
-        // Get node details
-        let node_details = []
-        for (let node = 0; node < num_nodes; node++) {
-            node_details.push(ns.hacknet.getNodeStats(node))
-        }
-
-        // Check details 
-        let no_go = true
-        for (let node of node_details) {
-            if (node['level'] < max_levels || node['ram'] < max_ram || node['cores'] < max_cores || num_nodes < max_nodes) { no_go = false }
-        }
-
-        // If all nodes fully upgraded, make the flag
-        if (no_go) { ns.write('flags/hacknet.flag.txt', 'Hacknet halted'); return }
-        else { ns.rm('flags/hacknet.flag.txt') }
-
-        // Else remove the flag
-    } else { ns.rm('flags/hacknet.flag.txt') }
 
     // For each node
     for (let node = 0; node < num_nodes; node++) {

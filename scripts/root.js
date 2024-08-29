@@ -7,7 +7,7 @@ export async function main(ns) {
     let req_level = ns.getServerRequiredHackingLevel(target)
     let player_level = ns.getHackingLevel()
     if (req_level > player_level) {
-        ns.print(`ERROR - Hacking level not high enough to hack ${target} - ${player_level}/${req_level}`)
+        ns.print(`FAIL - Hacking level not high enough to hack ${target} - ${player_level}/${req_level}`)
     } else {
         //Check ports
         if (ns.fileExists('BruteSSH.exe')) {

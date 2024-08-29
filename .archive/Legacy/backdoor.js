@@ -14,6 +14,6 @@ export async function main(ns) {
         await ns.singularity.installBackdoor()
         ns.tprint('SUCCESS - Installed Backdoor on ' + target)
     } else {
-        ns.tprint('ERROR - No adjacent backdoor to ' + target)
+        ns.tprint('FAIL - No adjacent backdoor to ' + target)
     }
 }

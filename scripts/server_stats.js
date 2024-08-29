@@ -14,5 +14,6 @@ export async function main(ns) {
     }
     ns.rm('server_stats.txt')
     ns.write('server_stats.txt', data.join('\n'), 'w')
+    ns.tprint(`SUCCESS - Wrote ${data.length} lines to 'server_stats.txt'`)
     ns.print('\n' + data.join('\n'))
 }

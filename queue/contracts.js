@@ -85,7 +85,7 @@ export async function main(ns) {
                 if (reward) {
                     ns.tprint(`SUCCESS - ${contract} solved on ${server}: ${reward}`)
                 } else {
-                    ns.tprint(`ERROR - Failed to solve ${contract} on ${server} with result: ${result}`)
+                    ns.tprint(`FAIL - Failed to solve ${contract} on ${server} with result: ${result}`)
                 }
             }
         }

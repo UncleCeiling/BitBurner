@@ -12,7 +12,7 @@ export async function main(ns) {
         buyRam *= 2
         // If we somehow top out then something is very wrong
         if (buyRam > maxRam) {
-            ns.tprint(`ERROR - minRam too large: reduce size of mining scripts`)
+            ns.tprint(`ERROR - RAM too large: Reduce size of mining scripts`)
             break
         }
     }

@@ -46,25 +46,29 @@ export async function main(ns) {
 
 
     // Make list of minable servers
-    let toMine = []
+    let mines = []
+    let miners = []
     for (let server of serverDetails) {
-        // Skip 'home' and servers with no money
-        if (server['hostname'] == 'home') { continue }
-        if (server['moneyMax'] == 0) { continue }
-        // Skip unrooted and custom servers
         let rooted = server['hasAdminRights']
         let isCustom = server['hostname'].includes('custom-')
-        if (!rooted || isCustom) { continue }
-        // Skip servers without enough RAM to mine
         let currentRam = (ns.getServerMaxRam(server['hostname']) - ns.getServerUsedRam(server['hostname']))
         let scriptRam = Math.max(ns.getScriptRam('scripts/hack.js', 'home'), ns.getScriptRam('scripts/grow.js', 'home'), ns.getScriptRam('scripts/weaken.js', 'home'))
-        if (currentRam < scriptRam) { continue }
-        // Add what is left to the list
-        toMine.push(server['hostname'])
+        let miner = true
+        let mine = true
+        if (!rooted || isCustom) { continue } // Skip unrooted and Custom servers
+        if (currentRam < scriptRam || server['hostname'] == 'home') { miner = false } // Can't be a miner
+        if (server['moneyMax'] == 0) { mine = false }
+        if (mine) { mines.push(server['hostname']) }
+        if (miner) { miners.push(server['hostname']) }
+
     }
 
     // Create/update the list of mine-able servers
     ns.rm('mines.txt', 'home')
-    ns.write('mines.txt', toMine.join('\n'), 'w')
-    ns.print(`INFO - Updated 'mines.txt' with ${toMine.length} entries.`)
+    ns.write('mines.txt', mines.join('\n'), 'w')
+    ns.print(`INFO - Updated 'mines.txt' with ${mines.length} entries.`)
+    // Create/update the list of miner servers
+    ns.rm('miners.txt', 'home')
+    ns.write('miners.txt', miners.join('\n'), 'w')
+    ns.print(`INFO - Updated 'miners.txt' with ${miners.length} entries.`)
 }

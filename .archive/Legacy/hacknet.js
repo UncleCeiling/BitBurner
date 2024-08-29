@@ -55,22 +55,22 @@ export async function main(ns) {
             if (best[0] == 'a core') {
                 if (ns.hacknet.upgradeCore(coreDetails[1], 1)) {
                 } else {
-                    ns.tprint('ERROR - Failed to upgrade Cores')
+                    ns.tprint('FAIL - Failed to upgrade Cores')
                 }
             } else if (best[0] == 'some RAM') {
                 if (ns.hacknet.upgradeRam(ramDetails[1], 1)) {
                 } else {
-                    ns.tprint('ERROR - Failed to upgrade RAM')
+                    ns.tprint('FAIL - Failed to upgrade RAM')
                 }
             } else if (best[0] == 'a level') {
                 if (ns.hacknet.upgradeLevel(levelDetails[1], 1)) {
                 } else {
-                    ns.tprint('ERROR - Failed to upgrade level')
+                    ns.tprint('FAIL - Failed to upgrade level')
                 }
             } else {
                 if (ns.hacknet.purchaseNode() !== -1) {
                 } else {
-                    ns.tprint('ERROR - Failed to purchase Node')
+                    ns.tprint('FAIL - Failed to purchase Node')
                 }
             }
             ns.tprint('SUCCESS - Bought ' + best[0] + ' on ' + best[1] + ' for $' + Math.floor(best[2]))
@@ -78,7 +78,7 @@ export async function main(ns) {
         await ns.sleep(1)
     }
     if (errorOut >= 100) {
-        ns.tprint('ERROR - Not enough funds to continue Hacknet upgrades.')
+        ns.tprint('WARN - Not enough funds to continue Hacknet upgrades.')
     }
     ns.tprint('INFO - Finished upgrading.')
     ns.spawn('explore.js')

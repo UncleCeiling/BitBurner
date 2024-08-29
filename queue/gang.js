@@ -1,6 +1,5 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    // if (ns.args[0] != 'live') { ns.tprint('ERROR - Gang function being written'); return }
     ns.disableLog('ALL')
     // ns.tail()
     const GANG_FACTION = "Slum Snakes" // My Chosen Faction
@@ -27,7 +26,7 @@ export async function main(ns) {
 
     function create_gang() {
         if (ns.gang.inGang()) { ns.print('WARN - Gang already made'); return true }
-        else if (get_karma() < 54000) { ns.tprint(`ERROR - Not enough karma (${Math.floor(get_karma() / 540)}%)`); return false }
+        else if (get_karma() < 54000) { ns.tprint(`WARN - Not enough karma (${Math.floor(get_karma() / 540)}%)`); return false }
         else { ns.gang.createGang(GANG_FACTION); return true }
     }
 

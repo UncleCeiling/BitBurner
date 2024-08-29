@@ -36,7 +36,7 @@ export async function main(ns) {
             }
             ns.tprint('SUCCESS - Servers upgraded to ' + nextRam + 'GB each')
         } else {
-            ns.tprint('ERROR - Not enough cash to upgrade servers - need $' + (ns.getPurchasedServerCost(nextRam * 2) * 25))
+            ns.tprint('WARN - Not enough cash to upgrade servers - need $' + (ns.getPurchasedServerCost(nextRam * 2) * 25))
         }
     } else {
         nextCost = (ns.getPurchasedServerCost(1) * 25)
@@ -47,7 +47,7 @@ export async function main(ns) {
             }
             ns.tprint('SUCCESS - Bought servers')
         } else {
-            ns.tprint('ERROR - Not enough cash to buy servers')
+            ns.tprint('WARN - Not enough cash to buy servers')
         }
     }
     ns.spawn('darkweb.js')

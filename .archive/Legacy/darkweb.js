@@ -10,7 +10,7 @@ export async function main(ns) {
             ns.singularity.purchaseTor()
             ns.tprint('SUCCESS - TOR router purchased')
         } else {
-            ns.tprint('ERROR - Not enough Cash to purchase TOR router')
+            ns.tprint('WARN - Not enough Cash to purchase TOR router')
         }
     }
     var min = 0
@@ -39,7 +39,7 @@ export async function main(ns) {
         } else if (Math.min(...programCosts) >= 1000000000000) {
             ns.tprint('SUCCESS - All Darkweb Products owned.')
         } else {
-            ns.tprint('ERROR - Not enough funds to purchase ' + buyChoice + ' - Need $' + Math.min(...programCosts))
+            ns.tprint('WARN - Not enough funds to purchase ' + buyChoice + ' - Need $' + Math.min(...programCosts))
         }
     }
     ns.tprint('INFO - Closing Darkweb tabs.')

@@ -10,8 +10,7 @@ export async function main(ns) {
             ns.singularity.purchaseTor()
             ns.tprint('SUCCESS - TOR router purchased')
         } else { // Give up if can't afford TOR router
-            ns.tprint('ERROR - Not enough Cash to purchase TOR router')
-            ns.rm('flags/darkweb.flag.txt')
+            ns.tprint('WARN - Not enough Cash to purchase TOR router')
             return
         }
     }
@@ -41,13 +40,10 @@ export async function main(ns) {
             ns.tprint(`SUCCESS - Purchased ${buyChoice}`) // Report the success
         } else if (min == Infinity) { // If all products are owned
             ns.tprint('SUCCESS - All Darkweb products are owned.') // Say so
-            ns.write('flags/darkweb.flag.txt', 'All Darkweb products are owned.', 'w') // Create Flag
-            ns.run('tools/blind_rooter.js', 1)
             return
         } else {
-            ns.tprint(`ERROR - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
+            ns.tprint(`WARN - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
         }
-        ns.rm('flags/darkweb.flag.txt')
         await ns.asleep(10)
     }
 }

@@ -128,15 +128,15 @@ export async function main(ns) {
 
     function get_miners() {
         // Make list of miners (smallest to largest)
-        let miners = new Set()
+        let miners = ns.read('miners.txt').split('\n')
         // Get list of purchased servers
         let custom = ns.getPurchasedServers()
         // If HOST has enough RAM, add it to the list
-        if (ns.getServerMaxRam(HOST) >= 64) { miners.add(HOST) }
+        if (ns.getServerMaxRam(HOST) >= 64) { miners.push(HOST) }
         // Add each purchased server if any
         if (custom.length > 0) {
             for (let resource of custom) {
-                miners.add(resource)
+                miners.push(resource)
             }
         }
         ns.print(`INFO - ${miners.size} Miners in pool`)
