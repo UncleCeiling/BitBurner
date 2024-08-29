@@ -1,7 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-
     // Get Budget
     function get_budget() { return ns.getServerMoneyAvailable('home') }
 
@@ -15,7 +14,6 @@ export async function main(ns) {
     function buy_node() {
         let budget = get_budget()
         let cost = get_node_cost()
-        if (num_nodes >= max_nodes) { return false }
         if (budget > cost) {
             ns.hacknet.purchaseNode()
             num_nodes = get_num_nodes()
@@ -90,9 +88,16 @@ export async function main(ns) {
             return false
         }
     }
+
+    function check_last_node_is_full() {
+        let last_node = get_num_nodes()
+        let node_stats = ns.hacknet.getNodeStats(last_node)
+        if (node_stats.levels == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
+        else { return false }
+    }
+
     // Variables
     let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'spent': 0 }
-    const max_nodes = 21
     const max_levels = 200
     const max_ram = 64
     const max_cores = 16
@@ -136,8 +141,7 @@ export async function main(ns) {
     }
 
     // If SQL Inject doesn't exist, buy nodes
-    while (get_budget() > get_node_cost()) {
-        if (get_num_nodes() >= max_nodes) { break }
+    while (get_budget() > get_node_cost() && check_last_node_is_full()) {
         buy_node()
     }
 
