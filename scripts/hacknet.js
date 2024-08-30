@@ -92,7 +92,7 @@ export async function main(ns) {
     function check_last_node_is_full() {
         let last_node = get_num_nodes() - 1
         let node_stats = ns.hacknet.getNodeStats(last_node)
-        if (node_stats.levels == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
+        if (node_stats.level == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
         else { return false }
     }
 
@@ -110,6 +110,9 @@ export async function main(ns) {
         buy_node()
         num_nodes = get_num_nodes()
     }
+    // Buy nodes
+    ns.print(get_budget() > get_node_cost(), check_last_node_is_full())
+    while (get_budget() > get_node_cost() && check_last_node_is_full()) { buy_node() }
 
     // For each node
     for (let node = 0; node < num_nodes; node++) {
@@ -118,10 +121,6 @@ export async function main(ns) {
         while (buy_level(node)) { continue }
     }
 
-    // If SQL Inject doesn't exist, buy nodes
-    while (get_budget() > get_node_cost() && check_last_node_is_full()) {
-        buy_node()
-    }
 
     // Check the history and report what we spent
     if (history.spent > 0) {

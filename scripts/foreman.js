@@ -4,7 +4,7 @@ export async function main(ns) {
     ns.disableLog("ALL")
     // Set Constants
     const HOST = 'home'
-    const DELAY = 10
+    const DELAY = 1
     const PROCESSES = 4
     // Create Working variable
     let working = {}
@@ -14,23 +14,19 @@ export async function main(ns) {
 
     // Repeat ad-nauseam
     while (true) {
-        await ns.asleep(100)
+        await ns.asleep(200)
         // Clean working list of any 
         working = clean_working_list(working)
         // Get list of jobs as queue
         let queue = get_queue()
         if (queue[0] == '') { continue }
-
         // While there are jobs in the queue
         while (queue.length > 0) {
-            await ns.asleep(100)
-            // Clear the log
-            ns.clearLog()
+            await ns.asleep(200)
             // Get list of miners
             let miners = get_miners()
             // If no miners, stop
             if (miners.size <= 0) { continue }
-
             // For each miner, take a job.
             for (let miner of miners) {
                 // Pull first job and get details
@@ -61,7 +57,7 @@ export async function main(ns) {
                     if (working[job.host].end < end_time) { working[job.host].end = end_time }
                 } else { working[job.host] = { 'threads': job.threads, 'end': Date.now() + job.time } }
                 // Run the job
-                run_job(job, miner)
+                await run_job(job, miner)
             }
 
             // If still stuff in Queue, tell us
@@ -69,15 +65,16 @@ export async function main(ns) {
                 let message = queue.join(' | ')
                 ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
             }
-            await ns.asleep(((DELAY - 1) * 1000 * Math.random()) + 1)
+            await ns.asleep((DELAY * 1000) + 1)
         }
-        await ns.asleep(((DELAY - 1) * 1000 * Math.random()) + 1)
+        await ns.asleep((DELAY * 1000) + 1)
     }
 
-    function run_job(job, miner) {
-        ns.print(`SUCCESS - ${miner} running ${job.script} on ${job.host} (t=${job.threads})`)
-        ns.scp(job.script, HOST, miner)
-        ns.exec(job.script, miner, job.threads, job.host)
+    async function run_job(job, miner) {
+        ns.scp(job.script, miner, HOST)
+        let success = await ns.exec(job.script, miner, job.threads, job.host)
+        if (success > 0) { ns.print(`SUCCESS - ${miner} is running ${job.script} against ${job.host} (t=${job.threads}).`) }
+        else { ns.print(`FAIL - Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).`) }
     }
 
     function get_weaken_threads(server) {
@@ -139,7 +136,9 @@ export async function main(ns) {
                 miners.push(resource)
             }
         }
-        ns.print(`INFO - ${miners.size} Miners in pool`)
+        // Clear the log
+        ns.clearLog()
+        ns.print(`INFO - ${miners.length} Miners in pool`)
         return miners
     }
 

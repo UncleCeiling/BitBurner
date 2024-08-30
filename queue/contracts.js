@@ -39,7 +39,7 @@ export async function main(ns) {
                         break
 
                     case 'Proper 2-Coloring of a Graph':
-                        result = proper_2_colour(data_in)
+                        result = await proper_2_colour(data_in)
                         ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
@@ -87,12 +87,29 @@ export async function main(ns) {
                         ns.print('WARN - How did you get here?')
                         break
                 }
-                let reward = ns.codingcontract.attempt(result, contract, server)
+                let reward = false
+                let tries = ns.codingcontract.getNumTriesRemaining(contract, server)
+                const exceptions = ['Array Jumping Game']
+                if (tries <= 1 && !exceptions.includes(type)) {
+                    ns.tprint(`ERROR - Not enough tries (${tries}) to submit ${contract} on ${server}. (${type}).`)
+                    ns.tprint(`ERROR - Input:`)
+                    ns.tprint(data_in)
+                    ns.tprint('ERROR - Result:')
+                    ns.tprint(result)
+                    continue
+                }
+                else { reward = ns.codingcontract.attempt(result, contract, server) }
                 if (reward) {
                     ns.tprint(`SUCCESS - ${contract} solved on ${server}: ${reward}`)
                 } else {
-                    ns.tprint(`FAIL - Failed to solve ${contract} on ${server} with result: ${result}`)
+                    ns.tprint(`FAIL - Failed to solve ${contract} on ${server}.`)
+
+                    ns.tprint(`FAIL - Input:`)
+                    ns.tprint(data_in)
+                    ns.tprint('FAIL - Result:')
+                    ns.tprint(result)
                 }
+                await ns.asleep(200)
             }
         }
     }
@@ -216,7 +233,7 @@ export async function main(ns) {
 
         // Find the largest of the primes
         let result = Math.max(...prime_factors)
-        ns.tprint(result)
+        // ns.tprint(result)
         // Hand in your work
         return result
 
@@ -229,14 +246,17 @@ export async function main(ns) {
         }
     }
 
-    function proper_2_colour(data_in) {
+    async function proper_2_colour(data_in) {
+        // Sort edges small-to-large in both axes
+        data_in[1].forEach(edge => edge.sort((a, b) => a - b))
+        data_in[1].sort((a, b) => a[0] - b[0])
         // Take data
         let num_vertices = data_in[0]
-        let edges = data_in[1]
+        let edges = Array.from(data_in[1])
+        // If no edges, output with success
+        if (edges.length < 1) { for (let i = 0; i < num_vertices; i++) { results[i] = 0 } }
 
-        // Sort edges small-to-large in both axes
-        edges.forEach(edge => edge.sort((a, b) => a - b))
-        edges.sort((a, b) => a[0] - b[0])
+        ns.tprint(edges)
 
         // Build empty results array
         let results = []
@@ -252,42 +272,47 @@ export async function main(ns) {
             let comparison = []
             if (queue.length > 0) { comparison = queue.shift() }
             else if (edges.length > 0) { comparison = edges.shift() }
-
             // Split the comparison
             let c0 = comparison[0]
             let c1 = comparison[1]
+            ns.tprint(c0, ' | ', c1)
+            // Start the first result as 0
+            if (results[0] == null) { results[0] = 0 }
 
             // If first node is not coloured
             if (results[c0] == null) {
                 // If second node is also not coloured
                 if (results[c1] == null) {
-                    // Set colours
-                    results[c0] = 0 // Set colour to 0
-                    results[c1] = 1 // Set colour to 1
-                    // Add freshly coloured nodes to the queue
-                    queue.push(c0)
-                    queue.push(c1)
+                    if (edges.filter((x) => x[0] == c0 || x[1] == c0).length == 0) { results[c0] = 0 }
+                    if (edges.filter((x) => x[0] == c1 || x[1] == c1).length == 0) { results[c1] = 1 }
+                    edges.push([c0, c1])
+                    // Add nodes to the queue
+                    queue.push(...edges.filter((x) => x[0] == c0))
+                    queue.push(...edges.filter((x) => x[0] == c1))
                 } else {
                     // First node is coloured, but second isn't
                     results[c0] = (results[c1] + 1) % 2 // Set colour of empty first node to opposite of the coloured second node
-                    queue.push(c0) // Add freshly coloured nodes to the queue
+                    queue.push(...edges.filter((x) => x[0] == c0)) // Add freshly coloured nodes to the queue
                 }
                 // First node is coloured
             } else {
                 // If second node isn't coloured
                 if (results[c1] == null) {
                     results[c1] = (results[c0] + 1) % 2 // Set colour of empty second node to opposite of the coloured first node
-                    queue.push(c1) // Add freshly coloured nodes to the queue
+                    queue.push(...edges.filter((x) => x[0] == c1)) // Add freshly coloured nodes to the queue
                 } else {
                     // If both nodes are the same colour, set the impossible flag and break.
-                    if (results[c0] == results[c1]) {
+                    if (results[c0] === results[c1]) {
                         impossible = true
                         break
                     }
                 }
             }
+            ns.tprint(results)
+            await ns.asleep(10)
         }
         if (impossible) { results = [] }
+        if (results.includes(null)) { for (let item in results) { if (results[item] === null) { results[item] = 0 } } }
         return results
     }
 

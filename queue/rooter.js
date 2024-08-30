@@ -67,8 +67,10 @@ export async function main(ns) {
     ns.rm('mines.txt', 'home')
     ns.write('mines.txt', mines.join('\n'), 'w')
     ns.print(`INFO - Updated 'mines.txt' with ${mines.length} entries.`)
+    ns.print(mines)
     // Create/update the list of miner servers
     ns.rm('miners.txt', 'home')
     ns.write('miners.txt', miners.join('\n'), 'w')
     ns.print(`INFO - Updated 'miners.txt' with ${miners.length} entries.`)
+    ns.print(miners)
 }
