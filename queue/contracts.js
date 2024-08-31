@@ -83,6 +83,11 @@ export async function main(ns) {
                         ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
+                    case 'Subarray with Maximum Sum':
+                        result = max_sum_subarray(data_in)
+                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        break
+
                     default:
                         ns.print('WARN - How did you get here?')
                         break
@@ -590,4 +595,34 @@ export async function main(ns) {
         }
     }
 
+    function max_sum_subarray(data_in) {
+        // Init Array
+        const ARRAY = Array.from(data_in)
+        // Get starting sum and array
+        var max_sum = sum_array(ARRAY)
+        var max_sub_array = Array.from(ARRAY)
+        // ns.print('0,0 | ',max_sum, ' | ',max_sub_array)
+        for (var i = 1; i < ARRAY.length; i++) {
+            for (var j = 0; j < i; j++) {
+                var current_array = Array.from(ARRAY).slice(j, ARRAY.length - i + j)
+                var current_sum = sum_array(current_array)
+                // ns.print(i,',',j,' | ',current_sum, ' | ', current_array )
+                if (max_sum < current_sum) {
+                    new_max_sum(current_sum)
+                    new_max_array(current_array)
+                }
+            }
+        }
+        // ns.print(max_sum,' | ',max_sub_array)
+        return max_sum
+        // Update values
+        function new_max_sum(sum_in) { max_sum = sum_in }
+        function new_max_array(array_in) { max_sub_array = array_in }
+        // Calculate the sum of the array
+        function sum_array(array_in) {
+            let sum = 0
+            for (let item of array_in) { sum = sum + item }
+            return sum
+        }
+    }
 }

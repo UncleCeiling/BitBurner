@@ -3,7 +3,7 @@
 ## ToDo List
 
 [/] ["Find Largest Prime Factor"](#find-largest-prime-factor)  
-[ ] ["Subarray with Maximum Sum"](#subarray-with-maximum-sum)  
+[/] ["Subarray with Maximum Sum"](#subarray-with-maximum-sum)  
 [ ] ["Total Ways to Sum"](#total-ways-to-sum)  
 [/] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
 [/] ["Spiralize Matrix"](#spiralize-matrix)  
@@ -58,6 +58,15 @@ ___
 4. Check for the largest item in that set by the end.
 
 ### "Subarray with Maximum Sum"
+
+Given the following integer array, find the contiguous subarray (containing at least one number) which has the largest sum and return that sum. 'Sum' refers to the sum of all the numbers in the subarray.
+8,-3,-4,-1,7,-4,6,-10,-6,5,0,-1,6,1,2,3,8,-1,8,9,-5,8,-2,8,-7,7,-7,8,4,-6,9,6
+
+___
+
+1. For each possible subarray:
+2. Find the sum
+3. Compare to current Max sum and store array if larger
 
 ### "Total Ways to Sum"
 
