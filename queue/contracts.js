@@ -219,6 +219,8 @@ export async function main(ns) {
         let factors = new Set()
         let prime_factors = new Set()
 
+        if (is_prime(target)) { return target }
+
         // For each possible factor between 2 and sqrt of target, check if it's a factor
         for (let i = 2; i <= Math.sqrt(target); i++) {
             if (target % i === 0) {
