@@ -2,6 +2,7 @@
 export async function main(ns) {
     const SOLUTIONS = [
         'Find Largest Prime Factor',
+        'Subarray with Maximum Sum',
         'Total Ways to Sum II',
         'Spiralize Matrix',
         'Array Jumping Game',
