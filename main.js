@@ -12,6 +12,7 @@ export async function main(ns) {
     // Loop forever
     await ns.asleep(1000)
     while (true) {
+        ns.cls()
         // Fetch scripts and flag from queue
         let scripts = ns.ls('home', queue_loc)
         ns.print(`INFO - Found ${scripts.length} scripts.`)

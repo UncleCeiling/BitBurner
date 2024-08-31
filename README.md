@@ -4,18 +4,19 @@ This is my BitBurner repo!
 
 ## 🗺️ Map
 
-> 📦BitBurner (this repo)  
+> 📦 BitBurner (this repo)  
 > ┣ 📂.archive  
 > ┣ 📂_Development  
 > ┣ 📂_Lore  
-> ┣ 📂queue  
-> ┣ 📂scripts  
-> ┣ 📂tools  
-> ┣ 📜boot.js  
-> ┣ 📜devmenu.js  
-> ┣ 📜main.js  
-> ┣ 📍README.md  
-> ┗ 📜template.js  
+> ┣ 📂 demo  
+> ┣ 📂 queue  
+> ┣ 📂 scripts  
+> ┣ 📂 tools  
+> ┣ 📜 boot.js  
+> ┣ 📜 devmenu.js  
+> ┣ 📜 main.js  
+> ┣ 📍 README.md  
+> ┗ 📜 template.js  
 
 ## ✅ ToDo
 
