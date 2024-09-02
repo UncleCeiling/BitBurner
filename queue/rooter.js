@@ -56,7 +56,7 @@ export async function main(ns) {
         let miner = true
         let mine = true
         if (!rooted || isCustom) { continue } // Skip unrooted and Custom servers
-        if (currentRam < scriptRam || server['hostname'] == 'home') { miner = false } // Can't be a miner
+        if (currentRam < scriptRam || server['hostname'] == 'home' || server['hostname'] == 'darkweb') { miner = false } // Can't be a miner
         if (server['moneyMax'] == 0) { mine = false }
         if (mine) { mines.push(server['hostname']) }
         if (miner) { miners.push(server['hostname']) }

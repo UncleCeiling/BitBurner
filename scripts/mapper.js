@@ -4,7 +4,7 @@ export async function main(ns) {
     var servers = new Set()
     function print_server(server, depth) {
         let current = ns.getServer(server)
-        if (server.includes("custom-")) { return }
+        if (server.includes("custom-") || server.includes("darkweb")) { return }
         depth++
         let rooted = ''
         let backdoor = ''
