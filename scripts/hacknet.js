@@ -110,9 +110,6 @@ export async function main(ns) {
         buy_node()
         num_nodes = get_num_nodes()
     }
-    // Buy nodes
-    ns.print(get_budget() > get_node_cost(), check_last_node_is_full())
-    while (get_budget() > get_node_cost() && check_last_node_is_full()) { buy_node() }
 
     // For each node
     for (let node = 0; node < num_nodes; node++) {
@@ -121,6 +118,8 @@ export async function main(ns) {
         while (buy_level(node)) { continue }
     }
 
+    // Buy nodes
+    while (get_budget() > get_node_cost()) { buy_node() }
 
     // Check the history and report what we spent
     if (history.spent > 0) {

@@ -68,6 +68,7 @@ export async function main(ns) {
             await ns.asleep((DELAY * 1000) + 1)
         }
         await ns.asleep((DELAY * 1000) + 1)
+        return
     }
 
     async function run_job(job, miner) {
