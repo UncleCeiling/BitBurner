@@ -40,7 +40,8 @@ export async function main(ns) {
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner)
                 if (miner == HOST) { free_ram -= 32 }
                 // If not enough RAM, skip
-                if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
+                // if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
+                if (free_ram < job.ram) { continue }
 
                 // Find max threads
                 let max_threads = Math.floor(free_ram / job.ram)
@@ -63,7 +64,7 @@ export async function main(ns) {
             // If still stuff in Queue, tell us
             if (queue.length > 0) {
                 let message = queue.join(' | ')
-                ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
+                // ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
             }
             await ns.asleep((DELAY * 1000) + 1)
         }
@@ -137,16 +138,16 @@ export async function main(ns) {
                 miners.push(resource)
             }
         }
-        // Clear the log
-        ns.clearLog()
-        ns.print(`INFO - ${miners.length} Miners in pool`)
+        // // Clear the log
+        // ns.clearLog()
+        // ns.print(`INFO - ${miners.length} Miners in pool`)
         return miners
     }
 
     function get_queue() {
         // Create Queue from Mines.txt
         let mines = ns.read('mines.txt').split('\n')
-        ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
+        // ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
 
         // Compare to working list
         let queue = []
@@ -154,7 +155,7 @@ export async function main(ns) {
 
         // If empty, return empty list
         if (queue.length == 0) { return [] }
-        ns.print(`INFO - ${queue.length} items in Queue`)
+        // ns.print(`INFO - ${queue.length} items in Queue`)
 
         return queue
     }
@@ -163,10 +164,10 @@ export async function main(ns) {
         // If too many things running, skip this server
         if (ns.ps(miner).length >= PROCESSES) {
             if (miner != HOST) {
-                ns.print(`WARN - ${miner} - Too many processes (${PROCESSES}).`)
+                // ns.print(`WARN - ${miner} - Too many processes (${PROCESSES}).`)
                 return true
             } else if (ns.ps(miner).length >= PROCESSES + 3) {
-                ns.print(`WARN - ${miner} - Too many processes (${PROCESSES + 3}).`)
+                // ns.print(`WARN - ${miner} - Too many processes (${PROCESSES + 3}).`)
                 return true
             }
         } else { return false }
