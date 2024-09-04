@@ -69,6 +69,7 @@ export async function main(ns) {
             await ns.asleep((DELAY * 1000) + 1)
         }
         await ns.asleep((DELAY * 1000) + 1)
+        ns.closeTail()
         return
     }
 
