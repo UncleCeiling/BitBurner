@@ -1,6 +1,5 @@
 /** @param {NS} ns **/
 export async function main(ns) {
-    Number.prototype.toExponential = function () {
-        return null
-    }
+    // Changing the `toExponential` function to return null
+    Number.prototype.toExponential = function () { return null }
 }
