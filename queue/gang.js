@@ -30,14 +30,18 @@ export async function main(ns) {
         else { ns.gang.createGang(GANG_FACTION); return true }
     }
 
-    function recruit_member() { return ns.gang.recruitMember(`Dave ${get_members().length}`) }
+    function recruit_member() {
+        for (var i = 0; i <= get_members().length; i++) { if (ns.gang.recruitMember(`Dave ${i}`)) { return i } else { continue } }
+        return -1
+    }
 
     function recruiting() {
         while (get_members().length < MAX_MEMBERS) {
-            if (recruit_member()) {
-                ns.gang.setMemberTask(get_members()[get_members().length - 1], 'Train Combat')
-                ns.tprint(`SUCCESS - Recruited new member: ${get_members()[get_members().length - 1]}`)
-            } else { break }
+            let member = recruit_member()
+            if (member != -1) {
+                ns.gang.setMemberTask(`Dave ${member}`, 'Train Combat')
+                ns.tprint(`SUCCESS - Recruited new member: Dave ${member}`)
+            } else { ns.tprint(`FAIL - Failed to recruit new member.`) }
         }
     }
 
@@ -64,7 +68,7 @@ export async function main(ns) {
             let current_win_chance = ns.gang.getChanceToWinClash(faction)
             if (worst_win_chance > current_win_chance) { worst_win_chance = current_win_chance }
         }
-        if (worst_win_chance > MIN_WIN_PERCENT) { return true }
+        if (worst_win_chance > MIN_WIN_PERCENT && get_members().length >= 12) { return true }
         else { return false }
 
     }
