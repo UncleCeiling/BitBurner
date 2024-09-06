@@ -60,17 +60,9 @@ export async function main(ns) {
                 // Run the job
                 await run_job(job, miner)
             }
-
-            // If still stuff in Queue, tell us
-            if (queue.length > 0) {
-                let message = queue.join(' | ')
-                // ns.print(`INFO - ${queue.length} items in Queue:\n${message}`)
-            }
             await ns.asleep((DELAY * 1000) + 1)
         }
         await ns.asleep((DELAY * 1000) + 1)
-        ns.closeTail()
-        return
     }
 
     async function run_job(job, miner) {
