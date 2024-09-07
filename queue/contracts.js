@@ -16,6 +16,7 @@ export async function main(ns) {
         'Encryption I: Caesar Cipher',
     ]
     let contracts = get_contracts()
+    if (contracts.length <= 0) { ns.tprint('INFO - No contracts found.'); return }
     for (let server of Object.keys(contracts)) {
         for (let contract of contracts[server]) {
             let type = ns.codingcontract.getContractType(contract, server)

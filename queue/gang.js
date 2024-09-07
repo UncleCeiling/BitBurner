@@ -41,7 +41,7 @@ export async function main(ns) {
             if (member != -1) {
                 ns.gang.setMemberTask(`Dave ${member}`, 'Train Combat')
                 ns.tprint(`SUCCESS - Recruited new member: Dave ${member}`)
-            } else { ns.tprint(`FAIL - Failed to recruit new member.`) }
+            } else { ns.tprint(`FAIL - Failed to recruit new member.`); return }
         }
     }
 
@@ -88,11 +88,11 @@ export async function main(ns) {
         ascension()
         let doing_war = war()
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
+        recruiting()
         for (let member of get_members()) {
             await ns.gang.nextUpdate();
             task(doing_war, member)
         }
-        recruiting()
         ns.tprint(`INFO\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}\nMembers: ${get_members()}`)
     }
 }

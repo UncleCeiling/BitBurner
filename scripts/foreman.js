@@ -61,6 +61,7 @@ export async function main(ns) {
                 await run_job(job, miner)
             }
             await ns.asleep((DELAY * 1000) + 1)
+            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < Math.max(ns.getScriptRam('queue/gang.js'), ns.getScriptRam('queue/contracts.js'))) { ns.closeTail(); return }
         }
         await ns.asleep((DELAY * 1000) + 1)
     }
