@@ -66,8 +66,9 @@ export async function main(ns) {
         if (ns.gang.getGangInformation().territory == 1) { return false }
         for (let faction of ENEMY_FACTIONS) {
             let current_win_chance = ns.gang.getChanceToWinClash(faction)
-            if (worst_win_chance > current_win_chance) { worst_win_chance = current_win_chance }
+            if (worst_win_chance > current_win_chance && ns.gang.getOtherGangInformation()[faction].territory > 0) { worst_win_chance = current_win_chance }
         }
+        ns.print('Win chance: ' + worst_win_chance)
         if (worst_win_chance > MIN_WIN_PERCENT && get_members().length >= 12) { return true }
         else { return false }
 
@@ -87,6 +88,7 @@ export async function main(ns) {
     else {
         ascension()
         let doing_war = war()
+        ns.print('Doing War: ' + doing_war)
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
         recruiting()
         for (let member of get_members()) {
