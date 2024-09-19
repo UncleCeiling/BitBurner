@@ -14,7 +14,7 @@ export async function main(ns) {
     const ASCENSION_MULTIPLIER = 1.6487212707 // Minimum increase in stats for ascension
     const MAX_MEMBERS = 12 // Max num of gang members
     const TRAINING_PERCENT = 0.2
-    const MIN_WIN_PERCENT = 0.65 // Min win-rate for territory warfare
+    const MIN_WIN_PERCENT = 0.55 // Min win-rate for territory warfare
 
     function get_members() { return ns.gang.getMemberNames() }
 
@@ -52,13 +52,12 @@ export async function main(ns) {
         if (wanted_rate > 0 || wanted_penalty < 0.45) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
         else if (doing_war) { ns.gang.setMemberTask(member, 'Territory Warfare') }
         else if (ns.gang.getGangInformation().territory != 1) {
-            if (random < TRAINING_PERCENT && get_members.length < 12) { ns.gang.setMemberTask(member, 'Train Combat') }
+            if (random < TRAINING_PERCENT && get_members.length < 12 && get_members().length < 12) { ns.gang.setMemberTask(member, 'Train Combat') }
             else if (get_members().length <= 6) { ns.gang.setMemberTask(member, 'Strongarm Civilians') }
             else if (get_members().length >= 12) { ns.gang.setMemberTask(member, 'Territory Warfare') }
             else if (Math.random() < 0.5) { ns.gang.setMemberTask(member, 'Human Trafficking') }
             else { ns.gang.setMemberTask(member, 'Terrorism') }
-        }
-        else { ns.gang.setMemberTask(member, 'Human Trafficking') }
+        } else { ns.gang.setMemberTask(member, 'Human Trafficking') }
     }
 
     function war() {
