@@ -18,7 +18,7 @@ export async function main(ns) {
         // Skip backdoored and unrooted servers
         if (server['backdoorInstalled'] || !server['hasAdminRights']) { continue }
         // Skip 'home' and custom servers
-        if (server['hostname'] == 'home' || server['hostname'].includes('custom-')) { continue }
+        if (server['hostname'] == 'home' || server['hostname'].includes('custom-') || server['hostname'].includes('hacknet-server-')) { continue }
         // Backdoor whatever is left
         toBackdoor.push(server['hostname'])
     }

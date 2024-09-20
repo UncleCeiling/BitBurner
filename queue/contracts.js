@@ -1,5 +1,7 @@
 /** @param {NS} ns */
 export async function main(ns) {
+    // Disable logs
+    ns.disableLog("ALL")
     const SOLUTIONS = [
         'Find Largest Prime Factor',
         'Subarray with Maximum Sum',
@@ -16,6 +18,7 @@ export async function main(ns) {
         'Encryption I: Caesar Cipher',
     ]
     let contracts = get_contracts()
+    ns.print(contracts)
     if (contracts.length <= 0) { ns.tprint('INFO - No contracts found.'); return }
     for (let server of Object.keys(contracts)) {
         for (let contract of contracts[server]) {
@@ -124,18 +127,16 @@ export async function main(ns) {
     function get_server_set() {
         let servers = new Set(['home'])
         for (let server of servers) {
-            for (let result of ns.scan(server)) {
-                if (result.includes('custom-')) { continue }
-                servers.add(result)
-            }
+            for (let result of ns.scan(server)) { servers.add(result) }
         }
         return servers
     }
 
     function get_contracts() {
-        var contracts = []
+        let contracts = {}
         for (let server of get_server_set()) {
             let files = ns.ls(server, '.cct')
+            ns.print(`${server}: ${files}`)
             if (files.length > 0) { contracts[server] = files } else { continue }
         }
         return contracts

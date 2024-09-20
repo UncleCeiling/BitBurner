@@ -89,18 +89,40 @@ export async function main(ns) {
         }
     }
 
-    function check_last_node_is_full() {
-        let last_node = get_num_nodes() - 1
-        let node_stats = ns.hacknet.getNodeStats(last_node)
-        if (node_stats.level == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
-        else { return false }
+    // Buy cache or return `false`
+    function buy_cache(node) {
+        let budget = get_budget()
+        let cache = ns.hacknet.getNodeStats(node).cache
+        let cost = ns.hacknet.getCacheUpgradeCost(node, 1)
+        if (cache >= max_cache) { return false }
+        if (budget > cost) {
+            if (ns.hacknet.upgradeCache(node, 1)) {
+                history['cache']++
+                history['spent'] += cost
+                return true
+            } else {
+                ns.tprint(`FAIL - Buying cache on node ${node} failed. ($${cost.toLocaleString()})`)
+                return false
+            }
+        } else {
+            ns.print(`WARN - Not enough cash to buy cache on node ${node}. ($${cost.toLocaleString()})`)
+            return false
+        }
     }
 
+    // function check_last_node_is_full() {
+    //     let last_node = get_num_nodes() - 1
+    //     let node_stats = ns.hacknet.getNodeStats(last_node)
+    //     if (node_stats.level == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
+    //     else { return false }
+    // }
+
     // Variables
-    let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'spent': 0 }
+    let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'cache': 0, 'spent': 0 }
     const max_levels = 200
     const max_ram = 64
     const max_cores = 16
+    const max_cache = 100
 
     // Get num of nodes
     let num_nodes = get_num_nodes()
@@ -116,6 +138,7 @@ export async function main(ns) {
         while (buy_ram(node)) { continue }
         while (buy_core(node)) { continue }
         while (buy_level(node)) { continue }
+        while (buy_cache(node)) { continue }
     }
 
     // Buy nodes
@@ -125,6 +148,7 @@ export async function main(ns) {
     if (history.spent > 0) {
         let list = []
         if (history.nodes > 0) { list.push(`${history.nodes} nodes`) }
+        if (history.cache > 0) { list.push(`${history.cache} cache upgrades`) }
         if (history.cores > 0) { list.push(`${history.cores} cores`) }
         if (history.ram > 0) { list.push(`${history.ram} ram upgrades`) }
         if (history.levels > 0) { list.push(`${history.levels} levels`) }
@@ -133,4 +157,6 @@ export async function main(ns) {
         if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
         ns.tprint(`SUCCESS - Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Total: $${history.spent.toLocaleString()}`)
     }
+
+
 }

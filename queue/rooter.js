@@ -16,7 +16,7 @@ export async function main(ns) {
     let toRoot = []
     for (let server of serverDetails) {
         // Skip rooted and custom servers
-        if (server['hasAdminRights'] || server['hostname'].includes('custom-')) { continue }
+        if (server['hasAdminRights'] || server.hostname.includes('custom-') || server.hostname.includes('hacknet-server-')) { continue }
         // Add the rest to the list
         toRoot.push(server['hostname'])
     }
@@ -49,13 +49,14 @@ export async function main(ns) {
     let mines = []
     let miners = []
     for (let server of serverDetails) {
-        let rooted = server['hasAdminRights']
-        let isCustom = server['hostname'].includes('custom-')
-        let currentRam = (ns.getServerMaxRam(server['hostname']) - ns.getServerUsedRam(server['hostname']))
+        let rooted = server.hasAdminRights
+        let isCustom = server.hostname.includes('custom-')
+        let isHacknet = server.hostname.includes('hacknet-server-')
+        let currentRam = (ns.getServerMaxRam(server.hostname) - ns.getServerUsedRam(server.hostname))
         let scriptRam = Math.max(ns.getScriptRam('scripts/hack.js', 'home'), ns.getScriptRam('scripts/grow.js', 'home'), ns.getScriptRam('scripts/weaken.js', 'home'))
         let miner = true
         let mine = true
-        if (!rooted || isCustom) { continue } // Skip unrooted and Custom servers
+        if (!rooted || isCustom || isHacknet) { continue } // Skip unrooted and Custom servers
         if (currentRam < scriptRam || server['hostname'] == 'home' || server['hostname'] == 'darkweb') { miner = false } // Can't be a miner
         if (server['moneyMax'] == 0) { mine = false }
         if (mine) { mines.push(server['hostname']) }
