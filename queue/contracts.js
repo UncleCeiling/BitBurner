@@ -2,6 +2,7 @@
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL")
+    const KILL_TIME = Date.now() + (5 * 1000)
     const SOLUTIONS = [
         'Find Largest Prime Factor',
         'Subarray with Maximum Sum',
@@ -266,7 +267,7 @@ export async function main(ns) {
         // If no edges, output with success
         if (edges.length < 1) { for (let i = 0; i < num_vertices; i++) { results[i] = 0 } }
 
-        ns.tprint(edges)
+        ns.print(edges)
 
         // Build empty results array
         let results = []
@@ -285,7 +286,9 @@ export async function main(ns) {
             // Split the comparison
             let c0 = comparison[0]
             let c1 = comparison[1]
-            ns.tprint(c0, ' | ', c1)
+            ns.print(c0, ' | ', c1)
+            // If it's taking too long, just assume it's not possible.
+            if (KILL_TIME < Date.now()) { return [] }
             // Start the first result as 0
             if (results[0] == null) { results[0] = 0 }
 
@@ -318,7 +321,7 @@ export async function main(ns) {
                     }
                 }
             }
-            ns.tprint(results)
+            ns.print(results)
             await ns.asleep(10)
         }
         if (impossible) { results = [] }

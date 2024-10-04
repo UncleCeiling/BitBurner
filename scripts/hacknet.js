@@ -119,10 +119,10 @@ export async function main(ns) {
 
     // Variables
     let history = { 'nodes': 0, 'levels': 0, 'ram': 0, 'cores': 0, 'cache': 0, 'spent': 0 }
-    const max_levels = 200
-    const max_ram = 64
-    const max_cores = 16
-    const max_cache = 100
+    const max_levels = 300
+    const max_ram = 8192
+    const max_cores = 128
+    const max_cache = 15
 
     // Get num of nodes
     let num_nodes = get_num_nodes()
@@ -134,11 +134,20 @@ export async function main(ns) {
     }
 
     // For each node
-    for (let node = 0; node < num_nodes; node++) {
-        while (buy_ram(node)) { continue }
-        while (buy_core(node)) { continue }
-        while (buy_level(node)) { continue }
-        while (buy_cache(node)) { continue }
+    if (Math.random() >= 0.5) {
+        for (let node = 0; node < num_nodes; node++) {
+            while (buy_ram(node)) { continue }
+            while (buy_core(node)) { continue }
+            while (buy_level(node)) { continue }
+            while (buy_cache(node)) { continue }
+        }
+    } else {
+        for (let node = num_nodes - 1; node >= 0; node--) {
+            while (buy_ram(node)) { continue }
+            while (buy_core(node)) { continue }
+            while (buy_level(node)) { continue }
+            while (buy_cache(node)) { continue }
+        }
     }
 
     // Buy nodes

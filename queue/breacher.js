@@ -4,7 +4,7 @@ export async function main(ns) {
     let servers = new Set(['home'])
     for (let server of servers) {
         for (let result of ns.scan(server)) {
-            if (result.includes('custom-')) { continue }
+            if (result.includes('custom-') || result.includes('w0r1d_d43m0n') || result.includes('hacknet-server-')) { continue }
             servers.add(result)
         }
     }
@@ -17,8 +17,8 @@ export async function main(ns) {
     for (let server of serverDetails) {
         // Skip backdoored and unrooted servers
         if (server['backdoorInstalled'] || !server['hasAdminRights']) { continue }
-        // Skip 'home' and custom servers
-        if (server['hostname'] == 'home' || server['hostname'].includes('custom-') || server['hostname'].includes('hacknet-server-')) { continue }
+        // Skip 'home' server
+        if (server['hostname'] == 'home') { continue }
         // Backdoor whatever is left
         toBackdoor.push(server['hostname'])
     }
