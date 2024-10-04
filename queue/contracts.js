@@ -2,7 +2,6 @@
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL")
-    const KILL_TIME = Date.now() + (5 * 1000)
     const SOLUTIONS = [
         'Find Largest Prime Factor',
         'Subarray with Maximum Sum',
@@ -21,6 +20,7 @@ export async function main(ns) {
     let contracts = get_contracts()
     ns.print(contracts)
     if (contracts.length <= 0) { ns.tprint('INFO - No contracts found.'); return }
+    let time_to_kill = Date.now() + (5 * 1000)
     for (let server of Object.keys(contracts)) {
         for (let contract of contracts[server]) {
             let type = ns.codingcontract.getContractType(contract, server)
@@ -288,7 +288,7 @@ export async function main(ns) {
             let c1 = comparison[1]
             ns.print(c0, ' | ', c1)
             // If it's taking too long, just assume it's not possible.
-            if (KILL_TIME < Date.now()) { return [] }
+            if (time_to_kill < Date.now()) { time_to_kill = Date.now() + (5 * 1000); return [] }
             // Start the first result as 0
             if (results[0] == null) { results[0] = 0 }
 
