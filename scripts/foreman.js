@@ -1,4 +1,5 @@
 /** @param {NS} ns */
+import { ANSI as clr } from "./imports/ANSI"
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL")
@@ -69,8 +70,8 @@ export async function main(ns) {
     async function run_job(job, miner) {
         ns.scp(job.script, miner, HOST)
         let success = await ns.exec(job.script, miner, job.threads, job.host)
-        if (success > 0) { ns.print(`${job.script} (t=${job.threads}) "${miner}" => "${job.host}"`) }
-        else { ns.print(`FAIL - Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).`) }
+        if (success > 0) { ns.print(`${clr.green}${job.script}|t=${job.threads}|${clr.cyan}${miner} >> ${job.host}${clr.reset}`) }
+        else { ns.print(`${clr.red}Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).${clr.reset}`) }
     }
 
     function get_weaken_threads(server) {
