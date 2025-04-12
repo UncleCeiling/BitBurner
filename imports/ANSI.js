@@ -1,15 +1,28 @@
 /** @param {NS} ns */
 
-// Custom color coding.
+// Custom ANSI coding.
 const ANSI = {
+    // Multiple can be used at once using `;` like this
+    // \u001b[1;3m (bold and italic)
     // Reset to default
     reset: "\u001b[0m",
     // Font
-    bold: "\u001b[1m,",
-    under: "\u001b[4m,",
-    // Actions
-    blink: "\u001b[5m,",
-    clr_scr: "\u001b[2J,",
+    bold: "\u001b[1m",
+    dim: "\u001b[2m",
+    italic: "\u001b[3m",
+    underline: "\u001b[4m",
+    blink: "\u001b[5m",
+    invert: "\u001b[7m",
+    hide: "\u001b[8m",
+    strike: "\u001b[9m",
+    unbold: "\u001b[22m",
+    undim: "\u001b[22m",
+    unitalic: "\u001b[23m",
+    deunderline: "\u001b[24m",
+    unblink: "\u001b[25m",
+    uninvert: "\u001b[27m",
+    unhide: "\u001b[28m",
+    unstrike: "\u001b[29m",
     // foreground colours
     black: "\u001b[30m",
     red: "\u001b[31m",

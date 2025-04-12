@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-import { ANSI as clr } from "./imports/ANSI"
+import { ANSI, ANSI as clr } from "../imports/ANSI"
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL")
@@ -10,8 +10,11 @@ export async function main(ns) {
     // Create Working variable
     let working = {}
     // If not running on home, say so and return
-    if (ns.getHostname() != HOST) { ns.tprint(`ERROR - Script must be run on 'home', not '${ns.getHostname()}'.`); return }
-    ns.tail()
+    if (ns.getHostname() != HOST) {
+        ns.tprint(`${ANSI.red}Script must be run on 'home', not '${ns.getHostname()}'.${ANSI.reset}`)
+        ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}`, "error")
+        return
+    }
 
     // Repeat ad-nauseam
     while (true) {
@@ -62,7 +65,11 @@ export async function main(ns) {
                 await run_job(job, miner)
             }
             await ns.asleep((DELAY * 1000) + 1)
-            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < Math.max(ns.getScriptRam('queue/gang.js'), ns.getScriptRam('queue/contracts.js'))) { ns.closeTail(); return }
+            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < Math.max(ns.getScriptRam('queue/gang.js'), ns.getScriptRam('queue/contracts.js'))) {
+                ns.tprint(`${ANSI.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`)
+                ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error")
+                return
+            }
         }
         await ns.asleep((DELAY * 1000) + 1)
     }
