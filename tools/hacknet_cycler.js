@@ -1,21 +1,24 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tprint('ERROR - Deprecated')
-    return
-    ns.tprint('INFO - Starting Hacknet Cycler')
-    let duration = ns.args[0] * 1000
+
+    // Disable logs
+    ns.disableLog("ALL")
+    // Start
+    // Take variables
+    let duration = ns.args[0]
     if (!(duration > 0)) { ns.tprint(`ERROR - "${duration}" is not a valid argument (please enter an integer larger than 1)`); return }
-    ns.tprint(`INFO - Duration: ${duration}`)
-    let now = Date.now()
-    let finish = now + duration
-    while (Date.now() <= finish) {
-        ns.run('queue/hacknet.js')
-        // let estimate = Math.floor((finish - Date.now()) / 1000)
-        // if (estimate % 10 == 0) { ns.tprint(`INFO - ${estimate} seconds until cycler ends`) }
-        while (ns.isRunning('queue/hacknet.js')) {
-            await ns.asleep(10)
+    let cycles = duration * 10
+    ns.tprint(`\nINFO - Starting Hacknet Cycler\nDuration: ${duration} seconds\n(${cycles} cycles)`)
+    // Count cycles
+    for (let complete_cycles = 1; complete_cycles <= cycles; complete_cycles++) {
+        ns.run('scripts/hacknet.js')
+        // Report every tenth cycle
+        if (complete_cycles % 10 == 0) {
+            let estimate = Math.floor((cycles - complete_cycles) / 10)
+            let message = `INFO - ${Math.floor((complete_cycles / cycles) * 100)}% completed | Approx ${estimate} seconds until cycler ends`
+            if (complete_cycles % 100 == 0) { ns.tprint(message) } else { ns.print(message) }
         }
-        await ns.asleep(10)
+        await ns.asleep(100)
     }
     ns.tprint(`SUCCESS - Hacknet Cycler complete`)
 }

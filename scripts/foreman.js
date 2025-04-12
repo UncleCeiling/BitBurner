@@ -69,7 +69,7 @@ export async function main(ns) {
     async function run_job(job, miner) {
         ns.scp(job.script, miner, HOST)
         let success = await ns.exec(job.script, miner, job.threads, job.host)
-        if (success > 0) { ns.print(`SUCCESS - ${miner} is running ${job.script} against ${job.host} (t=${job.threads}).`) }
+        if (success > 0) { ns.print(`${job.script} (t=${job.threads}) "${miner}" => "${job.host}"`) }
         else { ns.print(`FAIL - Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).`) }
     }
 
