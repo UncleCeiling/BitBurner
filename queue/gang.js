@@ -1,4 +1,5 @@
 /** @param {NS} ns */
+import { ANSI } from "imports/ANSI"
 export async function main(ns) {
     ns.disableLog('ALL')
     // ns.tail()
@@ -26,7 +27,7 @@ export async function main(ns) {
 
     function create_gang() {
         if (ns.gang.inGang()) { ns.print('WARN - Gang already made'); return true }
-        else if (get_karma() < 54000) { ns.tprint(`WARN - Not enough karma (${Math.floor(get_karma() / 540)}%)`); return false }
+        else if (get_karma() < 54000) { ns.tprint(`WARN - Not enough karma ${get_karma()}/54000 (${Math.floor(get_karma() / 540)}%)`); return false }
         else { ns.gang.createGang(GANG_FACTION); return true }
     }
 
@@ -40,8 +41,8 @@ export async function main(ns) {
             let member = recruit_member()
             if (member != -1) {
                 ns.gang.setMemberTask(`Dave ${member}`, 'Train Combat')
-                ns.tprint(`SUCCESS - Recruited new member: Dave ${member}`)
-            } else { ns.tprint(`FAIL - Failed to recruit new member.`); return }
+                ns.tprint(`${ANSI.fg.green} Recruited new member: Dave ${member}${ANSI.reset}`)
+            } else { ns.print(`FAIL - Failed to recruit new member.`); return }
         }
     }
 
@@ -87,13 +88,12 @@ export async function main(ns) {
     else {
         ascension()
         let doing_war = war()
-        ns.print('Doing War: ' + doing_war)
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
+        ns.tprint(`INFO\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}/54000\nMembers: ${get_members()}\nDoing War: ${doing_war}`)
         recruiting()
         for (let member of get_members()) {
             await ns.gang.nextUpdate();
             task(doing_war, member)
         }
-        ns.tprint(`INFO\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}\nMembers: ${get_members()}`)
     }
 }

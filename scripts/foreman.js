@@ -17,6 +17,9 @@ export async function main(ns) {
     }
 
     // Repeat ad-nauseam
+    ns.ui.openTail()
+    await ns.asleep(100)
+    resize_tail()
     while (true) {
         await ns.asleep(200)
         // Clean working list of any 
@@ -66,6 +69,7 @@ export async function main(ns) {
             }
             await ns.asleep((DELAY * 1000) + 1)
             if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < Math.max(ns.getScriptRam('queue/gang.js'), ns.getScriptRam('queue/contracts.js'))) {
+                ns.ui.closeTail()
                 ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`)
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error")
                 return
@@ -140,16 +144,12 @@ export async function main(ns) {
                 miners.push(resource)
             }
         }
-        // // Clear the log
-        // ns.clearLog()
-        // ns.print(`INFO - ${miners.length} Miners in pool`)
         return miners
     }
 
     function get_queue() {
         // Create Queue from Mines.txt
         let mines = ns.read('mines.txt').split('\n')
-        // ns.print(`INFO - ${mines.length} mines in 'mines.txt'`)
 
         // Compare to working list
         let queue = []
@@ -157,7 +157,6 @@ export async function main(ns) {
 
         // If empty, return empty list
         if (queue.length == 0) { return [] }
-        // ns.print(`INFO - ${queue.length} items in Queue`)
 
         return queue
     }
@@ -166,10 +165,8 @@ export async function main(ns) {
         // If too many things running, skip this server
         if (ns.ps(miner).length >= PROCESSES) {
             if (miner != HOST) {
-                // ns.print(`WARN - ${miner} - Too many processes (${PROCESSES}).`)
                 return true
             } else if (ns.ps(miner).length >= PROCESSES + 3) {
-                // ns.print(`WARN - ${miner} - Too many processes (${PROCESSES + 3}).`)
                 return true
             }
         } else { return false }
@@ -180,6 +177,17 @@ export async function main(ns) {
             if (Date.now() > working[item].end) { delete working[item] }
         }
         return working
+    }
 
+    function resize_tail() {
+        // 30 static characters + Max Miner length + Max Mine Length
+        let mines = ns.read('mines.txt').split('\n')
+        let characters_wide = 32 + Math.max(...(get_miners().map(miner => miner.length))) + Math.max(...(mines.map(mine => mine.length)))
+        let font_size = ns.ui.getStyles().tailFontSize
+        let line_size = ns.ui.getStyles().lineHeight
+        let tail_width = (characters_wide * font_size * 0.6) + 3
+        let tail_height = (2 * font_size * line_size) + 9
+        ns.ui.resizeTail(tail_width, tail_height)
+        ns.ui.moveTail(58, 0)
     }
 }
