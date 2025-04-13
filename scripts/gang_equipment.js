@@ -2,7 +2,7 @@
 export async function main(ns) {
     ns.disableLog('ALL')
     // ns.tail()
-    if (!ns.gang.inGang()) { ns.tprint('ERROR - Not currently in a gang.'); return }
+    if (!ns.gang.inGang()) { ns.print('ERROR - Not currently in a gang.'); return }
     const EQUIPMENT = { // List of possible equipment
         'weapons': [
             "Baseball Bat",
@@ -62,5 +62,5 @@ export async function main(ns) {
         }
     }
     if (bought > 0) { ns.tprint(`SUCCESS - Bought ${bought} pieces of equipment across ${members.length} members.`) }
-    else { ns.tprint('INFO - Nothing bought.') }
+    else { ns.print('INFO - Nothing bought.') }
 }

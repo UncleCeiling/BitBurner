@@ -11,7 +11,7 @@ export async function main(ns) {
     const SCRIPT_LOC = 'scripts/'
     for (let script of SCRIPTS) {
         let path = `${SCRIPT_LOC}${script}`
-        ns.tprint(`INFO - Running ${script}`)
+        ns.print(`INFO - Running ${script}`)
         await ns.run(path)
         // Give it a second
         await ns.asleep(1000)

@@ -101,7 +101,7 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.tprint(`FAIL - Buying cache on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`FAIL - Buying cache on node ${node} failed. ($${cost.toLocaleString()})`)
                 return false
             }
         } else {
