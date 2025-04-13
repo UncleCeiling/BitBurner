@@ -31,67 +31,67 @@ export async function main(ns) {
                 switch (type) {
                     case 'Merge Overlapping Intervals':
                         result = merge_overlap(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Encryption I: Caesar Cipher':
                         result = encrypt_1(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Find Largest Prime Factor':
                         result = largest_prime_factor(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Proper 2-Coloring of a Graph':
                         result = await proper_2_colour(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Array Jumping Game':
                         result = array_jumping(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Array Jumping Game II':
                         result = array_jumping_2(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Shortest Path in a Grid':
                         result = shortest_path(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Minimum Path Sum in a Triangle':
                         result = min_path_sum_triangle(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Total Ways to Sum II':
                         result = total_ways_sum_2(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Spiralize Matrix':
                         result = spiralize_matrix(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Compression I: RLE Compression':
                         result = compression_1(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Sanitize Parentheses in Expression':
                         result = sanitize_parentheses(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     case 'Subarray with Maximum Sum':
                         result = max_sum_subarray(data_in)
-                        ns.tprint(`INFO - Attempting ${type} on ${server} (${contract})`)
+                        ns.print(`INFO - Attempting ${type} on ${server} (${contract})`)
                         break
 
                     default:
@@ -102,11 +102,11 @@ export async function main(ns) {
                 let tries = ns.codingcontract.getNumTriesRemaining(contract, server)
                 const exceptions = ['Array Jumping Game']
                 if (tries <= 1 && !exceptions.includes(type)) {
-                    ns.tprint(`ERROR - Not enough tries (${tries}) to submit ${contract} on ${server}. (${type}).`)
-                    ns.tprint(`ERROR - Input:`)
-                    ns.tprint(data_in)
-                    ns.tprint('ERROR - Result:')
-                    ns.tprint(result)
+                    ns.print(`ERROR - Not enough tries (${tries}) to submit ${contract} on ${server}. (${type}).`)
+                    ns.print(`ERROR - Input:`)
+                    ns.print(data_in)
+                    ns.print('ERROR - Result:')
+                    ns.print(result)
                     continue
                 }
                 else { reward = ns.codingcontract.attempt(result, contract, server) }
@@ -115,10 +115,10 @@ export async function main(ns) {
                 } else {
                     ns.tprint(`FAIL - Failed to solve ${contract} on ${server}.`)
 
-                    ns.tprint(`FAIL - Input:`)
-                    ns.tprint(data_in)
-                    ns.tprint('FAIL - Result:')
-                    ns.tprint(result)
+                    ns.print(`FAIL - Input:`)
+                    ns.print(data_in)
+                    ns.print('FAIL - Result:')
+                    ns.print(result)
                 }
                 await ns.asleep(200)
             }
@@ -244,7 +244,6 @@ export async function main(ns) {
 
         // Find the largest of the primes
         let result = Math.max(...prime_factors)
-        // ns.tprint(result)
         // Hand in your work
         return result
 
