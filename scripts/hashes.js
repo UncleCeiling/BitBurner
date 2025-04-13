@@ -1,11 +1,15 @@
 /** @param {NS} ns */
 export async function main(ns) {
 
-    // Spend hashes
+    // Init Spend History
     let history = { 'money': 0, 'contracts': 0, 'spent': 0 }
-
+    // Attempt to buy hashes
     while (buy_hash_upgrade('Generate Coding Contract')) { history.contracts++ }
-    while (buy_hash_upgrade('Sell for Money')) { history.money++ }
+    // Check if it's worth buying cash
+    let cash_buy = ns.hacknet.numHashes() / ns.hacknet.hashCost('Sell for Money')
+    let cash_on_hand = ns.getServerMoneyAvailable('home');
+    // Attempt to buy cash
+    if (cash_buy > cash_on_hand) { while (buy_hash_upgrade('Sell for Money')) { history.money++ } }
     // Check the history and report what we spent
     if (history.spent > 0) {
         let list = []
@@ -16,7 +20,6 @@ export async function main(ns) {
         if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
         ns.tprint(`SUCCESS - Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Hashes spent: ${history.spent}`)
     }
-
     function buy_hash_upgrade(upgrade, target = '') {
         let cost = ns.hacknet.hashCost(upgrade)
         let hashes = ns.hacknet.numHashes()

@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-import { ANSI, ANSI as clr } from "../imports/ANSI"
+import { ANSI } from "../imports/ANSI"
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL")
@@ -11,7 +11,7 @@ export async function main(ns) {
     let working = {}
     // If not running on home, say so and return
     if (ns.getHostname() != HOST) {
-        ns.tprint(`${ANSI.red}Script must be run on 'home', not '${ns.getHostname()}'.${ANSI.reset}`)
+        ns.tprint(`${ANSI.fg.red}Script must be run on 'home', not '${ns.getHostname()}'.${ANSI.reset}`)
         ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}`, "error")
         return
     }
@@ -66,7 +66,7 @@ export async function main(ns) {
             }
             await ns.asleep((DELAY * 1000) + 1)
             if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < Math.max(ns.getScriptRam('queue/gang.js'), ns.getScriptRam('queue/contracts.js'))) {
-                ns.tprint(`${ANSI.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`)
+                ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`)
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error")
                 return
             }
@@ -77,8 +77,8 @@ export async function main(ns) {
     async function run_job(job, miner) {
         ns.scp(job.script, miner, HOST)
         let success = await ns.exec(job.script, miner, job.threads, job.host)
-        if (success > 0) { ns.print(`${clr.green}${job.script}|t=${job.threads}|${clr.cyan}${miner} >> ${job.host}${clr.reset}`) }
-        else { ns.print(`${clr.red}Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).${clr.reset}`) }
+        if (success > 0) { ns.print(`${ANSI.fg.green}${job.script}|t=${job.threads}|${ANSI.fg.cyan}${miner} >> ${job.host}${ANSI.reset}`) }
+        else { ns.print(`${ANSI.fg.red}Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).${ANSI.reset}`) }
     }
 
     function get_weaken_threads(server) {
