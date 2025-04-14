@@ -20,14 +20,14 @@ export async function main(ns) {
     function get_members() { return ns.gang.getMemberNames() }
 
     function get_karma() {
-        let karma = Math.floor(-(ns.heart.break()))
-        ns.print(`Karma: ${karma}/54000`)
+        let karma = Math.floor(ns.heart.break())
+        ns.print(`Karma: ${karma}/-54000`)
         return karma
     }
 
     function create_gang() {
         if (ns.gang.inGang()) { ns.print('WARN - Gang already made'); return true }
-        else if (get_karma() < 54000) { ns.tprint(`WARN - Not enough karma ${get_karma()}/54000 (${Math.floor(get_karma() / 540)}%)`); return false }
+        else if (get_karma() > -54000) { ns.tprint(`WARN - Not enough karma ${get_karma()}/-54000 (${Math.floor(get_karma() / -540)}%)`); return false }
         else { ns.gang.createGang(GANG_FACTION); return true }
     }
 

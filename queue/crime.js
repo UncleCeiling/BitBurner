@@ -1,10 +1,17 @@
+import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
     // Get Karma
-    ns.tprint('ERROR - Not written yet')
+    let player_stats = ns.getPlayer();
+    let karma = player_stats.karma;
+    if (karma > -54000) {
+        if (ns.singularity.getCurrentWork().crimeType != "Homicide") {
+            ns.singularity.commitCrime("Homicide", false);
+            ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);
+        } else { ns.tprint(`${ANSI.fg.cyan}Continuing to commit Homicide to decrease Karma${ANSI.reset}`) };
+    }
     return
     // ns.tail()
-    let player_stats = ns.getPlayer()
     // stats.skills.
     //             .agility
     //             .charisma
@@ -46,4 +53,4 @@ export async function main(ns) {
     // if (stats.agility < 300) { ns.singularity, commitCrime(stat_to_crime.agility, false) }
 
 
-}
+};

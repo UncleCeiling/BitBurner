@@ -1,5 +1,5 @@
-/** @param {NS} ns */
 import { ANSI } from "../imports/ANSI";
+/** @param {NS} ns */
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL");
@@ -173,12 +173,13 @@ export async function main(ns) {
     function resize_tail() {
         // 30 static characters + Max Miner length + Max Mine Length
         let mines = ns.read('mines.txt').split('\n');
+        let screen = ns.ui.windowSize()
         let characters_wide = 32 + Math.max(...(get_miners().map(miner => miner.length))) + Math.max(...(mines.map(mine => mine.length)));
         let font_size = ns.ui.getStyles().tailFontSize;
         let line_size = ns.ui.getStyles().lineHeight;
         let tail_width = (characters_wide * font_size * 0.6) + 3;
         let tail_height = (2 * font_size * line_size) + 9;
         ns.ui.resizeTail(tail_width, tail_height);
-        ns.ui.moveTail(58, 0);
+        ns.ui.moveTail((screen[0] - tail_width) / 2, 0);
     };
 };
