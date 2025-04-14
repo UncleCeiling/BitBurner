@@ -6,8 +6,9 @@ export async function main(ns) {
     // Attempt to buy hashes
     while (buy_hash_upgrade('Generate Coding Contract')) { history.contracts++ }
     // Check if it's worth buying cash
-    let cash_buy = ns.hacknet.numHashes() / ns.hacknet.hashCost('Sell for Money')
+    let cash_buy = (ns.hacknet.numHashes() / ns.hacknet.hashCost('Sell for Money')) * 1000000
     let cash_on_hand = ns.getServerMoneyAvailable('home');
+    ns.print(cash_buy, " > ", cash_on_hand)
     // Attempt to buy cash
     if (cash_buy > cash_on_hand) { while (buy_hash_upgrade('Sell for Money')) { history.money++ } }
     // Check the history and report what we spent
