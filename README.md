@@ -9,6 +9,7 @@ This is my BitBurner repo!
 > ┣ 📂_Development  
 > ┣ 📂_Lore  
 > ┣ 📂 demo  
+> ┣ 📂 imports  
 > ┣ 📂 queue  
 > ┣ 📂 scripts  
 > ┣ 📂 tools  
@@ -22,6 +23,5 @@ This is my BitBurner repo!
 
 🟢 Redo Readme system  
 🟡 `queue/contracts.js`  
-🔴 `queue/crime.js`  
+🟡 `queue/crime.js`  
 🔴 Augments  
-🔴 Remake `tools/hacknet_cycler.js`  
