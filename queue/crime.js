@@ -1,16 +1,40 @@
 import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
-    // Get Karma
+    // Initialise variables
     let player_stats = ns.getPlayer();
     let karma = player_stats.karma;
+    // Farm Karma
     if (karma > -54000) {
-        if (ns.singularity.getCurrentWork().crimeType != "Homicide") {
-            ns.singularity.commitCrime("Homicide", false);
-            ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);
-        } else { ns.tprint(`${ANSI.fg.cyan}Continuing to commit Homicide to decrease Karma${ANSI.reset}`) };
-    }
-    return
+        if (ns.singularity.getCurrentWork() == null) { do_homicide() } else if (ns.singularity.getCurrentWork().type != "CRIME") { do_homicide() } else if (ns.singularity.getCurrentWork().crimeType != "Homicide") { do_homicide() }
+        else { ns.tprint(`${ANSI.fg.cyan}Continuing to commit Homicide to decrease Karma${ANSI.reset}`) };
+    };
+    // Join Bladeburners Division
+    if (
+        ns.bladeburner.inBladeburner() == false &&
+        player_stats.skills.strength >= 100 &&
+        player_stats.skills.defense >= 100 &&
+        player_stats.skills.dexterity >= 100 &&
+        player_stats.skills.agility >= 100
+    ) {
+        if (ns.bladeburner.joinBladeburnerDivision()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Division${ANSI.reset}`) }
+        else { ns.tprint(`${ANSI.fg.red}Failed to join Bladeburner Division${ANSI.reset}`) }
+    };
+    // Join Bladeburners Faction
+    if (player_stats.factions.indexOf("Bladeburners") == -1) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } }
+    // Start bladeburner script
+    if (!ns.isRunning("scripts/bladeburner.js")) {
+        if (ns.run("scripts/bladeburner.js") == 0) { ns.tprint(`${ANSI.fg.red}Failed to start bladeburner.js${ANSI.reset}`) }
+        else { ns.tprint(`${ANSI.fg.cyan}Started bladeburner.js${ANSI.reset}`) }
+    };
+    return;
+
+    /** @param {NS} ns */
+    function do_homicide() {
+        ns.singularity.commitCrime("Homicide", false);
+        ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);
+    };
+
     // ns.tail()
     // stats.skills.
     //             .agility
