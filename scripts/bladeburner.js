@@ -11,7 +11,7 @@ export async function main(ns) {
         ns.clearLog();
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
-        if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) { ns.bladeburner.stopBladeburnerAction() }
+        if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) { ns.tprint(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`); ns.bladeburner.stopBladeburnerAction() }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
         ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
@@ -75,7 +75,7 @@ export async function main(ns) {
             ns.print("Checking estimates...")
             let estimate = get_success_chance("Black Operations", get_blackop().name)
             if (estimate[1] - estimate[0] >= 0.001) {
-                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(3)}>>>0.001).${ANSI.reset}`);
+                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
                 if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {
                     ns.bladeburner.startAction("General", "Field Analysis");
                 }

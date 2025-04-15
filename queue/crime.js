@@ -70,10 +70,10 @@ export async function main(ns) {
     let next_city = CITIES[CITIES.indexOf(player_stats.city) - 1];
     ns.tprint(`${ANSI.fg.cyan}Travelling to ${next_city}.${ANSI.reset}`)
     ns.singularity.travelToCity(next_city);
-    //!Search for more factions to get invites from? 
-    ns.tprint(`${ANSI.fg.red}WIP${ANSI.reset}`);
     // Make sure enough people have been killed
     if (player_stats.numPeopleKilled < 30) { do_homicide(); ns.tprint(`${ANSI.fg.cyan}Committing Homicide to increase body-count.${ANSI.reset}`) };
+    //!Search for more factions to get invites from? 
+    // ns.tprint(`${ANSI.fg.red}WIP${ANSI.reset}`);
 
     // ===== FUNCTIONS =====
     /** @param {NS} ns */
