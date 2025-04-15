@@ -1,6 +1,8 @@
 import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
+    ns.disableLog("ALL");
+    ns.ui.openTail()
     const OPERATIONS = ns.bladeburner.getOperationNames();
     const CONTRACTS = ns.bladeburner.getContractNames();
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
@@ -11,7 +13,7 @@ export async function main(ns) {
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) { ns.bladeburner.stopBladeburnerAction() }
         // If BlackOp available and probable: do it, then wait for it to finish
-        ns.print("BlackOp: ", get_blackop().name, " Rank: ", get_blackop().rank);
+        ns.print(`Checking ${get_blackop().name} | Rank: ${get_blackop().rank.toExponential(1)}`);
         while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
             await do_action("Black Operations", get_blackop().name);
         };
@@ -31,6 +33,7 @@ export async function main(ns) {
                     // ns.print(`${operation} success chance ${Math.floor(success[0] * 100)}%`);
                     continue
                 }; // Won't do them
+                ns.print(`Checking ${operation} operation: | Rep: ${ns.bladeburner.getActionRepGain("Operations", operation).toExponential(1)}`)
                 operation_list.push({
                     "name": operation,
                     "success": success,
@@ -54,6 +57,7 @@ export async function main(ns) {
                     // ns.print(`${contract} success chance ${Math.floor(success[0] * 100)}%`);
                     continue
                 }; // Won't do them
+                ns.print(`Checking ${contract} contract: | Rep: ${ns.bladeburner.getActionRepGain("Contracts", contract).toExponential(1)}`)
                 contract_list.push({
                     "name": contract,
                     "success": success,
@@ -66,22 +70,35 @@ export async function main(ns) {
             if (contract_list.length > 0) { await do_action("Contracts", contract_list.pop().name); break };
             let current_action = ns.bladeburner.getCurrentAction();
             if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); break };
+            // Check accuracy of data and do Field Analysis if not good, otherwise Train
+            ns.print("Checking estimates...")
+            let estimate = get_success_chance("Black Operations", get_blackop().name)
+            if (estimate[1] - estimate[0] >= 0.001) {
+                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toExponential(1)}).${ANSI.reset}`);
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {
+                    ns.bladeburner.startAction("General", "Field Analysis");
+                }
+                break
+            } else {
+                ns.print(`${ANSI.fg.cyan}Performing Training to improve skills.${ANSI.reset}`)
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") { ns.bladeburner.startAction("General", "Training") }
+            }
             // If no jobs available, return `false`
-            ns.print("Travelling to: ", city);
+            ns.print(`Checking ${city}...`);
             ns.bladeburner.switchCity(city);
             await ns.bladeburner.nextUpdate()
         }
+
         // Assess situation and pick a General Action.
-        let city_list = [];
-        for (let city of CITIES) {
-            let chaos = ns.bladeburner.getCityChaos(city)
-            let communities = ns.bladeburner.getCityCommunities(city)
-            let population = ns.bladeburner.getCityEstimatedPopulation(city)
-            let suspicious = (population == 0 && communities > 0)
-            city_list.push({ "name": city, "chaos": chaos, "communities": communities, "population": population, "suspicious": true })
-        }
-        //!WIP
-        ns.print(`${ANSI.fg.red}WIP${ANSI.reset}`);
+        // let city_list = [];
+        // for (let city of CITIES) {
+        //     let chaos = ns.bladeburner.getCityChaos(city)
+        //     let communities = ns.bladeburner.getCityCommunities(city)
+        //     let population = ns.bladeburner.getCityEstimatedPopulation(city)
+        //     let suspicious = (population == 0 && communities > 0)
+        //     city_list.push({ "name": city, "chaos": chaos, "communities": communities, "population": population, "suspicious": true })
+        // }
+
         // If no action was chosen, wait for the next update. <== REMOVE (after General Actions section is added)
         await ns.bladeburner.nextUpdate()
     };
@@ -96,6 +113,7 @@ export async function main(ns) {
      */
     async function do_action(type, name) {
         let current = ns.bladeburner.getCurrentAction()
+        ns.print(`${ANSI.fg.green}Doing ${name}${ANSI.reset}`);
         if (current != null && name == current.name) { await ns.bladeburner.nextUpdate(); return };
         if (ns.bladeburner.startAction(type, name)) {
             ns.tprint(`${ANSI.fg.green}Started ${name}${ANSI.reset}`);

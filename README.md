@@ -24,3 +24,4 @@ This is my BitBurner repo!
 🟢 Redo Readme system  
 🟡 `queue/contracts.js`  
 🔴 Augments  
+🔴 Fix Backdoor  
