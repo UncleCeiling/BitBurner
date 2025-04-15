@@ -85,7 +85,7 @@ export async function main(ns) {
             ns.print("Checking recruitment...")
             let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
             if (recruit >= 1) {
-                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()}+1).${ANSI.reset}`);
+                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()} => ${ns.bladeburner.getTeamSize() + 1}).${ANSI.reset}`);
                 if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Recruitment") {
                     ns.bladeburner.startAction("General", "Recruitment");
                 }
