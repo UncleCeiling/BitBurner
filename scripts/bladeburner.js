@@ -2,7 +2,7 @@ import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
-    ns.ui.openTail()
+    // ns.ui.openTail()
     const OPERATIONS = ns.bladeburner.getOperationNames();
     const CONTRACTS = ns.bladeburner.getContractNames();
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
@@ -12,8 +12,9 @@ export async function main(ns) {
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) { ns.bladeburner.stopBladeburnerAction() }
+        ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
-        ns.print(`Checking ${get_blackop().name} | Rank: ${get_blackop().rank.toExponential(1)}`);
+        ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
         while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
             await do_action("Black Operations", get_blackop().name);
         };
@@ -33,7 +34,7 @@ export async function main(ns) {
                     // ns.print(`${operation} success chance ${Math.floor(success[0] * 100)}%`);
                     continue
                 }; // Won't do them
-                ns.print(`Checking ${operation} operation: | Rep: ${ns.bladeburner.getActionRepGain("Operations", operation).toExponential(1)}`)
+                ns.print(`Checking ${operation} operation: | Rank: +${ns.bladeburner.getActionRepGain("Operations", operation).toExponential(1)}`)
                 operation_list.push({
                     "name": operation,
                     "success": success,
@@ -57,7 +58,7 @@ export async function main(ns) {
                     // ns.print(`${contract} success chance ${Math.floor(success[0] * 100)}%`);
                     continue
                 }; // Won't do them
-                ns.print(`Checking ${contract} contract: | Rep: ${ns.bladeburner.getActionRepGain("Contracts", contract).toExponential(1)}`)
+                ns.print(`Checking ${contract} contract: | Rank: +${ns.bladeburner.getActionRepGain("Contracts", contract).toExponential(1)}`)
                 contract_list.push({
                     "name": contract,
                     "success": success,
@@ -74,7 +75,7 @@ export async function main(ns) {
             ns.print("Checking estimates...")
             let estimate = get_success_chance("Black Operations", get_blackop().name)
             if (estimate[1] - estimate[0] >= 0.001) {
-                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toExponential(1)}).${ANSI.reset}`);
+                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(3)}>>>0.001).${ANSI.reset}`);
                 if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {
                     ns.bladeburner.startAction("General", "Field Analysis");
                 }
