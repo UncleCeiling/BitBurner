@@ -12,11 +12,11 @@ export async function main(ns) {
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
-            ns.tprint(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`);
+            ns.print(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`);
             ns.bladeburner.stopBladeburnerAction();
         }
         if (current_action != null && ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 1) {
-            ns.tprint(`${ANSI.fg.red}${current_action.name} ran out - stopping.${ANSI.reset}`);
+            ns.print(`${ANSI.fg.red}${current_action.name} ran out - stopping.${ANSI.reset}`);
             ns.bladeburner.stopBladeburnerAction();
         }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
@@ -144,7 +144,7 @@ export async function main(ns) {
         ns.print(`${ANSI.fg.green}Doing ${name}${ANSI.reset}`);
         if (current != null && name == current.name) { await ns.bladeburner.nextUpdate(); return };
         if (ns.bladeburner.startAction(type, name)) {
-            ns.tprint(`${ANSI.fg.green}Started ${name}${ANSI.reset}`);
+            ns.print(`${ANSI.fg.green}Started ${name}${ANSI.reset}`);
             if (type == "Black Operations") { await wait_for_blackop_end() }
             else { await ns.bladeburner.nextUpdate() };
         } else { ns.tprint(`${ANSI.fg.red}Failed to start ${name}${ANSI.reset}`) };
