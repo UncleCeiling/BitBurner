@@ -71,7 +71,7 @@ export async function main(ns) {
             if (contract_list.length > 0) { await do_action("Contracts", contract_list.pop().name); break };
             let current_action = ns.bladeburner.getCurrentAction();
             if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); break };
-            // Check accuracy of data and do Field Analysis if not good, otherwise Train
+            // Check skills; train if any under 100
             ns.print("Checking skills...")
             let skills = ns.getPlayer().skills
             if (skills.strength < 100 && skills.defense < 100 && skills.dexterity < 100 && skills.agility < 100) {
@@ -81,6 +81,17 @@ export async function main(ns) {
                 }
                 break
             }
+            // Check recruitment; recruit if 100%
+            ns.print("Checking recruitment...")
+            let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
+            if (recruit >= 1) {
+                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()}+1).${ANSI.reset}`);
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Recruitment") {
+                    ns.bladeburner.startAction("General", "Recruitment");
+                }
+                break
+            }
+            // Check accuracy of data and do Field Analysis if not good, otherwise Train
             ns.print("Checking estimates...")
             let estimate = get_success_chance("Black Operations", get_blackop().name)
             if (estimate[1] - estimate[0] >= 0.001) {
