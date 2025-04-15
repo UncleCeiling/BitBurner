@@ -11,7 +11,14 @@ export async function main(ns) {
         ns.clearLog();
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
-        if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) { ns.tprint(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`); ns.bladeburner.stopBladeburnerAction() }
+        if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
+            ns.tprint(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`);
+            ns.bladeburner.stopBladeburnerAction();
+        }
+        if (current_action != null && ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 1) {
+            ns.tprint(`${ANSI.fg.red}${current_action.name} ran out - stopping.${ANSI.reset}`);
+            ns.bladeburner.stopBladeburnerAction();
+        }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
         ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
@@ -25,7 +32,7 @@ export async function main(ns) {
             let operation_list = [];
             for (let operation of OPERATIONS) {
                 let remaining = ns.bladeburner.getActionCountRemaining("Operations", operation);
-                if (remaining <= 0) {
+                if (remaining < 1) {
                     // ns.print(`No ${operation} remaining`);
                     continue
                 }; // Can't do them
@@ -49,7 +56,7 @@ export async function main(ns) {
             let contract_list = [];
             for (let contract of CONTRACTS) {
                 let remaining = ns.bladeburner.getActionCountRemaining("Contracts", contract);
-                if (remaining <= 0) {
+                if (remaining < 1) {
                     // ns.print(`No ${contract} remaining`);
                     continue
                 }; // Can't do them
