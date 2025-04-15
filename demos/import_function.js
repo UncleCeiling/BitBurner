@@ -11,11 +11,11 @@ import * as Custom from 'demos/my_function.js'
 //
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tail(); ns.disableLog('ALL')
+    ns.disableLog("ALL"); ns.openTail();
     //        Namespace   Function   Arguments                           
     //              \/       \/       \/
-    let message = Custom.an_example('Peepee Poopoo')
-    ns.print(message)
+    let message = Custom.an_example('Peepee Poopoo');
+    ns.print(message);
 }
 
 // ====================================
@@ -30,7 +30,7 @@ export async function main(ns) {
 //
 /** @param {NS} ns */
 // export async function main(ns) {
-// 	ns.tail(); ns.disableLog('ALL')
+// ns.disableLog("ALL"); ns.openTail();
 // 	//             Function      Arguments                           
 // 	//                \/            \/
 // 	let message = an_example('Peepee Poopoo')

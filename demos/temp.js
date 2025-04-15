@@ -1,6 +1,7 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tail(); ns.disableLog('ALL')
+    ns.disableLog('ALL')
+    ns.openTail();
     let array = ['this', 'that', 'the other']
     let random = Math.random() 								// Pick a random num between 0 & 1
     let scaled_random = random * array.length // Scale this random number by the size of our array 

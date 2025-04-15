@@ -1,7 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL')
-    // ns.tail()
     if (!ns.gang.inGang()) { ns.print('ERROR - Not currently in a gang.'); return }
     const EQUIPMENT = { // List of possible equipment
         'weapons': [

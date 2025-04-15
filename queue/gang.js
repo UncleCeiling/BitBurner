@@ -2,7 +2,6 @@
 import { ANSI } from "imports/ANSI"
 export async function main(ns) {
     ns.disableLog('ALL')
-    // ns.tail()
     const GANG_FACTION = "Slum Snakes" // My Chosen Faction
     const ENEMY_FACTIONS = [ // List of enemies
         "Tetrads",

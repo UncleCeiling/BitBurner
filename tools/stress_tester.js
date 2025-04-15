@@ -1,6 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tail()
+    ns.ui.openTail()
     const loops = 10
     let solutions = [
         'Find Largest Prime Factor',
