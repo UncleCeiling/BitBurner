@@ -7,6 +7,9 @@ export async function main(ns) {
     const HOST = 'home';
     const DELAY = 1;
     const PROCESSES = 4;
+    const QUEUE_LIST = ns.ls("home", "queue/");
+    const SCRIPTS_LIST = ns.ls("home", "scripts/");
+    const MIN_FREE_RAM = Math.max(QUEUE_LIST.map((a) => { ns.getScriptRam(a) })) + Math.max(SCRIPTS_LIST.map((a) => { ns.getScriptRam(a) }))
     // Create Working variable
     let working = {};
     // If not running on home, say so and return
@@ -15,7 +18,6 @@ export async function main(ns) {
         ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}`, "error");
         return;
     };
-
     // Repeat ad-nauseam
     ns.ui.openTail();
     await ns.asleep(100);
@@ -44,7 +46,7 @@ export async function main(ns) {
                 if (too_many_processes(miner)) { continue };
                 // Get free RAM on miner (-12 if HOST)
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner);
-                if (miner == HOST) { free_ram -= 32 };
+                if (miner == HOST) { free_ram -= 64 };
                 // If not enough RAM, skip
                 // if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
                 if (free_ram < job.ram) { continue };
@@ -66,7 +68,7 @@ export async function main(ns) {
                 await run_job(job, miner);
             };
             await ns.asleep((DELAY * 1000) + 1);
-            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < Math.max(ns.getScriptRam('queue/gang.js'), ns.getScriptRam('queue/contracts.js'))) {
+            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
                 ns.ui.closeTail();
                 ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
@@ -80,7 +82,7 @@ export async function main(ns) {
         ns.scp(job.script, miner, HOST);
         let success = await ns.exec(job.script, miner, job.threads, job.host);
         if (success > 0) { ns.print(`${ANSI.fg.green}${job.script}|t=${job.threads}|${ANSI.fg.cyan}${miner} >> ${job.host}${ANSI.reset}`) }
-        else { ns.print(`${ANSI.fg.red}Failed to execute ${job.script} on ${miner} (${job.host},t=${job.threads}).${ANSI.reset}`) };
+        else { ns.print(`${ANSI.fg.red}Failed to execute ${job.script} | ${miner} >> ${job.host} | t=${job.threads}${ANSI.reset}`) };
     };
 
     function get_weaken_threads(server) {
