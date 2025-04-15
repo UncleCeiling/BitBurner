@@ -23,5 +23,4 @@ This is my BitBurner repo!
 
 🟢 Redo Readme system  
 🟡 `queue/contracts.js`  
-🟡 `queue/crime.js`  
 🔴 Augments  
