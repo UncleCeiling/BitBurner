@@ -64,7 +64,7 @@ export async function main(ns) {
         let work_options = faction_choice.work;
         let work_choice = "";
         if (work_options.length == 1) { work_choice = work_options[0] };
-        if (work_options.length >= 2) { work_choice = work_options[work_options.indexOf("field")] };
+        if (work_options.length >= 2) { if (work_options.includes("field")) { work_choice = "field" } } else { work_choice = "security" };
         if (ns.singularity.workForFaction(faction_choice.name, work_choice, false)) { ns.tprint(`${ANSI.fg.green}Doing ${work_choice} work for ${faction_choice.name}.${ANSI.reset}`) }
         else { ns.tprint(`${ANSI.fg.red}Failed to start ${work_choice} work for ${faction_choice.name}.${ANSI.reset}`) };
         return;
