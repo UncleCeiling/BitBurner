@@ -7,12 +7,13 @@ export async function main(ns) {
         'servers.js',
         'hacknet.js',
         'hashes.js',
+        'bladeburner_skills.js'
     ]
     const SCRIPT_LOC = 'scripts/'
     for (let script of SCRIPTS) {
         let path = `${SCRIPT_LOC}${script}`
         ns.print(`INFO - Running ${script}`)
-        await ns.run(path)
+        ns.run(path)
         // Give it a second
         await ns.asleep(1000)
         // Don't continue until the script is finished
