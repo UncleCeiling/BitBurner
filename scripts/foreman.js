@@ -156,10 +156,15 @@ export async function main(ns) {
         return queue;
     };
 
+    /**
+     * 
+     * @param {String} miner 
+     * @returns 
+     */
     function too_many_processes(miner) {
         // If too many things running, skip this server
         if (ns.ps(miner).length >= PROCESSES) {
-            if (miner != HOST) {
+            if (miner != HOST || miner.slice(0, 5) != "Custom") {
                 return true;
             } else if (ns.ps(miner).length >= PROCESSES + 3) { return true };
         } else { return false };

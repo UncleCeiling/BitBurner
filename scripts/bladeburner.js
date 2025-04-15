@@ -1,7 +1,6 @@
 import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.tprint(`${ANSI.fg.red}WIP${ANSI.reset}`);
     const OPERATIONS = ns.bladeburner.getOperationNames();
     const CONTRACTS = ns.bladeburner.getContractNames();
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
@@ -11,7 +10,6 @@ export async function main(ns) {
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) { ns.bladeburner.stopBladeburnerAction() }
-        else if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); continue };
         // If BlackOp available and probable: do it, then wait for it to finish
         ns.print("BlackOp: ", get_blackop().name, " Rank: ", get_blackop().rank);
         while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
@@ -66,6 +64,8 @@ export async function main(ns) {
             contract_list = contract_list.sort((a, b) => a.rep_gain - b.rep_gain);
             // ns.print("Contracts: ", operation_list);
             if (contract_list.length > 0) { await do_action("Contracts", contract_list.pop().name); break };
+            let current_action = ns.bladeburner.getCurrentAction();
+            if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); break };
             // If no jobs available, return `false`
             ns.print("Travelling to: ", city);
             ns.bladeburner.switchCity(city);
@@ -81,6 +81,7 @@ export async function main(ns) {
             city_list.push({ "name": city, "chaos": chaos, "communities": communities, "population": population, "suspicious": true })
         }
         //!WIP
+        ns.print(`${ANSI.fg.red}WIP${ANSI.reset}`);
         // If no action was chosen, wait for the next update. <== REMOVE (after General Actions section is added)
         await ns.bladeburner.nextUpdate()
     };
