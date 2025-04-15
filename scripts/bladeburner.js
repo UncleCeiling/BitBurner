@@ -72,6 +72,15 @@ export async function main(ns) {
             let current_action = ns.bladeburner.getCurrentAction();
             if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); break };
             // Check accuracy of data and do Field Analysis if not good, otherwise Train
+            ns.print("Checking skills...")
+            let skills = ns.getPlayer().skills
+            if (skills.strength < 100 && skills.defense < 100 && skills.dexterity < 100 && skills.agility < 100) {
+                ns.print(`${ANSI.fg.cyan}Training to improve Combat stats${ANSI.reset}`)
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
+                    ns.bladeburner.startAction("General", "Training");
+                }
+                break
+            }
             ns.print("Checking estimates...")
             let estimate = get_success_chance("Black Operations", get_blackop().name)
             if (estimate[1] - estimate[0] >= 0.001) {

@@ -41,7 +41,10 @@ export async function main(ns) {
     for (let invite of invitations) {
         let invited_augments = ns.singularity.getAugmentationsFromFaction(invite);
         invited_augments = invited_augments.filter((a) => !installed_augments.includes(a));
-        if (invited_augments > 0) { ns.singularity.joinFaction(invite) };
+        if (invited_augments.length > 0) {
+            if (ns.singularity.joinFaction(invite)) { ns.tprint(`${ANSI.fg.cyan}Joined ${invite} faction.${ANSI.reset}`) }
+            else { ns.tprint(`${ANSI.fg.red}Failed to join ${invite} faction.${ANSI.reset}`) }
+        };
     };
     // Find lowest faction rep augment and work for it
     let joined_factions = ns.getPlayer().factions;
@@ -67,11 +70,13 @@ export async function main(ns) {
         return;
     };
     // Move City
-    let next_city = CITIES[CITIES.indexOf(player_stats.city) - 1];
-    ns.tprint(`${ANSI.fg.cyan}Travelling to ${next_city}.${ANSI.reset}`)
+    let player_city = CITIES.indexOf(player_stats.city);
+    if (player_city <= 0) { player_city += CITIES.length };
+    let next_city = CITIES[player_city - 1];
+    ns.tprint(`${ANSI.fg.cyan}Travelling from ${player_stats.city} to ${next_city}.${ANSI.reset}`);
     ns.singularity.travelToCity(next_city);
     // Make sure enough people have been killed
-    if (player_stats.numPeopleKilled < 30) { do_homicide(); ns.tprint(`${ANSI.fg.cyan}Committing Homicide to increase body-count.${ANSI.reset}`) };
+    if (player_stats.numPeopleKilled < 30) { do_homicide(); ns.tprint(`${ANSI.fg.cyan}Committing Homicide to increase body-count (${player_stats.numPeopleKilled}/30).${ANSI.reset}`) };
     //!Search for more factions to get invites from? 
     // ns.tprint(`${ANSI.fg.red}WIP${ANSI.reset}`);
 
