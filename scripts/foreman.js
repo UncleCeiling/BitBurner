@@ -178,10 +178,8 @@ export async function main(ns) {
     };
 
     function resize_tail() {
-        // 30 static characters + Max Miner length + Max Mine Length
-        let mines = ns.read('mines.txt').split('\n');
-        let screen = ns.ui.windowSize()
-        let characters_wide = 32 + Math.max(...(get_miners().map(miner => miner.length))) + Math.max(...(mines.map(mine => mine.length)));
+        let screen = ns.ui.windowSize();
+        let characters_wide = 72;
         let font_size = ns.ui.getStyles().tailFontSize;
         let line_size = ns.ui.getStyles().lineHeight;
         let tail_width = (characters_wide * font_size * 0.6) + 3;

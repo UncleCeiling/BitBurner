@@ -2,6 +2,7 @@ import { ANSI } from "imports/ANSI"
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
+    if (!ns.bladeburner.inBladeburner()) { return }
     let skills = ns.bladeburner.getSkillNames();
     let skill_levels = [];
     let success = true;

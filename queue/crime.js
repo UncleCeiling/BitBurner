@@ -29,7 +29,8 @@ export async function main(ns) {
     };
 
     // Join Bladebuners Faction
-    if (player_stats.factions.indexOf("Bladeburners") == -1) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } };
+
+    if (player_stats.factions.indexOf("Bladeburners") == -1 && ns.bladeburner.inBladeburner()) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } };
     // Start bladeburner script
     if (!ns.isRunning("scripts/bladeburner.js")) {
         if (ns.run("scripts/bladeburner.js") == 0) { ns.tprint(`${ANSI.fg.red}Failed to start bladeburner.js${ANSI.reset}`) }

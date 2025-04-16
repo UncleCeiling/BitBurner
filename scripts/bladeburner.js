@@ -9,6 +9,7 @@ export async function main(ns) {
     const GENERAL_ACTIONS = ["Training", "Field Analysis", "Recruitment", "Diplomacy", "Hyperbolic Regeneration Chamber", "Incite Violence"];
     while (true) {
         ns.clearLog();
+        if (get_blackop() == null) { ns.alert("WORLDDAEMON ready to be destroyed"); return };
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
@@ -27,6 +28,12 @@ export async function main(ns) {
         };
         // For each city, try Ops and Contracts.
         let cities = CITIES.filter((name) => name != ns.bladeburner.getCity());
+        // If no communities, look for a city with one and move there.
+        if (ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 1) {
+            for (let city of CITIES) {
+                if (ns.bladeburner.getCityCommunities(city) > 1) { ns.bladeburner.switchCity(city) }
+            }
+        }
         for (let city of cities) {
             // If Operation available and probable: do it
             let operation_list = [];
@@ -116,17 +123,6 @@ export async function main(ns) {
             ns.bladeburner.switchCity(city);
             await ns.bladeburner.nextUpdate()
         }
-
-        // Assess situation and pick a General Action.
-        // let city_list = [];
-        // for (let city of CITIES) {
-        //     let chaos = ns.bladeburner.getCityChaos(city)
-        //     let communities = ns.bladeburner.getCityCommunities(city)
-        //     let population = ns.bladeburner.getCityEstimatedPopulation(city)
-        //     let suspicious = (population == 0 && communities > 0)
-        //     city_list.push({ "name": city, "chaos": chaos, "communities": communities, "population": population, "suspicious": true })
-        // }
-
         // If no action was chosen, wait for the next update. <== REMOVE (after General Actions section is added)
         await ns.bladeburner.nextUpdate()
     };
