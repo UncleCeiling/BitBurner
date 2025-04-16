@@ -28,7 +28,7 @@ export async function main(ns) {
         };
     };
 
-    // Join Bladebuners Faction
+    // Join Bladeburners Faction
 
     if (player_stats.factions.indexOf("Bladeburners") == -1 && ns.bladeburner.inBladeburner()) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } };
     // Start bladeburner script
