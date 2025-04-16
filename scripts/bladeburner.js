@@ -9,7 +9,7 @@ export async function main(ns) {
     const GENERAL_ACTIONS = ["Training", "Field Analysis", "Recruitment", "Diplomacy", "Hyperbolic Regeneration Chamber", "Incite Violence"];
     while (true) {
         ns.clearLog();
-        if (get_blackop() == null) { ns.alert("WORLDDAEMON ready to be destroyed"); return };
+        if (get_blackop() == null) { ns.toast("WORLDDAEMON ready to be destroyed", "error", null); return };
         // Check Current Action is still viable
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
