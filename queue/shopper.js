@@ -1,13 +1,13 @@
 /** @param {NS} ns */
 export async function main(ns) {
     const SCRIPTS = [
+        'hashes.js',
         'housekeeping.js',
         'darkweb.js',
         'gang_equipment.js',
         'servers.js',
         'hacknet.js',
-        'hashes.js',
-        'bladeburner_skills.js'
+        'bladeburner_skills.js',
     ]
     const SCRIPT_LOC = 'scripts/'
     for (let script of SCRIPTS) {

@@ -1,6 +1,5 @@
 /** @param {NS} ns */
 export async function main(ns) {
-
     // Get Budget
     function get_budget() { return ns.getServerMoneyAvailable('home') }
 
@@ -166,6 +165,4 @@ export async function main(ns) {
         if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
         ns.tprint(`SUCCESS - Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Total: $${history.spent.toLocaleString()}`)
     }
-
-
 }
