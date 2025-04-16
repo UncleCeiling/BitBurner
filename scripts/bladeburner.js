@@ -156,7 +156,7 @@ export async function main(ns) {
      */
     async function wait_for_blackop_end() {
         let action = ns.bladeburner.getCurrentAction()
-        while (action != null && current_action.type == "Black Operations") {
+        while (action != null && action.type == "Black Operations") {
             await ns.bladeburner.nextUpdate();
             action = ns.bladeburner.getCurrentAction();
         };

@@ -19,7 +19,7 @@ export async function main(ns) {
                     ns.tprint(`${ANSI.fg.green}Bought ${item.name} for ${item.cost} points (Level: ${item.level + 1})${ANSI.reset}`);
                     success = true;
                 } else {
-                    ns.tprint(`${ANSI.fg.Red}Failed to buy ${item.name} for ${item.cost} points (Current points: ${get_skill_points()})${ANSI.reset}`);
+                    ns.tprint(`${ANSI.fg.red}Failed to buy ${item.name} for ${item.cost} points (Current points: ${get_skill_points()})${ANSI.reset}`);
                 };
             };
         };
