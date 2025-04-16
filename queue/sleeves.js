@@ -25,10 +25,10 @@ export async function main(ns) {
      * @returns {Boolean} `true` when karma farmed, `false` if not.
      */
     function farm_karma(sleeve_num) {
-        if (ns.heart.break() < -54000) {
+        if (ns.heart.break() > -54000) {
             let task = ns.sleeve.getTask(sleeve_num)
             if (task == null || task.crimeType == null || task.crimeType != "Homicide") {
-                ns.sleeve.setToCommitCrime(sleeve, "Homicide"); return true
+                ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true
             } else { return false }
         }
     }
