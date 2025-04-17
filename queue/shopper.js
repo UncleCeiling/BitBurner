@@ -2,14 +2,15 @@
 export async function main(ns) {
     const SCRIPTS = [
         'hashes.js',
-        'housekeeping.js',
         'darkweb.js',
+        'housekeeping.js',
         'gang_equipment.js',
-        'servers.js',
+        'sleeve_augments.js',
         'hacknet.js',
+        'servers.js',
         'bladeburner_skills.js',
     ]
-    const SCRIPT_LOC = 'scripts/'
+    const SCRIPT_LOC = 'shopping/'
     for (let script of SCRIPTS) {
         let path = `${SCRIPT_LOC}${script}`
         ns.print(`INFO - Running ${script}`)

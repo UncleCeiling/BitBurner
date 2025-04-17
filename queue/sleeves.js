@@ -6,7 +6,7 @@ export async function main(ns) {
     // Initialise variables
     let num_sleeves = ns.sleeve.getNumSleeves();
     // Do we have any sleeves?
-    if (num_sleeves <= 0) { return };
+    if (num_sleeves < 1) { return };
     // Build sleeve list
     let sleeves = [];
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
@@ -29,8 +29,8 @@ export async function main(ns) {
             let task = ns.sleeve.getTask(sleeve_num)
             if (task == null || task.crimeType == null || task.crimeType != "Homicide") {
                 ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true
-            } else { return false }
-        }
+            } else { return true }
+        } else { return false }
     }
 
     /**
