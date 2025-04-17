@@ -1,14 +1,14 @@
 import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
-    var history = { "augments": 0, "money": 0 }
+    var history = { "augments": 0, "money": 0 };
     let num_sleeves = ns.sleeve.getNumSleeves();
     if (num_sleeves < 1) { return };
     let sleeves = [];
-    for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
+    for (let i = 0; i < num_sleeves; i++) { sleeves.push(i) };
     for (let sleeve of sleeves) {
         // Skip sleeves with no purchasable augments
-        if (purchasable_augs().length == 0) { continue };
+        if (purchasable_augs(sleeve).length == 0) { continue };
         // for each augment in the list of augments available to purchase (sorted by descending cost)
         for (let augment of purchasable_augs(sleeve)) { buy_augment(sleeve_num, augment.name, augment.cost) };
     }
@@ -19,7 +19,7 @@ export async function main(ns) {
     /**
      * Given a specific sleeve, return all purchasable augments and their costs.
      * @param {Number} sleeve_num Number of the sleeve
-     * @returns {import("NetscriptDefinitions").AugmentPair}
+     * @returns {AugmentPair}
      */
     function purchasable_augs(sleeve_num) {
         return ns.sleeve.getSleevePurchasableAugs(sleeve_num).sort((a, b) => b.cost - a.cost)
