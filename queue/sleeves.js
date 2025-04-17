@@ -12,8 +12,8 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
-        if (farm_karma(sleeve)) { continue }
         if (synchronise_sleeve(sleeve)) { continue }
+        if (farm_karma(sleeve)) { continue }
         if (calm_sleeve(sleeve)) { continue }
     };
 

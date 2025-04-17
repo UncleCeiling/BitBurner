@@ -10,7 +10,7 @@ export async function main(ns) {
         // Skip sleeves with no purchasable augments
         if (purchasable_augs(sleeve).length == 0) { continue };
         // for each augment in the list of augments available to purchase (sorted by descending cost)
-        for (let augment of purchasable_augs(sleeve)) { buy_augment(sleeve_num, augment.name, augment.cost) };
+        for (let augment of purchasable_augs(sleeve)) { buy_augment(sleeve, augment.name, augment.cost) };
     }
     print_history()
 

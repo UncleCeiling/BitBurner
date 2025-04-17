@@ -3,8 +3,9 @@ import { ANSI } from "imports/ANSI";
 export async function main(ns) {
     // Initialise variables
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
-    let player_stats = ns.getPlayer();
-    let karma = player_stats.karma;
+    var player_stats = ns.getPlayer();
+    var installed_augments = ns.singularity.getOwnedAugmentations(true);
+    var karma = player_stats.karma;
     // Do the stuff
     accept_invites();
     join_bladeburners();
@@ -59,7 +60,6 @@ export async function main(ns) {
     /** Accept Faction invitations */
     function accept_invites() {
         let invitations = ns.singularity.checkFactionInvitations();
-        let installed_augments = ns.singularity.getOwnedAugmentations(true);
         for (let invite of invitations) {
             let invited_augments = ns.singularity.getAugmentationsFromFaction(invite);
             invited_augments = invited_augments.filter((a) => !installed_augments.includes(a));
@@ -86,13 +86,10 @@ export async function main(ns) {
         if (faction_details.length > 0) {
             faction_details = faction_details.sort((a, b) => a.augments_to_buy[0].rep - b.augments_to_buy[0].rep);
             let faction_choice = faction_details[0];
-            let work_options = faction_choice.work;
-            let work_choice = "";
-            if (work_options.length == 1) { work_choice = work_options[0] };
-            if (work_options.length >= 2) { if (work_options.includes("field")) { work_choice = "field" } } else { work_choice = "security" };
-            if (ns.singularity.workForFaction(faction_choice.name, work_choice, false)) { ns.tprint(`${ANSI.fg.green}Doing ${work_choice} work for ${faction_choice.name}.${ANSI.reset}`); return true }
-            else { ns.tprint(`${ANSI.fg.red}Failed to start ${work_choice} work for ${faction_choice.name}.${ANSI.reset}`) };
-            return true;
+            if (ns.singularity.workForFaction(faction_choice.name, "field", false)) { ns.tprint(`${ANSI.fg.green}Working in the field for ${faction_choice.name}.${ANSI.reset}`); return true }
+            else if (ns.singularity.workForFaction(faction_choice.name, "security", false)) { ns.tprint(`${ANSI.fg.green}Working Security for ${faction_choice.name}.${ANSI.reset}`); return true }
+            else if (ns.singularity.workForFaction(faction_choice.name, "hacking", false)) { ns.tprint(`${ANSI.fg.green}Hacking for ${faction_choice.name}.${ANSI.reset}`); return true }
+            else { ns.tprint(`${ANSI.fg.red}Failed to start ${work_choice} work for ${faction_choice.name}.${ANSI.reset}`); return false }
         } else { return false }
     }
 
