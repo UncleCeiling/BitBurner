@@ -3,8 +3,7 @@ import { SOLUTIONS } from "queue/contracts";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
-    ns.ui.openTail();
-    const TESTS = 1000;
+    const TESTS = 10;
     for (let type of Object.keys(SOLUTIONS)) {
         for (let i = 0; i < TESTS; i++) { ns.codingcontract.createDummyContract(type) }
     };

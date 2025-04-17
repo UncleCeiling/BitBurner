@@ -1,4 +1,4 @@
 /** @param {NS} ns */
-export function name(data_in) {
+export default function name(data_in) {
 
 }

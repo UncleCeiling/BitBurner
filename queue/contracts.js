@@ -5,7 +5,13 @@ import array_jumping_game_2 from "contracts/complete/array_jumping_game_2";
 import compression_1_rle_compression from "contracts/complete/compression_1_rle_compression";
 import encryption_1_caesar_cipher from "contracts/complete/encryption_1_caesar_cipher";
 import find_largest_prime_factor from "contracts/complete/find_largest_prime_factor";
-import { merge_overlapping_intervals } from "contracts/WIP/merge_overlapping_intervals";
+import merge_overlapping_intervals from "contracts/complete/merge_overlapping_intervals";
+import minimum_path_sum_in_a_triangle from "contracts/complete/minimum_path_sum_in_a_triangle";
+import proper_2_coloring_of_a_graph from "contracts/complete/proper_2_coloring_of_a_graph";
+import shortest_path_in_a_grid from "contracts/complete/shortest_path_in_a_grid";
+import spiralize_matrix from "contracts/complete/spiralize_matrix";
+import subarray_with_maximum_sum from "contracts/complete/subarray_with_maximum_sum";
+import total_ways_to_sum_2 from "contracts/complete/total_ways_to_sum_2";
 
 //#endregion
 
@@ -25,14 +31,8 @@ const TODO = [
     'Generate IP Addresses',
     'HammingCodes: Integer to Encoded Binary',
     'HammingCodes: Encoded Binary to Integer',
-    'Minimum Path Sum in a Triangle',
-    'Proper 2-Coloring of a Graph',
     'Sanitize Parentheses in Expression',
-    'Shortest Path in a Grid',
-    'Spiralize Matrix',
-    'Subarray with Maximum Sum',
     'Total Ways to Sum',
-    'Total Ways to Sum II',
     'Unique Paths in a Grid I',
     'Unique Paths in a Grid II',
 ]
@@ -43,6 +43,12 @@ const SOLUTIONS = {
     'Encryption I: Caesar Cipher': encryption_1_caesar_cipher,
     'Find Largest Prime Factor': find_largest_prime_factor,
     'Merge Overlapping Intervals': merge_overlapping_intervals,
+    'Minimum Path Sum in a Triangle': minimum_path_sum_in_a_triangle,
+    'Proper 2-Coloring of a Graph': proper_2_coloring_of_a_graph, //! REDO ME
+    'Shortest Path in a Grid': shortest_path_in_a_grid,
+    'Spiralize Matrix': spiralize_matrix,
+    'Subarray with Maximum Sum': subarray_with_maximum_sum,
+    'Total Ways to Sum II': total_ways_to_sum_2,
 }
 export { SOLUTIONS }
 //#endregion
@@ -51,7 +57,7 @@ export { SOLUTIONS }
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL");
-    let history = { "success": 0, "fail": 0 }
+    let history = { "success": 0, "fail": 0 };
     let contracts = get_contracts();
     ns.print(contracts);
     if (contracts.length <= 0) { ns.tprint('INFO - No contracts found.'); return };
@@ -61,13 +67,14 @@ export async function main(ns) {
             if (!Object.keys(SOLUTIONS).includes(type)) { ns.tprint(`WARN - ${server}: Solution to "${type}" does not exist.`); continue };
             let data_in = ns.codingcontract.getData(contract, server);
             let result = SOLUTIONS[type](data_in);
-            let reward = ns.codingcontract.attempt(result, contract, server)
+            let reward = ns.codingcontract.attempt(result, contract, server);
             if (reward) { if (!reward.includes("No reward")) { ns.tprint(`SUCCESS - ${type}: ${contract} solved - ${reward}.`) } history.success++ }
             else { ns.tprint(`FAIL - ${type}: Failed to solve ${contract}.\nData: ${data_in}\nResult: ${result}`); history.fail++ };
+            await ns.asleep(10)
         }
     }
-    if (history.success > 0) { ns.tprint(`SUCCESS - Completed ${history.success} contracts.`) }
-    if (history.fail > 0) { ns.tprint(`FAIL - Failed ${history.fail} contracts.`) }
+    if (history.success > 0) { ns.tprint(`SUCCESS - Completed ${history.success} contracts.`) };
+    if (history.fail > 0) { ns.tprint(`FAIL - Failed ${history.fail} contracts.`) };
 
 
     function get_contracts() {

@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-export function merge_overlapping_intervals(data_in) {
+export default function merge_overlapping_intervals(data_in) {
     // Sort the data, lowest low first.
     var data = data_in
     data.sort((a, b) => { return Math.min(...a) - Math.min(...b) })
