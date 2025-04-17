@@ -5,6 +5,7 @@ import array_jumping_game_2 from "contracts/complete/array_jumping_game_2";
 import compression_1_rle_compression from "contracts/complete/compression_1_rle_compression";
 import encryption_1_caesar_cipher from "contracts/complete/encryption_1_caesar_cipher";
 import find_largest_prime_factor from "contracts/complete/find_largest_prime_factor";
+import { merge_overlapping_intervals } from "contracts/WIP/merge_overlapping_intervals";
 
 //#endregion
 
@@ -24,7 +25,6 @@ const TODO = [
     'Generate IP Addresses',
     'HammingCodes: Integer to Encoded Binary',
     'HammingCodes: Encoded Binary to Integer',
-    'Merge Overlapping Intervals',
     'Minimum Path Sum in a Triangle',
     'Proper 2-Coloring of a Graph',
     'Sanitize Parentheses in Expression',
@@ -42,6 +42,7 @@ const SOLUTIONS = {
     'Compression I: RLE Compression': compression_1_rle_compression,
     'Encryption I: Caesar Cipher': encryption_1_caesar_cipher,
     'Find Largest Prime Factor': find_largest_prime_factor,
+    'Merge Overlapping Intervals': merge_overlapping_intervals,
 }
 export { SOLUTIONS }
 //#endregion

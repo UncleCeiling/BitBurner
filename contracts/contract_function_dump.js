@@ -1,32 +1,4 @@
 
-
-function merge_overlap(data_in) {
-    // Sort the data, lowest low first.
-    var data = data_in
-    data.sort((a, b) => { return Math.min(...a) - Math.min(...b) })
-    // Set output variable
-    var results = []
-    // Set current interval info
-    let current_interval = data[0]
-    // For each interval in the data
-    for (let interval of data) {
-        // If the smallest value is smaller than the largest value of our current interval
-        if (Math.min(...interval) <= Math.max(...current_interval)) {
-            // Combine the intervals
-            ns.print(current_interval)
-            current_interval.push(Math.max(...interval))
-        } else {
-            // Otherwise, they don't overlap, so push the current_interval to results
-            results.push([Math.min(...current_interval), Math.max(...current_interval)])
-            // Then set set the current_interval to be this interval
-            current_interval = interval
-        }
-    }
-    results.push([Math.min(...current_interval), Math.max(...current_interval)])
-
-    return results
-}
-
 async function proper_2_colour(data_in) {
     // Sort edges small-to-large in both axes
     data_in[1].forEach(edge => edge.sort((a, b) => a - b))
@@ -36,8 +8,6 @@ async function proper_2_colour(data_in) {
     let edges = Array.from(data_in[1])
     // If no edges, output with success
     if (edges.length < 1) { for (let i = 0; i < num_vertices; i++) { results[i] = 0 } }
-
-    ns.print(edges)
 
     // Build empty results array
     let results = []
@@ -91,8 +61,6 @@ async function proper_2_colour(data_in) {
                 }
             }
         }
-        ns.print(results)
-        await ns.asleep(10)
     }
     if (impossible) { results = [] }
     if (results.includes(null)) { for (let item in results) { if (results[item] === null) { results[item] = 0 } } }
