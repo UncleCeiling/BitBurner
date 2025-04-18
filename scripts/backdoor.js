@@ -8,6 +8,7 @@ export async function main(ns) {
             precursor.push(server)
         }
     }
+    if (target == "w0r1d_d43m0n") { ns.toast("w0r1d_d43m0n ready for Backdoor", "error", null) }
     if (precursor.length >= 1) {
         ns.singularity.connect(precursor[0])
         ns.singularity.connect(target)
