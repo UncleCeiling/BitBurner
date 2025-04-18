@@ -8,10 +8,12 @@ This is my BitBurner repo!
 > ┣ 📂.archive  
 > ┣ 📂_Development  
 > ┣ 📂_Lore  
-> ┣ 📂 demo  
+> ┣ 📂 contracts  
+> ┣ 📂 demos  
 > ┣ 📂 imports  
 > ┣ 📂 queue  
 > ┣ 📂 scripts  
+> ┣ 📂 shopping  
 > ┣ 📂 tools  
 > ┣ 📜 boot.js  
 > ┣ 📜 devmenu.js  

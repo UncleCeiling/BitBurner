@@ -81,6 +81,7 @@ export async function main(ns) {
             let augments_to_buy = [];
             for (let aug of faction_augments) { augments_to_buy.push({ "name": aug, "rep": ns.singularity.getAugmentationRepReq(aug) }) };
             if (augments_to_buy <= 0) { continue };
+            if (augments_to_buy.sort((a, b) => b.rep - a.rep)[0].rep < ns.singularity.getFactionRep(faction)) { continue };
             faction_details.push({ "name": faction, "work": work, "augments_to_buy": augments_to_buy.sort((a, b) => b.rep - a.rep) });
         };
         if (faction_details.length > 0) {
