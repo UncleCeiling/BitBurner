@@ -123,9 +123,15 @@ export async function main(ns) {
         return false
     }
 
+    /**
+     * Decides if a sleeve should assist in Bladeburner Actions, then makes them if they should
+     * @param {Number} sleeve_num Number of the sleeve
+     * @returns {Boolean} `true` when sleeve is being calmed, `false` if not.
+     */
     function bladeburn(sleeve_num) {
         if (!ns.bladeburner.inBladeburner()) { return false };
-        ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve")
+        if (ns.bladeburner.getNextBlackOp() == null) { return false };
+        ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
         return true
     }
 
