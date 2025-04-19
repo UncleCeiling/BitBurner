@@ -15,12 +15,13 @@ export async function main(ns) {
         success = false;
         for (let item of skill_levels.sort((a, b) => b.cost - a.cost)) {
             if (item.name == "Overclock" && item.level >= 90) { continue };
-            if (get_skill_points() >= item.cost) {
+            let points = get_skill_points();
+            if (points > item.cost) {
                 if (ns.bladeburner.upgradeSkill(item.name)) {
                     ns.tprint(`${ANSI.fg.green}Bought ${item.name} for ${item.cost} points (Level: ${item.level + 1})${ANSI.reset}`);
                     success = true;
                 } else {
-                    ns.tprint(`${ANSI.fg.red}Failed to buy ${item.name} for ${item.cost} points (Current points: ${get_skill_points()})${ANSI.reset}`);
+                    ns.tprint(`${ANSI.fg.red}Failed to buy ${item.name} for ${item.cost} points (Current points: ${points})${ANSI.reset}`);
                 };
             };
         };
