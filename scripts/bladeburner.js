@@ -9,9 +9,7 @@ export async function main(ns) {
     const GENERAL_ACTIONS = ["Training", "Field Analysis", "Recruitment", "Diplomacy", "Hyperbolic Regeneration Chamber", "Incite Violence"];
     while (true) {
         ns.clearLog();
-        if (get_blackop() == null) { ns.toast("WORLDDAEMON ready to be destroyed", "error", null); return };
-        // Check Current Action is still viable
-        let current_action = ns.bladeburner.getCurrentAction();
+        let current_action = ns.bladeburner.getCurrentAction();// Check Current Action is still viable
         if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
             ns.print(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`);
             ns.bladeburner.stopBladeburnerAction();
@@ -22,10 +20,14 @@ export async function main(ns) {
         }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
-        ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
-        while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
-            await do_action("Black Operations", get_blackop().name);
-        };
+        if (ns.bladeburner.getNextBlackOp() == null) {
+            ns.toast("WORLDDAEMON ready to be destroyed", "error", 10 * 1000);
+        } else {
+            ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
+            while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
+                await do_action("Black Operations", get_blackop().name);
+            };
+        }
         // For each city, try Ops and Contracts.
         let cities = CITIES.filter((name) => name != ns.bladeburner.getCity());
         // If no communities, look for a city with one and move there.
