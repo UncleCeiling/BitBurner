@@ -6,6 +6,7 @@ export async function main(ns) {
     const OPERATIONS = ns.bladeburner.getOperationNames();
     const CONTRACTS = ns.bladeburner.getContractNames();
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
+    const ACCURACY_ACTIONS = ["Field Analysis", "Tracking", "Investigation", "Undercover Operation"];
     const GENERAL_ACTIONS = ["Training", "Field Analysis", "Recruitment", "Diplomacy", "Hyperbolic Regeneration Chamber", "Incite Violence"];
     while (true) {
         ns.clearLog();
@@ -37,6 +38,26 @@ export async function main(ns) {
             }
         }
         for (let city of cities) {
+            // Check recruitment; recruit if 100%
+            ns.print("Checking recruitment...")
+            let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
+            if (recruit >= 1) {
+                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()} => ${ns.bladeburner.getTeamSize() + 1}).${ANSI.reset}`);
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Recruitment") {
+                    ns.bladeburner.startAction("General", "Recruitment");
+                }
+                break
+            }
+            // Check accuracy of data and do Field Analysis if not good, otherwise Train
+            ns.print("Checking estimates...");
+            let estimate = get_success_chance("Black Operations", get_blackop().name);
+            if (estimate[1] - estimate[0] >= 0.001) {
+                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {
+                    ns.bladeburner.startAction("General", "Field Analysis");
+                }
+                break
+            }
             // If Operation available and probable: do it
             let operation_list = [];
             for (let operation of OPERATIONS) {
@@ -97,30 +118,8 @@ export async function main(ns) {
                 }
                 break
             }
-            // Check recruitment; recruit if 100%
-            ns.print("Checking recruitment...")
-            let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
-            if (recruit >= 1) {
-                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()} => ${ns.bladeburner.getTeamSize() + 1}).${ANSI.reset}`);
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Recruitment") {
-                    ns.bladeburner.startAction("General", "Recruitment");
-                }
-                break
-            }
-            // Check accuracy of data and do Field Analysis if not good, otherwise Train
-            ns.print("Checking estimates...")
-            let estimate = get_success_chance("Black Operations", get_blackop().name)
-            if (estimate[1] - estimate[0] >= 0.001) {
-                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {
-                    ns.bladeburner.startAction("General", "Field Analysis");
-                }
-                break
-            } else {
-                ns.print(`${ANSI.fg.cyan}Performing Training to improve skills.${ANSI.reset}`)
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") { ns.bladeburner.startAction("General", "Training") }
-            }
-            // If no jobs available, return `false`
+            ns.print(`${ANSI.fg.cyan}Performing Training to improve skills.${ANSI.reset}`);
+            if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") { ns.bladeburner.startAction("General", "Training") };
             ns.print(`Checking ${city}...`);
             ns.bladeburner.switchCity(city);
             await ns.bladeburner.nextUpdate()
