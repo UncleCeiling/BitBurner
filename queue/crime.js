@@ -10,6 +10,7 @@ export async function main(ns) {
     accept_invites();
     join_bladeburners();
     start_bladeburning();
+    if (check_grafting()) { return };
     if (farm_karma()) { return };
     if (farm_kills()) { return };
     work_for_factions();
@@ -17,6 +18,13 @@ export async function main(ns) {
     next_city();
 
     //#region ===== FUNCTIONS =====
+
+    /** Check for Grafting */
+    function check_grafting() {
+        let current_work = ns.singularity.getCurrentWork();
+        if (current_work != null && current_work.augmentation != null) { return true }
+        else { return false }
+    }
 
     /** Farm Karma */
     function farm_karma() {
