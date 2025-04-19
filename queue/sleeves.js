@@ -16,6 +16,7 @@ export async function main(ns) {
         if (synchronise_sleeve(sleeve)) { continue };
         if (calm_sleeve(sleeve)) { continue };
         if (homicide(sleeve)) { continue };
+        if (bladeburn(sleeve)) { continue };
         heist(sleeve);
     };
 
@@ -120,6 +121,12 @@ export async function main(ns) {
         let success_chance = calc_crime_success(sleeve_num)["Homicide"];
         if (success_chance < 1) { ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true };
         return false
+    }
+
+    function bladeburn(sleeve_num) {
+        if (!ns.bladeburner.inBladeburner()) { return false };
+        ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve")
+        return true
     }
 
     /**
