@@ -6,12 +6,14 @@ import compression_1_rle_compression from "contracts/complete/compression_1_rle_
 import encryption_1_caesar_cipher from "contracts/complete/encryption_1_caesar_cipher";
 import encryption_2_vigenere_cipher from "contracts/complete/encryption_2_vigenere_cipher";
 import find_largest_prime_factor from "contracts/complete/find_largest_prime_factor";
+import generate_ip_addresses from "contracts/complete/generate_ip_addresses";
 import merge_overlapping_intervals from "contracts/complete/merge_overlapping_intervals";
 import minimum_path_sum_in_a_triangle from "contracts/complete/minimum_path_sum_in_a_triangle";
 import proper_2_coloring_of_a_graph from "contracts/complete/proper_2_coloring_of_a_graph";
 import shortest_path_in_a_grid from "contracts/complete/shortest_path_in_a_grid";
 import spiralize_matrix from "contracts/complete/spiralize_matrix";
 import subarray_with_maximum_sum from "contracts/complete/subarray_with_maximum_sum";
+import total_ways_to_sum_1 from "contracts/complete/total_ways_to_sum_1";
 import total_ways_to_sum_2 from "contracts/complete/total_ways_to_sum_2";
 
 //#endregion
@@ -32,7 +34,7 @@ const SOLUTIONS = {
     'Encryption II: Vigenère Cipher': encryption_2_vigenere_cipher,
     // 'Find All Valid Math Expressions':,
     'Find Largest Prime Factor': find_largest_prime_factor,
-    // 'Generate IP Addresses':,
+    'Generate IP Addresses': generate_ip_addresses,
     // 'HammingCodes: Integer to Encoded Binary':,
     // 'HammingCodes: Encoded Binary to Integer':,
     'Merge Overlapping Intervals': merge_overlapping_intervals,
@@ -42,7 +44,7 @@ const SOLUTIONS = {
     'Shortest Path in a Grid': shortest_path_in_a_grid,
     'Spiralize Matrix': spiralize_matrix,
     'Subarray with Maximum Sum': subarray_with_maximum_sum,
-    // 'Total Ways to Sum':, //! WIP
+    'Total Ways to Sum': total_ways_to_sum_1,
     'Total Ways to Sum II': total_ways_to_sum_2,
     // 'Unique Paths in a Grid I':,
     // 'Unique Paths in a Grid II':,

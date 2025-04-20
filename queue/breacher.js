@@ -1,18 +1,19 @@
+import { ANSI } from "imports/ANSI"
+
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("scan")
-    ns.print(get_backdoor_list())
     let backdoor_list = get_backdoor_list()
+    ns.clearLog()
     if (backdoor_list.length > 0) {
         for (let server of backdoor_list) {
             connect_to(server)
-            ns.clearLog()
             ns.ui.openTail()
             await ns.singularity.installBackdoor()
-            ns.tprint(`SUCCESS - Installed Backdoor on ${server}`)
+            ns.tprint(`${ANSI.fg.green}Installed Backdoor on ${server}.${ANSI.reset}`)
         }
     } else {
-        ns.print('INFO - All available servers backdoored.')
+        ns.print(`${ANSI.fg.cyan}All available servers backdoored.${ANSI.reset}`)
     }
 
     function get_servers() {
