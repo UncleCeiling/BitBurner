@@ -3,7 +3,7 @@ export default function total_ways_to_sum_2(data_in) {
     // Take data
     const TARGET = data_in[0]
     const NUMBERS = data_in[1].sort((a, b) => b - a)
-    // Some Voodoo shit
+    // Some Voodoo
     let result = check_sums(TARGET, NUMBERS)
     // Give the result
     return result
