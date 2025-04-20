@@ -42,7 +42,7 @@ const SOLUTIONS = {
     'Shortest Path in a Grid': shortest_path_in_a_grid,
     'Spiralize Matrix': spiralize_matrix,
     'Subarray with Maximum Sum': subarray_with_maximum_sum,
-    // 'Total Ways to Sum':,
+    // 'Total Ways to Sum':, //! WIP
     'Total Ways to Sum II': total_ways_to_sum_2,
     // 'Unique Paths in a Grid I':,
     // 'Unique Paths in a Grid II':,
