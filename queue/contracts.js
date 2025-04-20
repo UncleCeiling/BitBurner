@@ -4,6 +4,7 @@ import array_jumping_game_1 from "contracts/complete/array_jumping_game_1";
 import array_jumping_game_2 from "contracts/complete/array_jumping_game_2";
 import compression_1_rle_compression from "contracts/complete/compression_1_rle_compression";
 import encryption_1_caesar_cipher from "contracts/complete/encryption_1_caesar_cipher";
+import encryption_2_vigenere_cipher from "contracts/complete/encryption_2_vigenere_cipher";
 import find_largest_prime_factor from "contracts/complete/find_largest_prime_factor";
 import merge_overlapping_intervals from "contracts/complete/merge_overlapping_intervals";
 import minimum_path_sum_in_a_triangle from "contracts/complete/minimum_path_sum_in_a_triangle";
@@ -17,38 +18,34 @@ import total_ways_to_sum_2 from "contracts/complete/total_ways_to_sum_2";
 
 //#region CONSTANTS
 
-// const TRIES_EXCEPTIONS = ['Array Jumping Game'] // Not used
-
-const TODO = [
-    'Algorithmic Stock Trader I',
-    'Algorithmic Stock Trader II',
-    'Algorithmic Stock Trader III',
-    'Algorithmic Stock Trader IV',
-    'Compression II: LZ Decompression',
-    'Compression III: LZ Compression',
-    'Encryption II: Vigenère Cipher',
-    'Find All Valid Math Expressions',
-    'Generate IP Addresses',
-    'HammingCodes: Integer to Encoded Binary',
-    'HammingCodes: Encoded Binary to Integer',
-    'Sanitize Parentheses in Expression',
-    'Total Ways to Sum',
-    'Unique Paths in a Grid I',
-    'Unique Paths in a Grid II',
-]
 const SOLUTIONS = {
+    // 'Algorithmic Stock Trader I':,
+    // 'Algorithmic Stock Trader II':,
+    // 'Algorithmic Stock Trader III':,
+    // 'Algorithmic Stock Trader IV':,
     'Array Jumping Game': array_jumping_game_1,
     'Array Jumping Game II': array_jumping_game_2,
     'Compression I: RLE Compression': compression_1_rle_compression,
+    // 'Compression II: LZ Decompression':,
+    // 'Compression III: LZ Compression':,
     'Encryption I: Caesar Cipher': encryption_1_caesar_cipher,
+    'Encryption II: Vigenère Cipher': encryption_2_vigenere_cipher,
+    // 'Find All Valid Math Expressions':,
     'Find Largest Prime Factor': find_largest_prime_factor,
+    // 'Generate IP Addresses':,
+    // 'HammingCodes: Integer to Encoded Binary':,
+    // 'HammingCodes: Encoded Binary to Integer':,
     'Merge Overlapping Intervals': merge_overlapping_intervals,
     'Minimum Path Sum in a Triangle': minimum_path_sum_in_a_triangle,
     'Proper 2-Coloring of a Graph': proper_2_coloring_of_a_graph, //! REDO ME
+    // 'Sanitize Parentheses in Expression':,
     'Shortest Path in a Grid': shortest_path_in_a_grid,
     'Spiralize Matrix': spiralize_matrix,
     'Subarray with Maximum Sum': subarray_with_maximum_sum,
+    // 'Total Ways to Sum':,
     'Total Ways to Sum II': total_ways_to_sum_2,
+    // 'Unique Paths in a Grid I':,
+    // 'Unique Paths in a Grid II':,
 }
 export { SOLUTIONS }
 //#endregion

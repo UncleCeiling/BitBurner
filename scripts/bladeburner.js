@@ -21,9 +21,7 @@ export async function main(ns) {
         }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
-        if (ns.bladeburner.getNextBlackOp() == null) {
-            ns.toast("WORLDDAEMON ready to be destroyed", "error", 10 * 1000);
-        } else {
+        if (ns.bladeburner.getNextBlackOp() != null) {
             ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
             while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
                 await do_action("Black Operations", get_blackop().name);
@@ -50,7 +48,9 @@ export async function main(ns) {
             }
             // Check accuracy of data and do Field Analysis if not good, otherwise Train
             ns.print("Checking estimates...");
-            let estimate = get_success_chance("Black Operations", get_blackop().name);
+            let estimate = []
+            if (get_blackop() != null) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
+            else { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination") }
             if (estimate[1] - estimate[0] >= 0.001) {
                 ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
                 if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {

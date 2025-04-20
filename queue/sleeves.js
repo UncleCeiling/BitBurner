@@ -131,8 +131,19 @@ export async function main(ns) {
     function bladeburn(sleeve_num) {
         if (!ns.bladeburner.inBladeburner()) { return false };
         if (ns.bladeburner.getNextBlackOp() == null) { return false };
-        ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
-        return true
+        let contracts = ns.bladeburner.getContractNames();
+        let operations = ns.bladeburner.getOperationNames();
+        let num_remaining = 0;
+        for (let contract of contracts) {
+            let contract_remaining = Math.floor(ns.bladeburner.getActionCountRemaining("Contracts", contract));
+            if (contract_remaining > 0) { num_remaining += contract_remaining };
+        }
+        for (let operation of operations) {
+            let operation_remaining = Math.floor(ns.bladeburner.getActionCountRemaining("Operations", operation));
+            if (operation_remaining > 0) { num_remaining += operation_remaining };
+        }
+        if (num_remaining < 100) { ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids"); return true }
+        else { ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve"); return true }
     }
 
     /**
