@@ -1,53 +1,69 @@
+import { ANSI } from "imports/ANSI"
+
 /** @param {NS} ns */
 export async function main(ns) {
-    // Location of the files to be run
-    let queue_loc = 'queue/'
-    let argument = ns.args[0]
-    let break_secs = 60
-    // Darkweb function
-    // Set break to argument if there is one
-    if (argument > 0) {
-        break_secs = argument
-    }
-    // Loop forever
-    await ns.asleep(1000)
+    const QUEUE_LOC = 'queue/'
+    const ARGUMENT = ns.args[0]
+    var break_secs = 60
+    if (ARGUMENT != null && typeof ARGUMENT != Number) { ns.tprint(`${ANSI.fg.red}${ARGUMENT} is not a valid argument (must be an integer > 0)${ANSI.reset}`); return } else if (ARGUMENT != null && ARGUMENT > 0) { break_secs = ARGUMENT } // Set break time if set
     while (true) {
-        // Fetch scripts and flag from queue
-        let scripts = ns.ls('home', queue_loc)
-        ns.print(`INFO - Found ${scripts.length} scripts.`)
-        // Shuffle scripts
-        scripts.sort(() => Math.random() - 0.5)
-        // Check each script and run it
-        for (let script of scripts) {
-            // Run script
-            ns.tprint(`Running ${script.replace(queue_loc, '')}`)
-            await ns.run(script)
-            // Give it a second
-            await ns.asleep(1000)
-            // Don't continue until the script is finished
-            while (ns.isRunning(script)) {
-                await ns.asleep(1000)
+        map()
+        server_stats()
+        await queue() // Run scripts in `queue/` folder
+        foreman()
+        ns.tprint(`${ANSI.fg.cyan}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
+        await ns.asleep(break_secs * 1000)// Pause for a bit
+
+        async function queue() {
+            var scripts = ns.ls('home', QUEUE_LOC)// Fetch scripts and flag from queue
+            ns.print(`${ANSI.fg.cyan}Found ${scripts.length} scripts.${ANSI.reset}`)
+            for (let script of scripts.sort(() => Math.random() - 0.5)) { // For shuffled
+                ns.tprint(`${ANSI.fg.magenta}${ANSI.font.underline}Running ${script.replace(QUEUE_LOC, '')}${ANSI.reset}`)
+                ns.run(script)
+                await ns.asleep(1000) // Give it a second
+                while (ns.isRunning(script)) { await ns.asleep(1000) }// Don't continue until the script is finished
             }
-            await ns.asleep(1000)
         }
 
-        // Run `home` foreman if not running and have more than 64GB of RAM
-        if (!ns.isRunning('scripts/foreman.js', 'home') && ns.getServerMaxRam('home') >= 32) {
-            ns.tprint(`Launching foreman.js on 'home'`)
-            await ns.run('scripts/foreman.js', 1)
+        function map() {
+            ns.rm('map.txt', 'home') // Remove the old map
+            var servers = new Set() // I know this is icky
+            var map_data = [] // I'm so sorry
+            map_servers('home', 0) // I'll fix this awful recursion some other time
+            ns.write('map.txt', map_data.join('\n'), 'w') // Write the new one
+            ns.tprint(`${ANSI.fg.cyan}Wrote ${map_data.length} lines to 'map.txt'${ANSI.reset}`) // Report
+            /**
+             * Recursively builds a map of the network, storing it in `var servers` and `var map_data`
+             * @param {String} server 
+             * @param {Number} depth 
+             */
+            function map_servers(server, depth) { // Icky recursion using variables outside the function :(
+                if (server.includes("custom-") || server.includes("darkweb") || server.includes("hacknet-server-")) { return } // Don't mess with special servers
+                depth++ // increment depth
+                let current = ns.getServer(server) // Get current server's info
+                map_data.push(`${'|'.padStart((depth), '    ')}${current.hasAdminRights ? "R" : "X"}${current.backdoorInstalled ? "B" : "X"} \`${current.hostname}\` ${current.requiredHackingSkill}`) // Add this server's data to the map_data
+                let children = new Set(ns.scan(current.hostname)) // Make a list of the children of this server (filtering out servers we've already checked)
+                servers.add(current.hostname) // Add this server to the set of lists we've already checked
+                if (children.length == 0) { return }
+                for (let child of children) { if (!servers.has(child)) { map_servers(child, depth) } } // Map all the children
+            }
         }
 
-        // Run mapping utils
-        await ns.asleep(1000)
-        ns.tprint(`Running mapper.js`)
-        await ns.run('scripts/mapper.js')
-        await ns.asleep(1000)
+        function server_stats() {
+            ns.rm('server_stats.txt') // Remove old file
+            var servers = ns.getPurchasedServers() // Get servers
+            if (servers.length <= 0) { ns.tprint(`${ANSI.fg.yellow}No Purchased Servers${ANSI.reset}`); return } // Can't map what doesn't exist
+            let data = servers.map((a) => `${ns.getServer(a).hostname}: ${ns.getServer(a).maxRam.toLocaleString()} GB`) // Turn servers into string to add to file
+            ns.write('server_stats.txt', data.join('\n'), 'w') // Write new file
+            ns.tprint(`${ANSI.fg.cyan}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`)
+        }
 
-        ns.tprint(`Running server_stats.js`)
-        await ns.run('scripts/server_stats.js')
+        function foreman() {
+            if (ns.getServerMaxRam('home') >= 64 && !ns.isRunning('scripts/foreman.js', 'home')) { // Run `home` foreman if not running and have more than 64GB of RAM
+                ns.tprint(`${ANSI.fg.cyan}Launching foreman.js on 'home'${ANSI.reset}`)
+                ns.run('scripts/foreman.js', 1)
+            }
+        }
 
-        // Pause for a bit
-        ns.tprint(`INFO - Taking a break for ${break_secs} seconds.`)
-        await ns.asleep(break_secs * 1000)
     }
 }
