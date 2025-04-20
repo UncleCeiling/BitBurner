@@ -9,7 +9,7 @@ export async function main(ns) {
         for (let target of to_root) {
             let req = ns.getServerRequiredHackingLevel(target.hostname);
             if (req > ns.getHackingLevel()) { ns.print(`${ANSI.fg.yellow} Skipping ${target.hostname}. (Needs hacking level ${req})${ANSI.reset}`); continue };
-            do_root(target);
+            do_root(target.hostname);
 
         }
     } else { ns.tprint(`${ANSI.fg.green} All ${servers.length} servers have been rooted.${ANSI.reset}`) }
@@ -57,7 +57,7 @@ export async function main(ns) {
         let req_level = ns.getServerRequiredHackingLevel(target)
         let player_level = ns.getHackingLevel()
         if (req_level > player_level) { ns.print(`${ANSI.fg.red}Hacking level not high enough to hack ${target} - ${player_level}/${req_level}${ANSI.reset}`) }
-        for (let exe of PORT_EXE) {
+        for (let exe of Object.keys(PORT_EXE)) {
             if (ns.fileExists(exe)) {
                 PORT_EXE[exe](target);
                 ns.print(`${ANSI.fg.green}Used ${exe} ${target}${ANSI.reset}`);

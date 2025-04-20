@@ -15,6 +15,7 @@ import spiralize_matrix from "contracts/complete/spiralize_matrix";
 import subarray_with_maximum_sum from "contracts/complete/subarray_with_maximum_sum";
 import total_ways_to_sum_1 from "contracts/complete/total_ways_to_sum_1";
 import total_ways_to_sum_2 from "contracts/complete/total_ways_to_sum_2";
+import { ANSI } from "imports/ANSI";
 
 //#endregion
 
@@ -59,21 +60,24 @@ export async function main(ns) {
     let history = { "success": 0, "fail": 0 };
     let contracts = get_contracts();
     ns.print(contracts);
-    if (contracts.length <= 0) { ns.tprint('INFO - No contracts found.'); return };
+    if (contracts.length <= 0) { ns.tprint(`${ANSI.fg.cyan}No contracts found.${ANSI.reset}`); return };
     for (let server of Object.keys(contracts)) {
         for (let contract of contracts[server]) {
             let type = ns.codingcontract.getContractType(contract, server);
-            if (!Object.keys(SOLUTIONS).includes(type)) { ns.tprint(`WARN - ${server}: Solution to "${type}" does not exist.`); continue };
+            if (!Object.keys(SOLUTIONS).includes(type)) { ns.tprint(`${ANSI.fg.yellow}${type} does not exist (${server}).${ANSI.reset}`); continue };
             let data_in = ns.codingcontract.getData(contract, server);
             let result = SOLUTIONS[type](data_in);
             let reward = ns.codingcontract.attempt(result, contract, server);
-            if (reward) { if (!reward.includes("No reward")) { ns.tprint(`SUCCESS - ${type}: ${contract} solved - ${reward}.`) } history.success++ }
-            else { ns.tprint(`FAIL - ${type}: Failed to solve ${contract}.\nData: ${data_in}\nResult: ${result}`); history.fail++ };
+            if (reward) {
+                if (!reward.includes("No reward")) {
+                    ns.tprint(`${ANSI.fg.green}${type}: ${contract} solved - ${reward}.${ANSI.reset}`)
+                } history.success++
+            } else { ns.tprint(`${ANSI.fg.red}${type}: Failed to solve ${contract}.\nData: ${data_in}\nResult: ${result}${ANSI.reset}`); history.fail++ };
             await ns.asleep(10)
         }
     }
-    if (history.success > 0) { ns.tprint(`SUCCESS - Completed ${history.success} contracts.`) };
-    if (history.fail > 0) { ns.tprint(`FAIL - Failed ${history.fail} contracts.`) };
+    if (history.success > 0) { ns.tprint(`${ANSI.fg.green}Completed ${history.success} contracts.${ANSI.reset}`) };
+    if (history.fail > 0) { ns.tprint(`${ANSI.fg.red}Failed ${history.fail} contracts.${ANSI.reset}`) };
 
 
     function get_contracts() {

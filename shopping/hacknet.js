@@ -1,3 +1,5 @@
+import { ANSI } from "imports/ANSI"
+
 /** @param {NS} ns */
 export async function main(ns) {
     // Get Budget
@@ -20,7 +22,7 @@ export async function main(ns) {
             history['spent'] += cost
             return true
         } else {
-            ns.print(`WARN - Not enough cash to buy a node ($${cost.toLocaleString()})`)
+            ns.print(`${ANSI.fg.yellow}Not enough cash to buy a node ($${cost.toLocaleString()})${ANSI.reset}`)
             return false
         }
     }
@@ -37,11 +39,11 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`FAIL - Buying level on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`${ANSI.fg.red}Buying level on node ${node} failed. ($${cost.toLocaleString()})${ANSI.reset}`)
                 return false
             }
         } else {
-            ns.print(`WARN - Not enough cash to buy level on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`${ANSI.fg.yellow}Not enough cash to buy level on node ${node}. ($${cost.toLocaleString()})${ANSI.reset}`)
             return false
         }
     }
@@ -58,11 +60,11 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`FAIL - Buying RAM on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`${ANSI.fg.red}Buying RAM on node ${node} failed. ($${cost.toLocaleString()})${ANSI.reset}`)
                 return false
             }
         } else {
-            ns.print(`WARN - Not enough cash to buy RAM on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`${ANSI.fg.yellow}Not enough cash to buy RAM on node ${node}. ($${cost.toLocaleString()})${ANSI.reset}`)
             return false
         }
     }
@@ -79,11 +81,11 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`FAIL - Buying core on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`${ANSI.fg.red}Buying core on node ${node} failed. ($${cost.toLocaleString()})${ANSI.reset}`)
                 return false
             }
         } else {
-            ns.print(`WARN - Not enough cash to buy core on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`${ANSI.fg.yellow}Not enough cash to buy core on node ${node}. ($${cost.toLocaleString()})${ANSI.reset}`)
             return false
         }
     }
@@ -100,11 +102,11 @@ export async function main(ns) {
                 history['spent'] += cost
                 return true
             } else {
-                ns.print(`FAIL - Buying cache on node ${node} failed. ($${cost.toLocaleString()})`)
+                ns.print(`${ANSI.fg.red}Buying cache on node ${node} failed. ($${cost.toLocaleString()})${ANSI.reset}`)
                 return false
             }
         } else {
-            ns.print(`WARN - Not enough cash to buy cache on node ${node}. ($${cost.toLocaleString()})`)
+            ns.print(`${ANSI.fg.yellow}Not enough cash to buy cache on node ${node}. ($${cost.toLocaleString()})${ANSI.reset}`)
             return false
         }
     }
@@ -163,6 +165,6 @@ export async function main(ns) {
         let data = list.join(', ')
         let comma = data.lastIndexOf(',')
         if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
-        ns.tprint(`SUCCESS - Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Total: $${history.spent.toLocaleString()}`)
+        ns.tprint(`${ANSI.fg.green}Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Total: $${history.spent.toLocaleString()}${ANSI.reset}`)
     }
 }

@@ -1,3 +1,5 @@
+import { ANSI } from "imports/ANSI";
+
 /** @param {NS} ns */
 export async function main(ns) {
 
@@ -19,7 +21,7 @@ export async function main(ns) {
         let data = list.join(', ')
         let comma = data.lastIndexOf(',')
         if (comma > 0) { data = data.substring(0, comma) + ' and' + data.substring(comma + 1) }
-        ns.tprint(`SUCCESS - Bought ${data}.\n${' '.padEnd((ns.getScriptName().length), ' ')}  Hashes spent: ${history.spent}`)
+        ns.tprint(`${ANSI.fg.green}Bought ${data} for ${history.spent} hashes.${ANSI.reset}`)
     }
     function buy_hash_upgrade(upgrade, target = '') {
         let cost = ns.hacknet.hashCost(upgrade)

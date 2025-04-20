@@ -11,7 +11,7 @@ export async function main(ns) {
         server_stats()
         await queue() // Run scripts in `queue/` folder
         foreman()
-        ns.tprint(`${ANSI.fg.cyan}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
+        ns.tprint(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
         await ns.asleep(break_secs * 1000)// Pause for a bit
 
         async function queue() {
@@ -31,7 +31,7 @@ export async function main(ns) {
             var map_data = [] // I'm so sorry
             map_servers('home', 0) // I'll fix this awful recursion some other time
             ns.write('map.txt', map_data.join('\n'), 'w') // Write the new one
-            ns.tprint(`${ANSI.fg.cyan}Wrote ${map_data.length} lines to 'map.txt'${ANSI.reset}`) // Report
+            ns.tprint(`${ANSI.fg.magenta}Wrote ${map_data.length} lines to 'map.txt'${ANSI.reset}`) // Report
             /**
              * Recursively builds a map of the network, storing it in `var servers` and `var map_data`
              * @param {String} server 
@@ -39,9 +39,9 @@ export async function main(ns) {
              */
             function map_servers(server, depth) { // Icky recursion using variables outside the function :(
                 if (server.includes("custom-") || server.includes("darkweb") || server.includes("hacknet-server-")) { return } // Don't mess with special servers
-                depth++ // increment depth
                 let current = ns.getServer(server) // Get current server's info
-                map_data.push(`${'|'.padStart((depth), '    ')}${current.hasAdminRights ? "R" : "X"}${current.backdoorInstalled ? "B" : "X"} \`${current.hostname}\` ${current.requiredHackingSkill}`) // Add this server's data to the map_data
+                map_data.push(`${'|>'.padStart((depth * 2), '| ')}${current.hasAdminRights ? "R" : "X"}${current.backdoorInstalled ? "B" : "X"} \`${current.hostname}\` ${current.requiredHackingSkill}`) // Add this server's data to the map_data
+                depth++ // increment depth
                 let children = new Set(ns.scan(current.hostname)) // Make a list of the children of this server (filtering out servers we've already checked)
                 servers.add(current.hostname) // Add this server to the set of lists we've already checked
                 if (children.length == 0) { return }
@@ -55,12 +55,12 @@ export async function main(ns) {
             if (servers.length <= 0) { ns.tprint(`${ANSI.fg.yellow}No Purchased Servers${ANSI.reset}`); return } // Can't map what doesn't exist
             let data = servers.map((a) => `${ns.getServer(a).hostname}: ${ns.getServer(a).maxRam.toLocaleString()} GB`) // Turn servers into string to add to file
             ns.write('server_stats.txt', data.join('\n'), 'w') // Write new file
-            ns.tprint(`${ANSI.fg.cyan}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`)
+            ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`)
         }
 
         function foreman() {
             if (ns.getServerMaxRam('home') >= 64 && !ns.isRunning('scripts/foreman.js', 'home')) { // Run `home` foreman if not running and have more than 64GB of RAM
-                ns.tprint(`${ANSI.fg.cyan}Launching foreman.js on 'home'${ANSI.reset}`)
+                ns.tprint(`${ANSI.fg.magenta}Launching foreman.js on 'home'${ANSI.reset}`)
                 ns.run('scripts/foreman.js', 1)
             }
         }

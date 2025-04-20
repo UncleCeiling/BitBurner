@@ -25,8 +25,8 @@ export async function main(ns) {
     }
 
     function create_gang() {
-        if (ns.gang.inGang()) { ns.print('WARN - Gang already made'); return true }
-        else if (get_karma() > -54000) { ns.tprint(`WARN - Not enough karma ${get_karma()}/-54000 (${Math.floor(get_karma() / -540)}%)`); return false }
+        if (ns.gang.inGang()) { ns.print(`${ANSI.fg.yellow}Gang already made${ANSI.reset}`); return true }
+        else if (get_karma() > -54000) { ns.tprint(`${ANSI.fg.yellow}Not enough karma ${get_karma()}/-54000 (${Math.floor(get_karma() / -540)}%)${ANSI.reset}`); return false }
         else { ns.gang.createGang(GANG_FACTION); return true }
     }
 
@@ -41,7 +41,7 @@ export async function main(ns) {
             if (member != -1) {
                 ns.gang.setMemberTask(`Dave ${member}`, 'Train Combat')
                 ns.tprint(`${ANSI.fg.green} Recruited new member: Dave ${member}${ANSI.reset}`)
-            } else { ns.print(`FAIL - Failed to recruit new member.`); return }
+            } else { ns.print(`${ANSI.fg.red}Failed to recruit new member.${ANSI.reset}`); return }
         }
     }
 
@@ -78,7 +78,7 @@ export async function main(ns) {
             let result = ns.gang.getAscensionResult(member)
             if (result) {
                 let lowestMulti = Math.min(result.str, result.def, result.dex, result.agi)
-                if (lowestMulti > ASCENSION_MULTIPLIER) { ns.print(`SUCCESS - Ascended ${member}`); ns.gang.ascendMember(member) }
+                if (lowestMulti > ASCENSION_MULTIPLIER) { ns.print(`${ANSI.fg.green}Ascended ${member}${ANSI.reset}`); ns.gang.ascendMember(member) }
             }
         }
     }
@@ -88,7 +88,7 @@ export async function main(ns) {
         ascension()
         let doing_war = war()
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
-        ns.tprint(`INFO\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}/54000\nMembers: ${get_members()}\nDoing War: ${doing_war}`)
+        ns.tprint(`${ANSI.fg.cyan}\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}/54000\nMembers: ${get_members()}\nDoing War: ${doing_war}${ANSI.reset}`)
         recruiting()
         for (let member of get_members()) {
             await ns.gang.nextUpdate();
