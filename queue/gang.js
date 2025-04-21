@@ -88,7 +88,7 @@ export async function main(ns) {
         ascension()
         let doing_war = war()
         if (doing_war) { ns.gang.setTerritoryWarfare(1) } else { ns.gang.setTerritoryWarfare(0) }
-        ns.tprint(`${ANSI.fg.cyan}\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}/54000\nMembers: ${get_members()}\nDoing War: ${doing_war}${ANSI.reset}`)
+        ns.tprint(`${ANSI.fg.cyan}\nFaction: ${GANG_FACTION}\nKarma: ${get_karma()}/-54000\nMembers: ${get_members()}\nDoing War: ${doing_war}${ANSI.reset}`)
         recruiting()
         for (let member of get_members()) {
             await ns.gang.nextUpdate();
