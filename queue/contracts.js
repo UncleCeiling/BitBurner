@@ -10,6 +10,7 @@ import generate_ip_addresses from "contracts/complete/generate_ip_addresses";
 import merge_overlapping_intervals from "contracts/complete/merge_overlapping_intervals";
 import minimum_path_sum_in_a_triangle from "contracts/complete/minimum_path_sum_in_a_triangle";
 import proper_2_coloring_of_a_graph from "contracts/complete/proper_2_coloring_of_a_graph";
+import sanitize_parentheses_in_expression from "contracts/complete/sanitize_parentheses_in_expression";
 import shortest_path_in_a_grid from "contracts/complete/shortest_path_in_a_grid";
 import spiralize_matrix from "contracts/complete/spiralize_matrix";
 import subarray_with_maximum_sum from "contracts/complete/subarray_with_maximum_sum";
@@ -41,7 +42,7 @@ const SOLUTIONS = {
     'Merge Overlapping Intervals': merge_overlapping_intervals,
     'Minimum Path Sum in a Triangle': minimum_path_sum_in_a_triangle,
     'Proper 2-Coloring of a Graph': proper_2_coloring_of_a_graph, //! REDO ME
-    // 'Sanitize Parentheses in Expression':,
+    'Sanitize Parentheses in Expression': sanitize_parentheses_in_expression,
     'Shortest Path in a Grid': shortest_path_in_a_grid,
     'Spiralize Matrix': spiralize_matrix,
     'Subarray with Maximum Sum': subarray_with_maximum_sum,
