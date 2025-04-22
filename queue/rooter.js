@@ -46,28 +46,49 @@ export async function main(ns) {
     }
 
     function do_root(target) {
-        const PORT_EXE = {
-            "BruteSSH.exe": ns.brutessh,
-            "FTPCrack.exe": ns.ftpcrack,
-            "HTTPWorm.exe": ns.httpworm,
-            "SQLInject.exe": ns.sqlinject,
-            "relaySMTP.exe": ns.relaysmtp,
-        }
-        let currentPorts = 0
+        const EXE_LIST = [
+            "BruteSSH.exe",
+            "FTPCrack.exe",
+            "HTTPWorm.exe",
+            "SQLInject.exe",
+            "relaySMTP.exe",
+        ]
         let req_level = ns.getServerRequiredHackingLevel(target)
         let player_level = ns.getHackingLevel()
         if (req_level > player_level) { ns.print(`${ANSI.fg.red}Hacking level not high enough to hack ${target} - ${player_level}/${req_level}${ANSI.reset}`) }
-        for (let exe of Object.keys(PORT_EXE)) {
-            if (ns.fileExists(exe)) {
-                PORT_EXE[exe](target);
-                ns.print(`${ANSI.fg.green}Used ${exe} ${target}${ANSI.reset}`);
-                currentPorts++
-            }
+        let currentPorts = 0
+        for (let exe of EXE_LIST) {
+            if (!open_port(exe, target)) { continue };
+            ns.print(`${ANSI.fg.green}Used ${exe} ${target}${ANSI.reset}`);
+            currentPorts++
         }
         if (ns.getServerNumPortsRequired(target) > currentPorts) {
             ns.tprint(`WARN - Opened ${currentPorts}/${ns.getServerNumPortsRequired(target)} ports on ${target}.`)
         } else {
-            if (ns.getServer(target).hasAdminRights) { ns.nuke(target); ns.tprint(`${ANSI.fg.green}Nuked ${target}.${ANSI.reset}`) }
+            ns.nuke(target); ns.tprint(`${ANSI.fg.green}Nuked ${target}.${ANSI.reset}`)
         }
+    }
+
+    function open_port(exe, target) {
+        if (ns.fileExists(exe)) {
+            switch (exe) {
+                case "BruteSSH.exe":
+                    ns.brutessh(target);
+                    break;
+                case "FTPCrack.exe":
+                    ns.ftpcrack(target);
+                    break;
+                case "HTTPWorm.exe":
+                    ns.httpworm(target);
+                    break;
+                case "SQLInject.exe":
+                    ns.sqlinject(target);
+                    break;
+                case "relaySMTP.exe":
+                    ns.relaysmtp(target);
+                    break;
+            }
+            return true
+        } else { return false }
     }
 }

@@ -42,7 +42,7 @@ export async function main(ns) {
      * @returns {Boolean} `true` when sleeve is being synced, `false` if not.
      */
     function synchronise_sleeve(sleeve_num) {
-        if (ns.sleeve.getSleeve(sleeve_num).sync <= 99) {
+        if (ns.sleeve.getSleeve(sleeve_num).sync < 100) {
             ns.sleeve.setToSynchronize(sleeve_num);
             return true
         } else { return false }
@@ -65,7 +65,7 @@ export async function main(ns) {
      * @param {Number} sleeve_num Number of the sleeve
      * @returns {Number} Chance of success where 1 = 100%
      */
-    function calc_crime_success(sleeve_num) {
+    function calc_crime_success(sleeve_num, crime) {
         let stats = ns.sleeve.getSleeve(sleeve_num);
         const CRIME_WEIGHTS = {
             "Homicide":
@@ -92,22 +92,22 @@ export async function main(ns) {
         let crime_chances = {}
         for (let crime of Object.keys(CRIME_WEIGHTS)) {
             let chance = (
-                (CRIME_WEIGHTS[crime]["hacking_weight"] * stats.skills.hacking) +
-                (CRIME_WEIGHTS[crime]["strength_weight"] * stats.skills.strength) +
-                (CRIME_WEIGHTS[crime]["defense_weight"] * stats.skills.defense) +
-                (CRIME_WEIGHTS[crime]["dexterity_weight"] * stats.skills.dexterity) +
-                (CRIME_WEIGHTS[crime]["agility_weight"] * stats.skills.agility) +
-                (CRIME_WEIGHTS[crime]["charisma_weight"] * stats.skills.charisma) +
+                (CRIME_WEIGHTS[crime].hacking_weight * stats.skills.hacking) +
+                (CRIME_WEIGHTS[crime].strength_weight * stats.skills.strength) +
+                (CRIME_WEIGHTS[crime].defense_weight * stats.skills.defense) +
+                (CRIME_WEIGHTS[crime].dexterity_weight * stats.skills.dexterity) +
+                (CRIME_WEIGHTS[crime].agility_weight * stats.skills.agility) +
+                (CRIME_WEIGHTS[crime].charisma_weight * stats.skills.charisma) +
                 (0.025 * stats.skills.intelligence)
             )
             chance /= 975;
-            chance /= CRIME_WEIGHTS[crime]["difficulty"];
+            chance /= CRIME_WEIGHTS[crime].difficulty;
             chance *= stats.mults.crime_success;
             chance *= ns.getBitNodeMultipliers().CrimeSuccessRate;
             chance *= 1 + (Math.pow(ns.getPlayer().skills.intelligence, 0.8)) / 600
             crime_chances[crime] = chance
         }
-        return Math.min(crime_chances, 1)
+        return Math.min(crime_chances[crime], 1)
     }
 
     /**
@@ -118,7 +118,7 @@ export async function main(ns) {
     function homicide(sleeve_num) {
         let current_task = ns.sleeve.getTask(sleeve_num)
         if (current_task != null && current_task.crimeType != null && current_task.crimeType == "Homicide") { return true }
-        let success_chance = calc_crime_success(sleeve_num)["Homicide"];
+        let success_chance = calc_crime_success(sleeve_num, "Homicide");
         if (success_chance < 1) { ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true };
         return false
     }
@@ -143,7 +143,8 @@ export async function main(ns) {
             if (operation_remaining > 0) { num_remaining += operation_remaining };
         }
         if (num_remaining < 100) { ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids"); return true }
-        else { ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve"); return true }
+        if (ns.bladeburner.getCurrentAction().type != "General") { ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve"); return true }
+        else { return false }
     }
 
     /**
