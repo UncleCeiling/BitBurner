@@ -28,12 +28,12 @@ export async function main(ns) {
         // ns.print('INFO - Browsing the Darkweb.')
         if (ns.getServerMoneyAvailable('home') > Math.min(...programCosts)) { // If we have enough money
             ns.singularity.purchaseProgram(buyChoice) // Buy the program
-            ns.tprint(`SUCCESS - Purchased ${buyChoice}`) // Report the success
+            ns.tprint(`${ANSI.fg.green}Purchased ${buyChoice}${ANSI.reset}`) // Report the success
         } else if (min == Infinity) { // If all products are owned
-            ns.print('SUCCESS - All Darkweb products are owned.') // Say so
+            ns.print(`${ANSI.fg.green}All Darkweb products are owned.${ANSI.reset}`) // Say so
             return
         } else {
-            ns.print(`WARN - Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}`) // Otherwise we are out of cash
+            ns.print(`${ANSI.fg.yellow}Not enough funds to purchase ${buyChoice} - Need $${Math.min(min).toLocaleString()}${ANSI.reset}`) // Otherwise we are out of cash
         }
         await ns.asleep(10)
     }

@@ -1,3 +1,5 @@
+import { ANSI } from "imports/ANSI";
+
 /** @param {NS} ns */
 export async function main(ns) {
     // Get info
@@ -12,7 +14,7 @@ export async function main(ns) {
         buyRam *= 2
         // If we somehow top out then something is very wrong
         if (buyRam > maxRam) {
-            ns.tprint(`ERROR - RAM too large: Reduce size of mining scripts`)
+            ns.tprint(`${ANSI.fg.red}RAM too large: Reduce size of mining scripts.${ANSI.reset}`)
             break
         }
     }
@@ -26,7 +28,7 @@ export async function main(ns) {
             let serverName = `custom-${String(serverNum).padStart(2, '0')}`
             // Buy the server
             ns.purchaseServer(serverName, buyRam)
-            ns.tprint(`SUCCESS - Bought ${buyRam}GB server: ${serverName} ($${cost})`)
+            ns.tprint(`${ANSI.fg.green}Bought ${buyRam}GB server: ${serverName} ($${cost})${ANSI.reset}`)
             // Refresh the budget & increment the server num
             budget = ns.getServerMoneyAvailable('home')
             serverNum++
@@ -52,7 +54,7 @@ export async function main(ns) {
         if (upgradeCost > budget) { continue }
         // Buy upgrade
         ns.upgradePurchasedServer(server, currentRam * 2)
-        ns.tprint(`SUCCESS - Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})`)
+        ns.tprint(`${ANSI.fg.green}Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})${ANSI.reset}`)
     }
 
     // Deploy foreman to each server

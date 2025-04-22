@@ -1,7 +1,9 @@
+import { ANSI } from "imports/ANSI";
+
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL')
-    if (!ns.gang.inGang()) { ns.print('ERROR - Not currently in a gang.'); return }
+    if (!ns.gang.inGang()) { ns.print(`${ANSI.fg.red}Not currently in a gang.${ANSI.reset}`); return }
     const EQUIPMENT = { // List of possible equipment
         'weapons': [
             "Baseball Bat",
@@ -55,11 +57,11 @@ export async function main(ns) {
                 let cost = ns.gang.getEquipmentCost(item)
                 if (cost > budget) { continue }
                 else {
-                    if (ns.gang.purchaseEquipment(member, item)) { ns.print(`SUCCESS - Bought ${item} for ${member}.`); bought++ }
+                    if (ns.gang.purchaseEquipment(member, item)) { ns.print(`${ANSI.fg.green}Bought ${item} for ${member}.${ANSI.reset}`); bought++ }
                 }
             }
         }
     }
-    if (bought > 0) { ns.tprint(`SUCCESS - Bought ${bought} pieces of equipment across ${members.length} members.`) }
-    else { ns.print('INFO - Nothing bought.') }
+    if (bought > 0) { ns.tprint(`${ANSI.fg.green}Bought ${bought} pieces of equipment across ${members.length} members.${ANSI.reset}`) }
+    else { ns.print(`${ANSI.fg.cyan}Nothing bought.${ANSI.reset}`) }
 }
