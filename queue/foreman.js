@@ -66,7 +66,7 @@ export async function main(ns) {
                     if (working[job.host].end < end_time) { working[job.host].end = end_time };
                 } else { working[job.host] = { 'threads': job.threads, 'end': Date.now() + job.time } };
                 // Run the job
-                await run_job(job, miner);
+                run_job(job, miner);
             };
             await ns.asleep((DELAY * 1000) + 1);
             if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
@@ -79,9 +79,9 @@ export async function main(ns) {
         await ns.asleep((DELAY * 1000) + 1);
     };
 
-    async function run_job(job, miner) {
+    function run_job(job, miner) {
         ns.scp(job.script, miner, HOST);
-        let success = await ns.exec(job.script, miner, job.threads, job.host);
+        let success = ns.exec(job.script, miner, job.threads, job.host);
         if (success > 0) { ns.print(`${ANSI.fg.green}${job.script}|t=${job.threads}|${ANSI.fg.cyan}${miner} >> ${job.host}${ANSI.reset}`) }
         else { ns.print(`${ANSI.fg.red}Failed to execute ${job.script} | ${miner} >> ${job.host} | t=${job.threads}${ANSI.reset}`) };
     };

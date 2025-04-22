@@ -10,6 +10,17 @@ export async function main(ns) {
         for (let skill of skills) {
             let level = ns.bladeburner.getSkillLevel(skill);
             let cost = ns.bladeburner.getSkillUpgradeCost(skill);
+            if (skill == "Overclock") {
+                while (get_skill_points() > ns.bladeburner.getSkillUpgradeCost("Overclock")) {
+                    if (ns.bladeburner.upgradeSkill("Overclock")) {
+                        ns.tprint(`${ANSI.fg.green}Bought Overclock for ${cost} points (Level: ${level + 1})${ANSI.reset}`);
+                    } else {
+                        ns.tprint(`${ANSI.fg.red}Failed to buy Overclock for ${cost} points (Current points: ${points})${ANSI.reset}`);
+                    };
+                    cost = ns.bladeburner.getSkillUpgradeCost(skill)
+                    level = ns.bladeburner.getSkillLevel(skill)
+                }
+            }
             if (cost < Infinity) { skill_levels.push({ "name": skill, "level": level, "cost": cost }) };
         };
         success = false;
