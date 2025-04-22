@@ -6,7 +6,12 @@ export async function main(ns) {
     const OPERATIONS = ns.bladeburner.getOperationNames();
     const CONTRACTS = ns.bladeburner.getContractNames();
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
-    const ACCURACY_ACTIONS = ["Field Analysis", "Tracking", "Investigation", "Undercover Operation"];
+    const ACCURACY_ACTIONS = {
+        "Operations": "Undercover Operation",
+        "Operations": "Investigation",
+        "Contracts": "Tracking",
+        "General": "Field Analysis",
+    }
     const GENERAL_ACTIONS = ["Training", "Field Analysis", "Recruitment", "Diplomacy", "Hyperbolic Regeneration Chamber", "Incite Violence"];
     while (true) {
         ns.clearLog();
@@ -53,10 +58,12 @@ export async function main(ns) {
             else { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination") }
             if (estimate[1] - estimate[0] >= 0.001) {
                 ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Field Analysis") {
-                    ns.bladeburner.startAction("General", "Field Analysis");
+                for (let i in Object.keys(ACCURACY_ACTIONS)) {
+                    if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] < 1) {
+                        if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) { ns.bladeburner.startAction(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) };
+                        break
+                    }
                 }
-                break
             }
             // If Operation available and probable: do it
             let operation_list = [];
