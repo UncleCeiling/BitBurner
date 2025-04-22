@@ -3,6 +3,7 @@ import { ANSI } from "../imports/ANSI";
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL");
+    if (ns.getServerMaxRam("home" < 64)) { return }
     // Set Constants
     const HOST = 'home';
     const DELAY = 1;

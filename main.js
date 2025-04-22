@@ -10,7 +10,6 @@ export async function main(ns) {
         map()
         server_stats()
         await queue() // Run scripts in `queue/` folder
-        foreman()
         ns.tprint(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
         await ns.asleep(break_secs * 1000)// Pause for a bit
 
@@ -18,10 +17,11 @@ export async function main(ns) {
             var scripts = ns.ls('home', QUEUE_LOC)// Fetch scripts and flag from queue
             ns.print(`${ANSI.fg.cyan}Found ${scripts.length} scripts.${ANSI.reset}`)
             for (let script of scripts.sort(() => Math.random() - 0.5)) { // For shuffled
+                if (ns.isRunning(script)) { continue }// Skip script if already running
+                while (ns.getScriptRam(script) > (ns.getServerMaxRam("home") - ns.getServerUsedRam("home"))) { await ns.asleep(1000) }
                 ns.tprint(`${ANSI.fg.magenta}${ANSI.font.underline}Running ${script.replace(QUEUE_LOC, '')}${ANSI.reset}`)
                 ns.run(script)
                 await ns.asleep(1000) // Give it a second
-                while (ns.isRunning(script)) { await ns.asleep(1000) }// Don't continue until the script is finished
             }
         }
 
@@ -56,13 +56,6 @@ export async function main(ns) {
             let data = servers.map((a) => `${ns.getServer(a).hostname}: ${ns.getServer(a).maxRam.toLocaleString()} GB`) // Turn servers into string to add to file
             ns.write('server_stats.txt', data.join('\n'), 'w') // Write new file
             ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`)
-        }
-
-        function foreman() {
-            if (ns.getServerMaxRam('home') >= 64 && !ns.isRunning('scripts/foreman.js', 'home')) { // Run `home` foreman if not running and have more than 64GB of RAM
-                ns.tprint(`${ANSI.fg.magenta}Launching foreman.js on 'home'${ANSI.reset}`)
-                ns.run('scripts/foreman.js', 1)
-            }
         }
 
     }

@@ -9,7 +9,6 @@ export async function main(ns) {
     // Do the stuff
     accept_invites();
     join_bladeburners();
-    start_bladeburning();
     if (check_grafting()) { return };
     if (farm_karma()) { return };
     if (farm_kills()) { return };
@@ -55,14 +54,6 @@ export async function main(ns) {
         };
         // Join Faction
         if (player_stats.factions.indexOf("Bladeburners") == -1 && ns.bladeburner.inBladeburner()) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } };
-    }
-
-    /** Start bladeburner script */
-    function start_bladeburning() {
-        if (!ns.isRunning("scripts/bladeburner.js") && ns.bladeburner.inBladeburner()) {
-            if (ns.run("scripts/bladeburner.js") == 0) { ns.tprint(`${ANSI.fg.red}Failed to start bladeburner.js${ANSI.reset}`) }
-            else { ns.tprint(`${ANSI.fg.cyan}Started bladeburner.js${ANSI.reset}`) };
-        };
     }
 
     /** Accept Faction invitations */

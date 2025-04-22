@@ -1,24 +1,15 @@
+import { ANSI } from "imports/ANSI"
+
 /** @param {NS} ns */
 export async function main(ns) {
-    // Build program list
-    let programList = ns.singularity.getDarkwebPrograms()
-    let programCosts = []
-    // Check for TOR Router
     ns.print('Checking for TOR')
-    if (programList.length <= 0) {
-        if (ns.getServerMoneyAvailable('home') >= 200000) {
-            ns.singularity.purchaseTor()
-            ns.tprint('SUCCESS - TOR router purchased')
-        } else { // Give up if can't afford TOR router
-            ns.print('WARN - Not enough Cash to purchase TOR router')
-            return
-        }
-    }
+    if (!ns.singularity.purchaseTor()) { ns.tprint(`${ANSI.fg.red}TOR router not owned${ANSI.reset}`); return } // Check for TOR Router
     // Check for purchasable
     let min = 0
     let cheapestIndex = 0
     let buyChoice = ''
-    programList = ns.singularity.getDarkwebPrograms()
+    let programCosts = []
+    let programList = ns.singularity.getDarkwebPrograms()
     while ((min < ns.getServerMoneyAvailable('home'))) { // As long as I have the money
         programList = ns.singularity.getDarkwebPrograms() // Update Program list
         programCosts = []

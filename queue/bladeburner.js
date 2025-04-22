@@ -2,7 +2,7 @@ import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
-    // ns.ui.openTail()
+    if (!ns.bladeburner.inBladeburner()) { return }
     const OPERATIONS = ns.bladeburner.getOperationNames();
     const CONTRACTS = ns.bladeburner.getContractNames();
     const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
