@@ -26,11 +26,22 @@ export async function main(ns) {
         }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
-        if (ns.bladeburner.getNextBlackOp() != null) {
+        if (ns.bladeburner.getNextBlackOp() != null && ns.bladeburner.getNextBlackOp().rank != null) {
             ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
             while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
                 await do_action("Black Operations", get_blackop().name);
             };
+        }
+        // If stamina penalty too high, Train for a bit
+        let stamina = ns.bladeburner.getStamina()
+        if (stamina[0] / stamina[1] <= 0.5) {
+            while (stamina[0] / stamina[1] <= 0.6) {
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
+                    ns.bladeburner.startAction("General", "Training"); ns.print(`${ANSI.fg.yellow}Recovering Stamina while Training${ANSI.reset}`)
+                }
+                stamina = ns.bladeburner.getStamina();
+                await ns.bladeburner.nextUpdate();
+            }
         }
         // For each city, try Ops and Contracts.
         let cities = CITIES.filter((name) => name != ns.bladeburner.getCity());
@@ -57,13 +68,14 @@ export async function main(ns) {
             if (get_blackop() != null) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
             else { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination") }
             if (estimate[1] - estimate[0] >= 0.001) {
-                ns.print(`${ANSI.fg.cyan}Performing Field Analysis to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
                 for (let i in Object.keys(ACCURACY_ACTIONS)) {
-                    if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] < 1) {
+                    if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] >= 1) {
                         if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) { ns.bladeburner.startAction(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) };
+                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
                         break
                     }
                 }
+                break
             }
             // If Operation available and probable: do it
             let operation_list = [];

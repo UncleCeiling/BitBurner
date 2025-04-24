@@ -4,13 +4,13 @@ import { ANSI } from "imports/ANSI"
 export async function main(ns) {
     const SCRIPTS = [
         'hashes.js',
-        'bladeburner_skills.js',
         'darkweb.js',
         'housekeeping.js',
         'gang_equipment.js',
-        'sleeve_augments.js',
         'hacknet.js',
         'servers.js',
+        'sleeve_augments.js',
+        'bladeburner_skills.js',
     ]
     const SCRIPT_LOC = 'shopping/'
     for (let script of SCRIPTS) {

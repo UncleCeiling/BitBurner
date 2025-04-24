@@ -12,8 +12,8 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
-        if (calm_sleeve(sleeve)) { continue };
         if (farm_karma(sleeve)) { continue };
+        if (calm_sleeve(sleeve)) { continue };
         if (synchronise_sleeve(sleeve)) { continue };
         if (homicide(sleeve)) { continue };
         if (bladeburn(sleeve)) { continue };
@@ -117,9 +117,11 @@ export async function main(ns) {
      */
     function homicide(sleeve_num) {
         let current_task = ns.sleeve.getTask(sleeve_num)
-        if (current_task != null && current_task.crimeType != null && current_task.crimeType == "Homicide") { return true }
         let success_chance = calc_crime_success(sleeve_num, "Homicide");
-        if (success_chance < 1) { ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true };
+        if (success_chance < 1) {
+            if (current_task != null && current_task.crimeType != null && current_task.crimeType == "Homicide") { return true }
+            ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true
+        };
         return false
     }
 
@@ -143,7 +145,7 @@ export async function main(ns) {
             if (operation_remaining > 0) { num_remaining += operation_remaining };
         }
         if (num_remaining < 100) { ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids"); return true }
-        if (ns.bladeburner.getCurrentAction().type != "General") { ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve"); return true }
+        if (ns.bladeburner.getCurrentAction() != null && ns.bladeburner.getCurrentAction().type != "General") { ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve"); return true }
         else { return false }
     }
 
