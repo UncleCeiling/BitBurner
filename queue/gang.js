@@ -1,5 +1,5 @@
-/** @param {NS} ns */
 import { ANSI } from "imports/ANSI"
+/** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL')
     const GANG_FACTION = "Slum Snakes" // My Chosen Faction
@@ -77,8 +77,8 @@ export async function main(ns) {
         for (let member of get_members()) {
             let result = ns.gang.getAscensionResult(member)
             if (result) {
-                let lowestMulti = Math.min(result.str, result.def, result.dex, result.agi)
-                if (lowestMulti > ASCENSION_MULTIPLIER) { ns.print(`${ANSI.fg.green}Ascended ${member}${ANSI.reset}`); ns.gang.ascendMember(member) }
+                let avg_multi = (result.agi + result.cha + result.def + result.dex + result.hack + result.str) / 6
+                if (avg_multi > ASCENSION_MULTIPLIER) { ns.print(`${ANSI.fg.green}Ascended ${member}${ANSI.reset}`); ns.gang.ascendMember(member) }
             }
         }
     }
