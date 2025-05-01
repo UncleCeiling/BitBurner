@@ -12,7 +12,6 @@ export async function main(ns) {
         "Contracts": "Tracking",
         "General": "Field Analysis",
     }
-    const GENERAL_ACTIONS = ["Training", "Field Analysis", "Recruitment", "Diplomacy", "Hyperbolic Regeneration Chamber", "Incite Violence"];
     while (true) {
         ns.clearLog();
         let current_action = ns.bladeburner.getCurrentAction();// Check Current Action is still viable
@@ -52,6 +51,7 @@ export async function main(ns) {
             }
         }
         for (let city of cities) {
+            if (ns.bladeburner.getCityEstimatedPopulation(city) < 1000) { continue }
             // Check recruitment; recruit if 100%
             ns.print("Checking recruitment...")
             let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
@@ -64,9 +64,8 @@ export async function main(ns) {
             }
             // Check accuracy of data and do Field Analysis if not good, otherwise Train
             ns.print("Checking estimates...");
-            let estimate = []
-            if (get_blackop() != null) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
-            else { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination") }
+            let estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination")
+            if (get_blackop() != null && estimate[0] >= 1) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
             if (estimate[1] - estimate[0] >= 0.001) {
                 for (let i in Object.keys(ACCURACY_ACTIONS)) {
                     if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] >= 1 && ns.bladeburner.getActionCountRemaining(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) >= 1) {
