@@ -49,13 +49,11 @@ export async function main(ns) {
         let random = Math.random()
         let wanted_rate = ns.gang.getGangInformation().wantedLevelGainRate
         let wanted_penalty = ns.gang.getGangInformation().wantedPenalty
-        if (wanted_rate > 0 || wanted_penalty < 0.45) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
+        if (wanted_rate >= 0.5 || wanted_penalty < 0.8) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
         else if (doing_war) { ns.gang.setMemberTask(member, 'Territory Warfare') }
         else if (ns.gang.getGangInformation().territory != 1) {
-            if (random < TRAINING_PERCENT && get_members.length < 12 && get_members().length < 12) { ns.gang.setMemberTask(member, 'Train Combat') }
-            else if (get_members().length <= 6) { ns.gang.setMemberTask(member, 'Strongarm Civilians') }
+            if (random < TRAINING_PERCENT && get_members().length < 6) { ns.gang.setMemberTask(member, 'Train Combat') }
             else if (get_members().length >= 12) { ns.gang.setMemberTask(member, 'Territory Warfare') }
-            else if (Math.random() < 0.5) { ns.gang.setMemberTask(member, 'Human Trafficking') }
             else { ns.gang.setMemberTask(member, 'Terrorism') }
         } else { ns.gang.setMemberTask(member, 'Human Trafficking') }
     }
@@ -68,12 +66,13 @@ export async function main(ns) {
             if (worst_win_chance > current_win_chance && ns.gang.getOtherGangInformation()[faction].territory > 0) { worst_win_chance = current_win_chance }
         }
         ns.print('Win chance: ' + worst_win_chance)
-        if (worst_win_chance > MIN_WIN_PERCENT && get_members().length >= 12) { return true }
+        if (worst_win_chance > MIN_WIN_PERCENT && get_members().length >= 2) { return true }
         else { return false }
 
     }
 
     function ascension() {
+        if (get_members().length < 12) { return }
         for (let member of get_members()) {
             let result = ns.gang.getAscensionResult(member)
             if (result) {

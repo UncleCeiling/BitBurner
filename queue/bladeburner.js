@@ -66,11 +66,11 @@ export async function main(ns) {
             ns.print("Checking estimates...");
             let estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination")
             if (get_blackop() != null && estimate[0] >= 1) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
-            if (estimate[1] - estimate[0] >= 0.001) {
+            if (estimate[1] - estimate[0] > 0) {
                 for (let i in Object.keys(ACCURACY_ACTIONS)) {
                     if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] >= 1 && ns.bladeburner.getActionCountRemaining(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) >= 1) {
                         if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) { ns.bladeburner.startAction(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) };
-                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates (${(estimate[1] - estimate[0]).toFixed(4)} > 0.0010).${ANSI.reset}`);
+                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates (${(estimate[1] - estimate[0])} > 0).${ANSI.reset}`);
                         break
                     }
                 }

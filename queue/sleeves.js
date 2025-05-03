@@ -12,9 +12,10 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
+        if (farm_karma(sleeve)) { continue };
+        if (farm_hacking(sleeve)) { continue };
         if (calm_sleeve(sleeve)) { continue };
         if (synchronise_sleeve(sleeve)) { continue };
-        if (farm_karma(sleeve)) { continue };
         if (homicide(sleeve)) { continue };
         if (bladeburn(sleeve)) { continue };
         heist(sleeve);
@@ -33,6 +34,30 @@ export async function main(ns) {
             if (task == null || task.crimeType == null || task.crimeType != "Homicide") {
                 ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true
             } else { return true }
+        } else { return false }
+    }
+
+    /**
+ * Decides whether a sleeve should farm karma, then makes them if they should
+ * @param {Number} sleeve_num Number of the sleeve
+ * @returns {Boolean} `true` when karma farmed, `false` if not.
+ */
+    function farm_hacking(sleeve_num) {
+        if (ns.getPlayer().skills.hacking < 80) {
+            let task = ns.sleeve.getTask(sleeve_num)
+            if (ns.getServerMoneyAvailable("home") <= (960 * 8 * 60)) {
+                if (task == null || task.classType == null || task.classType != "Computer Science") {
+                    if (ns.sleeve.setToUniversityCourse(sleeve_num, "ZB Institute of Technology", "Computer Science")) { return true };
+                    if (ns.sleeve.setToUniversityCourse(sleeve_num, "Summit University", "Computer Science")) { return true };
+                    if (ns.sleeve.setToUniversityCourse(sleeve_num, "Rothman University", "Computer Science")) { return true };
+                } else { return true }
+            } else {
+                if (task == null || task.classType == null || task.classType != "Algorithms") {
+                    if (ns.sleeve.setToUniversityCourse(sleeve_num, "ZB Institute of Technology", "Algorithms")) { return true };
+                    if (ns.sleeve.setToUniversityCourse(sleeve_num, "Summit University", "Algorithms")) { return true };
+                    if (ns.sleeve.setToUniversityCourse(sleeve_num, "Rothman University", "Algorithms")) { return true };
+                } else { return true }
+            }
         } else { return false }
     }
 
