@@ -47,9 +47,10 @@ export async function main(ns) {
 
     function task(doing_war, member) {
         let random = Math.random()
+        let wanted_level = ns.gang.getGangInformation().wantedLevel
         let wanted_rate = ns.gang.getGangInformation().wantedLevelGainRate
         let wanted_penalty = ns.gang.getGangInformation().wantedPenalty
-        if (wanted_rate >= 0.5 || wanted_penalty < 0.8) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
+        if ((wanted_level >= 1000 && wanted_rate > 0) || wanted_penalty < 0.8) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
         else if (doing_war) { ns.gang.setMemberTask(member, 'Territory Warfare') }
         else if (ns.gang.getGangInformation().territory != 1) {
             if (random < TRAINING_PERCENT && get_members().length < 6) { ns.gang.setMemberTask(member, 'Train Combat') }
