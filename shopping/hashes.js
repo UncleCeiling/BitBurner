@@ -12,7 +12,7 @@ export async function main(ns) {
     let cash_on_hand = ns.getServerMoneyAvailable('home');
     ns.print(cash_buy, " > ", cash_on_hand)
     // Attempt to buy cash
-    if (cash_buy > cash_on_hand) { while (buy_hash_upgrade('Sell for Money')) { history.money++ } }
+    if (cash_buy > (cash_on_hand / 2)) { while (buy_hash_upgrade('Sell for Money')) { history.money++ } }
     // Check the history and report what we spent
     if (history.spent > 0) {
         let list = []

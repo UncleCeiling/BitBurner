@@ -1,0 +1,32 @@
+import { ANSI } from "imports/ANSI";
+/** @param {NS} ns */
+export async function main(ns) {
+    ns.disableLog("ALL")
+    const MIN_FREE_RAM = Math.max(ns.ls("home", "queue/").map((a) => { ns.getScriptRam(a) })) + Math.max(ns.ls("home", "scripts/").map((a) => { ns.getScriptRam(a) }))
+    if (ns.hacknet.numNodes() == 0) { ns.tprint(`${ANSI.fg.red}No Hacknet nodes.${ANSI.reset}`); return } // Nope out if no RAM to charge gifts
+    if (!ns.stanek.acceptGift()) { ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's gift${ANSI.reset}`); return } // Accept the gift, otherwise nope out.
+    while (true) {
+        let gifts = ns.stanek.activeFragments()
+        if (gifts == null) { ns.tprint(`${ANSI.fg.red}No fragments active - Add some to Stanek's gift.${ANSI.reset}`); return } // Remind player to assign gifts.
+        for (let gift of gifts) { // For each gift
+            if (gift.id >= 100) { continue } // Skip boosters
+            ns.print(`====${gift.id}====`)
+            for (let node = ns.hacknet.numNodes() - 1; node >= 0; node--) { // Charge using all RAM available in hacknet
+                let details = ns.hacknet.getNodeStats(node)
+                let script_ram = ns.getScriptRam("scripts/_charge.js", "home")
+                if (script_ram > details.ram) { continue } // Nope out if _charge.js costs more than the amount of ram on the server
+                let threads = Math.floor(details.ram / script_ram) // Calculate threads
+                while (ns.hacknet.getNodeStats(node).ramUsed > 0) { await ns.asleep(100) } // Wait for the hacknet server to be freed
+                ns.print(`Executing '_charge.js' (t=${threads}) on ${details.name}.`)
+                ns.scp("scripts/_charge.js", details.name, "home") // Copy charge script to the target server
+                if (ns.exec("scripts/_charge.js", details.name, threads, gift.x, gift.y) == 0) { ns.tprint(`Failed to charge gift ID ${gift.id} on ${details.name}`) } // Execute with threads and co-ords as arguments
+            }
+        }
+        if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
+            ns.ui.closeTail();
+            ns.tprint(`${ANSI.fg.red}Stanek Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
+            ns.toast("Stanek Stopped - Not enough spare RAM on 'home'.", "error");
+            return;
+        };
+    }
+}

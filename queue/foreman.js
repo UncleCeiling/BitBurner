@@ -3,7 +3,6 @@ import { ANSI } from "../imports/ANSI";
 export async function main(ns) {
     // Disable logs
     ns.disableLog("ALL");
-    if (ns.getServerMaxRam("home") < 64) { return }
     // Set Constants
     const HOST = 'home';
     const DELAY = 1;
@@ -19,10 +18,10 @@ export async function main(ns) {
         ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}`, "error");
         return;
     };
-    // Repeat ad-nauseam
     ns.ui.openTail();
     await ns.asleep(100);
     resize_tail();
+    // Repeat ad-nauseam
     while (true) {
         await ns.asleep(200);
         // Clean working list of any 
