@@ -6,8 +6,9 @@ export async function main(ns) {
     if (ns.hacknet.numNodes() == 0) { ns.tprint(`${ANSI.fg.red}No Hacknet nodes.${ANSI.reset}`); return } // Nope out if no RAM to charge gifts
     if (!ns.stanek.acceptGift()) { ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's gift${ANSI.reset}`); return } // Accept the gift, otherwise nope out.
     while (true) {
+        let start = Date.now()
         let gifts = ns.stanek.activeFragments()
-        if (gifts == null) { ns.tprint(`${ANSI.fg.red}No fragments active - Add some to Stanek's gift.${ANSI.reset}`); return } // Remind player to assign gifts.
+        if (gifts == null || gifts.length == 0) { ns.tprint(`${ANSI.fg.red}No fragments active - Add some to Stanek's gift.${ANSI.reset}`); return } // Remind player to assign gifts.
         for (let gift of gifts) { // For each gift
             if (gift.id >= 100) { continue } // Skip boosters
             ns.print(`====${gift.id}====`)
@@ -28,5 +29,7 @@ export async function main(ns) {
             ns.toast("Stanek Stopped - Not enough spare RAM on 'home'.", "error");
             return;
         };
+        let wait = Date.now() - start
+        await ns.asleep(wait)
     }
 }
