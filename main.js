@@ -2,6 +2,7 @@ import { ANSI } from "imports/ANSI"
 
 /** @param {NS} ns */
 export async function main(ns) {
+    ns.disableLog("ALL")
     const QUEUE_LOC = 'queue/'
     const ARGUMENT = ns.args[0]
     var break_secs = 60
@@ -12,7 +13,7 @@ export async function main(ns) {
         map()
         server_stats()
         await queue() // Run scripts in `queue/` folder
-        ns.tprint(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
+        ns.print(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
         await ns.asleep(break_secs * 1000)// Pause for a bit
 
         async function queue() {
@@ -20,6 +21,7 @@ export async function main(ns) {
             ns.print(`${ANSI.fg.cyan}Found ${scripts.length} scripts.${ANSI.reset}`)
             for (let script of scripts.sort(() => Math.random() - 0.5)) { // For shuffled
                 if (ns.isRunning(script)) { continue }// Skip script if already running
+                ns.print(`Script:${ns.getScriptRam(script)}\nServerMax:${ns.getServerMaxRam("home")}\nServerUsed:${ns.getServerUsedRam("home")}\nServerFree:${ns.getServerMaxRam("home") - ns.getServerUsedRam("home")}`)
                 while (ns.getScriptRam(script) > (ns.getServerMaxRam("home") - ns.getServerUsedRam("home"))) { await ns.asleep(1000) }
                 ns.tprint(`${ANSI.fg.magenta}${ANSI.font.underline}Running ${script.replace(QUEUE_LOC, '')}${ANSI.reset}`)
                 ns.run(script)

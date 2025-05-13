@@ -27,7 +27,7 @@ export async function main(ns) {
         for (let item of skill_levels.sort((a, b) => b.cost - a.cost)) {
             if (item.name == "Overclock" && item.level >= 90) { continue };
             let points = get_skill_points();
-            if (points > item.cost) {
+            if (points >= item.cost) {
                 if (ns.bladeburner.upgradeSkill(item.name)) {
                     ns.tprint(`${ANSI.fg.green}Bought ${item.name} for ${item.cost} points (Level: ${item.level + 1})${ANSI.reset}`);
                     success = true;

@@ -163,6 +163,7 @@ export async function main(ns) {
      */
     function too_many_processes(miner) {
         // If too many things running, skip this server
+        if (miner == "") { return true }
         if (ns.ps(miner).length >= PROCESSES) {
             if (miner != HOST || miner.slice(0, 5) != "Custom") {
                 return true;
