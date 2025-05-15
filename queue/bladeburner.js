@@ -25,7 +25,7 @@ export async function main(ns) {
         }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
-        if (ns.bladeburner.getNextBlackOp() != null && ns.bladeburner.getNextBlackOp().rank != null) {
+        if (get_blackop() != null && get_blackop().rank != null) {
             ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
             while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
                 await do_action("Black Operations", get_blackop().name);
