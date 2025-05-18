@@ -156,21 +156,30 @@ export async function main(ns) {
      * @returns {Boolean} `true` when sleeve is being calmed, `false` if not.
      */
     function bladeburn(sleeve_num) {
-        if (!ns.bladeburner.inBladeburner()) { return false };
-        if (ns.bladeburner.getNextBlackOp() == null) { return false };
-        let contracts = ns.bladeburner.getContractNames();
-        let operations = ns.bladeburner.getOperationNames();
-        let num_remaining = 0;
-        for (let contract of contracts) {
-            let contract_remaining = Math.floor(ns.bladeburner.getActionCountRemaining("Contracts", contract));
-            if (contract_remaining > 0) { num_remaining += contract_remaining };
+        if (!ns.bladeburner.inBladeburner()) { ns.print(`${sleeve_num} Not in Bladeburners`); return false };
+        if (ns.bladeburner.getNextBlackOp() == null) { ns.print("No BlackOps"); return false };
+        if (ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < 1000000000) {
+            ns.print(`${sleeve_num} Field Analysis`);
+            ns.sleeve.setToBladeburnerAction(sleeve_num, "Field Analysis");
+            return true
         }
-        for (let operation of operations) {
-            let operation_remaining = Math.floor(ns.bladeburner.getActionCountRemaining("Operations", operation));
-            if (operation_remaining > 0) { num_remaining += operation_remaining };
+        if (
+            Math.random() < 0.5 &&
+            ns.bladeburner.getCurrentAction() != null &&
+            ns.bladeburner.getCurrentAction().name != "Infiltrate Synthoids"
+        ) {
+            ns.print(`${sleeve_num} Infiltrating Synthoids`);
+            ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
+            return true
         }
-        if (num_remaining < 100) { ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids"); return true }
-        if (ns.bladeburner.getCurrentAction() != null && ns.bladeburner.getCurrentAction().type != "General") { ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve"); return true }
+        else if (
+            ns.bladeburner.getCurrentAction() != null &&
+            ns.bladeburner.getCurrentAction().name != "Support main sleeve"
+        ) {
+            ns.print(`${sleeve_num} Supporting main sleeve`);
+            ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
+            return true
+        }
         else { return false }
     }
 

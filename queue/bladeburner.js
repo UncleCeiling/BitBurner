@@ -25,7 +25,7 @@ export async function main(ns) {
         }
         ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
         // If BlackOp available and probable: do it, then wait for it to finish
-        if (get_blackop() != null && get_blackop().rank != null) {
+        if (get_blackop() != null) {
             ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
             while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
                 await do_action("Black Operations", get_blackop().name);
@@ -50,8 +50,13 @@ export async function main(ns) {
                 if (ns.bladeburner.getCityCommunities(city) > 1) { ns.bladeburner.switchCity(city) }
             }
         }
+        if (ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < 1000000) {
+            ns.print(`Checking ${city}...`);
+            ns.bladeburner.switchCity(city);
+            await ns.bladeburner.nextUpdate();
+        }
         for (let city of cities) {
-            if (ns.bladeburner.getCityEstimatedPopulation(city) < 1000) { continue }
+            if (ns.bladeburner.getCityEstimatedPopulation(city) < 1000000) { continue }
             // Check recruitment; recruit if 100%
             ns.print("Checking recruitment...")
             let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
@@ -69,8 +74,10 @@ export async function main(ns) {
             if (estimate[1] - estimate[0] > 0) {
                 for (let i in Object.keys(ACCURACY_ACTIONS)) {
                     if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] >= 1 && ns.bladeburner.getActionCountRemaining(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) >= 1) {
-                        if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) { ns.bladeburner.startAction(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) };
-                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates (${(estimate[1] - estimate[0])} > 0).${ANSI.reset}`);
+                        if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) {
+                            ns.bladeburner.startAction(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])
+                        }
+                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates.\n(${(estimate[1] - estimate[0])} > 0).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
                         break
                     }
                 }

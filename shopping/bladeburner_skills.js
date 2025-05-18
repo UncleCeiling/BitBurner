@@ -24,7 +24,7 @@ export async function main(ns) {
             if (cost < Infinity) { skill_levels.push({ "name": skill, "level": level, "cost": cost }) };
         };
         success = false;
-        for (let item of skill_levels.sort((a, b) => b.cost - a.cost)) {
+        for (let item of skill_levels.sort((a, b) => a.cost - b.cost)) {
             if (item.name == "Overclock" && item.level >= 90) { continue };
             let points = get_skill_points();
             if (points >= item.cost) {
