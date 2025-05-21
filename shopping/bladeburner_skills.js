@@ -17,14 +17,14 @@ export async function main(ns) {
                     } else {
                         ns.tprint(`${ANSI.fg.red}Failed to buy Overclock for ${cost} points (Current points: ${points})${ANSI.reset}`);
                     };
-                    cost = ns.bladeburner.getSkillUpgradeCost(skill)
-                    level = ns.bladeburner.getSkillLevel(skill)
+                    cost = ns.bladeburner.getSkillUpgradeCost(skill);
+                    level = ns.bladeburner.getSkillLevel(skill);
                 }
             }
             if (cost < Infinity) { skill_levels.push({ "name": skill, "level": level, "cost": cost }) };
         };
         success = false;
-        for (let item of skill_levels.sort((a, b) => a.cost - b.cost)) {
+        for (let item of skill_levels.sort((a, b) => a.level - b.level)) {
             if (item.name == "Overclock" && item.level >= 90) { continue };
             let points = get_skill_points();
             if (points >= item.cost) {

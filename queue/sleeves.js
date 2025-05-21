@@ -17,11 +17,24 @@ export async function main(ns) {
         if (calm_sleeve(sleeve)) { continue };
         if (synchronise_sleeve(sleeve)) { continue };
         if (homicide(sleeve)) { continue };
+        if (farm_rep(sleeve)) { continue };
         if (bladeburn(sleeve)) { continue };
         heist(sleeve);
     };
 
     //#region ===== FUNCTIONS =====
+
+    function farm_rep(sleeve_num) {
+        let current_work = ns.singularity.getCurrentWork()
+        if (current_work != null && current_work.type == "FACTION") {
+            let current_task = ns.sleeve.getTask(sleeve_num)
+            if (current_task.type == "FACTION" && current_task.factionName == current_work.factionName) { return true }
+            let success = false
+            try { success = ns.sleeve.setToFactionWork(sleeve_num, current_work.factionName, current_work.factionWorkType) }
+            catch (error) { ns.print(error) };
+            return success
+        } else { return false }
+    }
 
     /**
      * Decides whether a sleeve should farm karma, then makes them if they should
@@ -79,7 +92,7 @@ export async function main(ns) {
      * @returns {Boolean} `true` when sleeve is being calmed, `false` if not.
      */
     function calm_sleeve(sleeve_num) {
-        if (ns.sleeve.getSleeve(sleeve_num).shock > 0) {
+        if (ns.sleeve.getSleeve(sleeve_num).shock > 50) {
             ns.sleeve.setToShockRecovery(sleeve_num);
             return true
         } else { return false }

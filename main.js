@@ -5,7 +5,7 @@ export async function main(ns) {
     ns.disableLog("ALL")
     const QUEUE_LOC = 'queue/'
     const ARGUMENT = ns.args[0]
-    var break_secs = 60
+    var break_secs = 10
     if (ARGUMENT != null && typeof ARGUMENT != Number) { ns.tprint(`${ANSI.fg.red}${ARGUMENT} is not a valid argument (must be an integer > 0)${ANSI.reset}`); return } else if (ARGUMENT != null && ARGUMENT > 0) { break_secs = ARGUMENT } // Set break time if set
     ns.rm("mines.txt")
     ns.rm("miners.txt")
