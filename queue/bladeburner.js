@@ -27,7 +27,7 @@ export async function main(ns) {
         // If BlackOp available and probable: do it, then wait for it to finish
         if (get_blackop() != null) {
             ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
-            while (get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
+            while (get_blackop() != null && get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
                 await do_action("Black Operations", get_blackop().name);
             };
         }

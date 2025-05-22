@@ -26,7 +26,7 @@ export async function main(ns) {
 
     function farm_rep(sleeve_num) {
         let current_work = ns.singularity.getCurrentWork()
-        if (current_work != null && current_work.type == "FACTION") {
+        if (current_work != null && current_work.type == "FACTION" && sleeve_num == 0) {
             let current_task = ns.sleeve.getTask(sleeve_num)
             if (current_task.type == "FACTION" && current_task.factionName == current_work.factionName) { return true }
             let success = false
@@ -92,7 +92,7 @@ export async function main(ns) {
      * @returns {Boolean} `true` when sleeve is being calmed, `false` if not.
      */
     function calm_sleeve(sleeve_num) {
-        if (ns.sleeve.getSleeve(sleeve_num).shock > 50) {
+        if (ns.sleeve.getSleeve(sleeve_num).shock > 0) {
             ns.sleeve.setToShockRecovery(sleeve_num);
             return true
         } else { return false }
@@ -173,27 +173,25 @@ export async function main(ns) {
         if (ns.bladeburner.getNextBlackOp() == null) { ns.print("No BlackOps"); return false };
         if (ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < 1000000000) {
             ns.print(`${sleeve_num} Field Analysis`);
-            ns.sleeve.setToBladeburnerAction(sleeve_num, "Field Analysis");
+            if (ns.sleeve.getTask(sleeve_num) == null || ns.sleeve.getTask(sleeve_num).actionName != "Field Analysis") {
+                ns.sleeve.setToBladeburnerAction(sleeve_num, "Field Analysis");
+            }
             return true
         }
-        if (
-            Math.random() < 0.5 &&
-            ns.bladeburner.getCurrentAction() != null &&
-            ns.bladeburner.getCurrentAction().name != "Infiltrate Synthoids"
-        ) {
+        if (ns.sleeve.getTask(sleeve_num).type == "BLADEBURNER" && ns.sleeve.getTask(sleeve_num).actionName != "Field Analysis") { return true }
+        if (Math.random() < 0.5) {
             ns.print(`${sleeve_num} Infiltrating Synthoids`);
-            ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
-            return true
-        }
-        else if (
-            ns.bladeburner.getCurrentAction() != null &&
-            ns.bladeburner.getCurrentAction().name != "Support main sleeve"
-        ) {
+            if (ns.sleeve.getTask(sleeve_num).actionName != "Infiltrate Synthoids") {
+                ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
+                return true
+            }
+        } else {
             ns.print(`${sleeve_num} Supporting main sleeve`);
-            ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
-            return true
+            if (ns.sleeve.getTask(sleeve_num).actionName != "Support main sleeve") {
+                ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
+                return true
+            }
         }
-        else { return false }
     }
 
     /**

@@ -13,7 +13,6 @@ export async function main(ns) {
     ]
     const ASCENSION_MULTIPLIER = 1.6487212707 // Minimum increase in stats for ascension
     const MAX_MEMBERS = 12 // Max num of gang members
-    const TRAINING_PERCENT = 0.2
     const MIN_WIN_PERCENT = 0.55 // Min win-rate for territory warfare
 
     function get_members() { return ns.gang.getMemberNames() }
@@ -46,18 +45,18 @@ export async function main(ns) {
     }
 
     function task(doing_war, member) {
-        let random = Math.random()
-        let wanted_level = ns.gang.getGangInformation().wantedLevel
-        let wanted_rate = ns.gang.getGangInformation().wantedLevelGainRate
-        let wanted_penalty = ns.gang.getGangInformation().wantedPenalty
-        if ((wanted_level > 1000 || wanted_rate > 0 || wanted_penalty < 0.8) && ns.gang.getGangInformation().respect > 1) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
-        else if (ns.gang.getGangInformation().respect <= 100) { ns.gang.setMemberTask(member, "Terrorism") }
+        let gang_info = ns.gang.getGangInformation()
+        let wanted_level = gang_info.wantedLevel
+        let wanted_rate = gang_info.wantedLevelGainRate
+        let respect = gang_info.respect
+        let respect_gain = -1
+        if (ns.fileExists("Formulas.exe", "home")) { respect_gain = ns.formulas.gang.respectGain(gang_info, ns.gang.getMemberInformation(member), ns.gang.getTaskStats("Terrorism")) }
+        if ((wanted_level > respect || wanted_rate > 0) && gang_info.respect > 1) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
+        else if (respect_gain != -1 && respect_gain <= 0) { ns.gang.setMemberTask(member, 'Train Combat') }
+        else if (ns.gang.respectForNextRecruit() != Infinity && gang_info.respect < ns.gang.respectForNextRecruit()) { ns.gang.setMemberTask(member, "Terrorism") }
         else if (doing_war) { ns.gang.setMemberTask(member, 'Territory Warfare') }
-        else if (ns.gang.getGangInformation().territory != 1) {
-            if (random < TRAINING_PERCENT && get_members().length < 6) { ns.gang.setMemberTask(member, 'Train Combat') }
-            else if (get_members().length >= 12) { ns.gang.setMemberTask(member, 'Territory Warfare') }
-            else { ns.gang.setMemberTask(member, 'Terrorism') }
-        } else { ns.gang.setMemberTask(member, 'Human Trafficking') }
+        else if (gang_info.territory == 1) { ns.gang.setMemberTask(member, 'Human Trafficking') }
+        else { ns.gang.setMemberTask(member, 'Territory Warfare') }
     }
 
     function war() {
@@ -74,12 +73,12 @@ export async function main(ns) {
     }
 
     function ascension() {
-        if (get_members().length < 12) { return }
+        let multiplier = ASCENSION_MULTIPLIER * (12 / get_members().length)
         for (let member of get_members()) {
             let result = ns.gang.getAscensionResult(member)
             if (result) {
                 let avg_multi = (result.agi + result.cha + result.def + result.dex + result.hack + result.str) / 6
-                if (avg_multi > ASCENSION_MULTIPLIER) { ns.print(`${ANSI.fg.green}Ascended ${member}${ANSI.reset}`); ns.gang.ascendMember(member) }
+                if (avg_multi > multiplier) { ns.print(`${ANSI.fg.green}Ascended ${member}${ANSI.reset}`); ns.gang.ascendMember(member) }
             }
         }
     }
