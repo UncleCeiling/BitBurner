@@ -7,9 +7,10 @@ export async function main(ns) {
     const HOST = 'home';
     const DELAY = 1;
     const PROCESSES = 4;
-    const QUEUE_LIST = ns.ls("home", "queue/");
     const SCRIPTS_LIST = ns.ls("home", "scripts/");
-    const MIN_FREE_RAM = Math.max(QUEUE_LIST.map((a) => { ns.getScriptRam(a) })) + Math.max(SCRIPTS_LIST.map((a) => { ns.getScriptRam(a) }))
+    const MIN_SCRIPT_RAM = Math.max(SCRIPTS_LIST.map((a) => { ns.getScriptRam(a) }))
+    const QUEUE_LIST = ns.ls("home", "queue/");
+    const MIN_FREE_HOME_RAM = Math.max(QUEUE_LIST.map((a) => { ns.getScriptRam(a) })) + ns.getScriptRam("main.js")
     // Create Working variable
     let working = {};
     // If not running on home, say so and return
@@ -68,7 +69,7 @@ export async function main(ns) {
                 run_job(job, miner);
             };
             await ns.asleep((DELAY * 1000) + 1);
-            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
+            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') <= MIN_FREE_HOME_RAM) {
                 ns.ui.closeTail();
                 ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
@@ -135,7 +136,7 @@ export async function main(ns) {
         // Get list of purchased servers
         let custom = ns.getPurchasedServers();
         // If HOST has enough RAM, add it to the list
-        if (ns.getServerMaxRam(HOST) >= 64) { miners.push(HOST) };
+        if (ns.getServerMaxRam(HOST) >= MIN_SCRIPT_RAM) { miners.push(HOST) };
         // Add each purchased server if any
         if (custom.length > 0) {
             for (let resource of custom) {

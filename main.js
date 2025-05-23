@@ -12,6 +12,7 @@ export async function main(ns) {
     while (true) {
         map()
         server_stats()
+        achievements()
         await queue() // Run scripts in `queue/` folder
         ns.print(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
         await ns.asleep(break_secs * 1000)// Pause for a bit
@@ -62,5 +63,13 @@ export async function main(ns) {
             ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`)
         }
 
+        function achievements() {
+            ns.rm("achievements.txt") // Remove old file
+            let doc = globalThis["document"]
+            let list = []
+            for (let achieve of doc.achievements) { list.push(achieve) }
+            data = list.sort((a, b) => a.localeCompare(b)).join("\n") // Sort and join the entries with newlines
+            ns.write("achievements.txt", data, "w") // Write new file
+        }
     }
 }

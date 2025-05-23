@@ -12,9 +12,10 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
+        if (calm_sleeve(sleeve, 0.9)) { continue };
         if (farm_karma(sleeve)) { continue };
         if (farm_hacking(sleeve)) { continue };
-        if (calm_sleeve(sleeve)) { continue };
+        if (calm_sleeve(sleeve, 0)) { continue };
         if (synchronise_sleeve(sleeve)) { continue };
         if (homicide(sleeve)) { continue };
         if (farm_rep(sleeve)) { continue };
@@ -89,10 +90,11 @@ export async function main(ns) {
     /**
      * Decides whether a sleeve should be calmed or not, then makes them if they should
      * @param {Number} sleeve_num Number of the sleeve
+     * @param {Number} target_ratio Target ratio of calmness to achieve (0 = fully calm, 0.5 = 50% calm etc.)
      * @returns {Boolean} `true` when sleeve is being calmed, `false` if not.
      */
-    function calm_sleeve(sleeve_num) {
-        if (ns.sleeve.getSleeve(sleeve_num).shock > 0) {
+    function calm_sleeve(sleeve_num, target_ratio) {
+        if (ns.sleeve.getSleeve(sleeve_num).shock > target_ratio) {
             ns.sleeve.setToShockRecovery(sleeve_num);
             return true
         } else { return false }
