@@ -12,19 +12,24 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
-        if (calm_sleeve(sleeve, 0.9)) { continue };
-        if (farm_karma(sleeve)) { continue };
-        if (farm_hacking(sleeve)) { continue };
-        if (calm_sleeve(sleeve, 0)) { continue };
-        if (synchronise_sleeve(sleeve)) { continue };
-        if (homicide(sleeve)) { continue };
-        if (farm_rep(sleeve)) { continue };
-        if (bladeburn(sleeve)) { continue };
+        if (calm_sleeve(sleeve, 90)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 90% shock${ANSI.reset}`); continue };
+        if (farm_karma(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`); continue };
+        if (farm_hacking(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`); continue };
+        if (calm_sleeve(sleeve, 1)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 0% shock${ANSI.reset}`); continue };
+        if (synchronise_sleeve(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Synchronising to 100%${ANSI.reset}`); continue };
+        if (homicide(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Committing Homicide${ANSI.reset}`); continue };
+        if (farm_rep(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Reputation${ANSI.reset}`); continue };
+        if (bladeburn(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Assisting Bladeburner actions${ANSI.reset}`); continue };
         heist(sleeve);
     };
 
     //#region ===== FUNCTIONS =====
 
+    /**
+     * Decides if a sleeve should farm reputation, then makes them if they should
+     * @param {Number} sleeve_num Number of the sleeve
+     * @returns {Boolean} `true` when farming reputation,`false` if not.
+     */
     function farm_rep(sleeve_num) {
         let current_work = ns.singularity.getCurrentWork()
         if (current_work != null && current_work.type == "FACTION" && sleeve_num == 0) {
@@ -207,11 +212,4 @@ export async function main(ns) {
         ns.sleeve.setToCommitCrime(sleeve_num, "Heist")
         return true
     }
-
-    //! WIP Need to know how to buy new sleeves and what the max number is
-    //! WIP Would also be good to work out sleeve augments
-
-    // function buy_sleeves() {
-    //     ns.tprint(`${ANSI.fg.red}No sleeves to manage.${ANSI.reset}`); return false
-    // };
 }

@@ -68,7 +68,7 @@ export async function main(ns) {
             let doc = globalThis["document"]
             let list = []
             for (let achieve of doc.achievements) { list.push(achieve) }
-            data = list.sort((a, b) => a.localeCompare(b)).join("\n") // Sort and join the entries with newlines
+            let data = list.sort((a, b) => a.localeCompare(b)).join("\n") // Sort and join the entries with newlines
             ns.write("achievements.txt", data, "w") // Write new file
         }
     }

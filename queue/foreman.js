@@ -32,6 +32,12 @@ export async function main(ns) {
         if (queue[0] == '') { continue };
         // While there are jobs in the queue
         while (queue.length > 0) {
+            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_HOME_RAM) {
+                ns.ui.closeTail();
+                ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
+                ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
+                return;
+            };
             await ns.asleep(200);
             // Get list of miners
             let miners = get_miners();
@@ -69,12 +75,6 @@ export async function main(ns) {
                 run_job(job, miner);
             };
             await ns.asleep((DELAY * 1000) + 1);
-            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') <= MIN_FREE_HOME_RAM) {
-                ns.ui.closeTail();
-                ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
-                ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
-                return;
-            };
         };
         await ns.asleep((DELAY * 1000) + 1);
     };

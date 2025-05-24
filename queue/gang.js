@@ -14,6 +14,16 @@ export async function main(ns) {
     const ASCENSION_MULTIPLIER = 1.6487212707 // Minimum increase in stats for ascension
     const MAX_MEMBERS = 12 // Max num of gang members
     const MIN_WIN_PERCENT = 0.55 // Min win-rate for territory warfare
+    const CRIMES = [
+        "Mug People",
+        "Deal Drugs",
+        "Strongarm Civilians",
+        "Run a Con",
+        "Armed Robbery",
+        "Traffick Illegal Arms",
+        "Threaten & Blackmail",
+        "Human Trafficking"
+    ]
 
     function get_members() { return ns.gang.getMemberNames() }
 
@@ -45,18 +55,34 @@ export async function main(ns) {
     }
 
     function task(doing_war, member) {
-        let gang_info = ns.gang.getGangInformation()
-        let wanted_level = gang_info.wantedLevel
-        let wanted_rate = gang_info.wantedLevelGainRate
-        let respect = gang_info.respect
-        let respect_gain = -1
+        let gang_info = ns.gang.getGangInformation();
+        let wanted_level = gang_info.wantedLevel;
+        let wanted_rate = gang_info.wantedLevelGainRate;
+        let respect = gang_info.respect;
+        let respect_gain = -1;
+        let respect_rate = gang_info.respectGainRate;
         if (ns.fileExists("Formulas.exe", "home")) { respect_gain = ns.formulas.gang.respectGain(gang_info, ns.gang.getMemberInformation(member), ns.gang.getTaskStats("Terrorism")) }
-        if ((wanted_level > respect || wanted_rate > 0) && gang_info.respect > 1) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
-        else if (respect_gain != -1 && respect_gain <= 0) { ns.gang.setMemberTask(member, 'Train Combat') }
+        if ((wanted_level > respect || wanted_rate > respect_rate) && gang_info.respect > 1) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
+        else if (respect_gain != -1 && respect_gain <= 0) {
+            if (Math.random() < 0.5) { do_crime(member) }
+            else { ns.gang.setMemberTask(member, 'Train Combat') }
+        }
         else if (ns.gang.respectForNextRecruit() != Infinity && gang_info.respect < ns.gang.respectForNextRecruit()) { ns.gang.setMemberTask(member, "Terrorism") }
         else if (doing_war) { ns.gang.setMemberTask(member, 'Territory Warfare') }
         else if (gang_info.territory == 1) { ns.gang.setMemberTask(member, 'Human Trafficking') }
         else { ns.gang.setMemberTask(member, 'Territory Warfare') }
+
+        function do_crime(member) {
+            if (!ns.fileExists("Formulas.exe", "home")) { ns.gang.setMemberTask(member, "Mug People") }
+            let candidates = [];
+            for (let crime of CRIMES) {
+                let respect = ns.formulas.gang.respectGain(gang_info, ns.gang.getMemberInformation(member), ns.gang.getTaskStats(crime));
+                if (respect > 0) { candidates.push({ "crime": crime, "respect": respect }) }
+            }
+            if (candidates.length < 1) { ns.gang.setMemberTask(member, "Train Combat") }
+            let chosen = candidates.sort((a, b) => b.respect - a.respect)[0].crime;
+            ns.gang.setMemberTask(member, chosen)
+        }
     }
 
     function war() {
