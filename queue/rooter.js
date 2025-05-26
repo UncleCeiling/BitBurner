@@ -4,6 +4,7 @@ import { ANSI } from "imports/ANSI"
 export async function main(ns) {
     let servers = get_servers().map((a) => ns.getServer(a));
     let to_root = servers.filter((a) => !a.hasAdminRights);
+    const MIN_SCRIPT_RAM = SCRIPTS_LIST.map((a) => { ns.getScriptRam(a) }).sort((a, b) => b - a)[0]
     if (to_root.length > 0) {
         ns.tprint(`${ANSI.fg.cyan}${servers.length - to_root.length}/${servers.length} (${Math.floor(((servers.length - to_root.length) / servers.length) * 100)}%) servers rooted so far.${ANSI.reset}`);
         for (let target of to_root) {
@@ -39,7 +40,7 @@ export async function main(ns) {
         for (let server of get_servers()) {
             let details = ns.getServer(server)
             if (!details.hasAdminRights) { continue }
-            if (details.maxRam - details.ramUsed > Math.max(ns.getScriptRam('scripts/hack.js', 'home'), ns.getScriptRam('scripts/grow.js', 'home'), ns.getScriptRam('scripts/weaken.js', 'home')) && details.hostname != "home" && details.hostname != "darkweb") { miners.push(server) }
+            if (details.maxRam > MIN_SCRIPT_RAM && details.hostname != "darkweb") { miners.push(server) }
             if (details.moneyMax > 0) { mines.push(server) }
         }
         return { "mines": mines, "miners": miners }

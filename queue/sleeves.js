@@ -15,7 +15,7 @@ export async function main(ns) {
         if (calm_sleeve(sleeve, 90)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 90% shock${ANSI.reset}`); continue };
         if (farm_karma(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`); continue };
         if (farm_hacking(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`); continue };
-        if (calm_sleeve(sleeve, 1)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 0% shock${ANSI.reset}`); continue };
+        if (calm_sleeve(sleeve, 0)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 0% shock${ANSI.reset}`); continue };
         if (synchronise_sleeve(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Synchronising to 100%${ANSI.reset}`); continue };
         if (homicide(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Committing Homicide${ANSI.reset}`); continue };
         if (farm_rep(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Reputation${ANSI.reset}`); continue };

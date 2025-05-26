@@ -80,8 +80,9 @@ export async function main(ns) {
                 if (respect > 0) { candidates.push({ "crime": crime, "respect": respect }) }
             }
             if (candidates.length < 1) { ns.gang.setMemberTask(member, "Train Combat") }
-            let chosen = candidates.sort((a, b) => b.respect - a.respect)[0].crime;
-            ns.gang.setMemberTask(member, chosen)
+            let chosen = candidates.sort((a, b) => b.respect - a.respect)[0];
+            if (chosen.crime == undefined) { ns.gang.setMemberTask(member, 'Train Combat') }
+            ns.gang.setMemberTask(member, chosen.crime)
         }
     }
 

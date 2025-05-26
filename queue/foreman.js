@@ -6,11 +6,10 @@ export async function main(ns) {
     // Set Constants
     const HOST = 'home';
     const DELAY = 1;
-    const PROCESSES = 4;
+    const PROCESSES = 10;
     const SCRIPTS_LIST = ns.ls("home", "scripts/");
-    const MIN_SCRIPT_RAM = Math.max(SCRIPTS_LIST.map((a) => { ns.getScriptRam(a) }))
     const QUEUE_LIST = ns.ls("home", "queue/");
-    const MIN_FREE_HOME_RAM = Math.max(QUEUE_LIST.map((a) => { ns.getScriptRam(a) })) + ns.getScriptRam("main.js")
+    const MIN_FREE_HOME_RAM = QUEUE_LIST.map((a) => { ns.getScriptRam(a) }).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js")
     // Create Working variable
     let working = {};
     // If not running on home, say so and return
@@ -53,7 +52,7 @@ export async function main(ns) {
                 if (too_many_processes(miner)) { continue };
                 // Get free RAM on miner (-12 if HOST)
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner);
-                if (miner == HOST) { free_ram -= 64 };
+                if (miner == HOST) { free_ram -= MIN_FREE_HOME_RAM };
                 // If not enough RAM, skip
                 // if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
                 if (free_ram < job.ram) { continue };
@@ -135,8 +134,6 @@ export async function main(ns) {
         let miners = ns.read('miners.txt').split('\n');
         // Get list of purchased servers
         let custom = ns.getPurchasedServers();
-        // If HOST has enough RAM, add it to the list
-        if (ns.getServerMaxRam(HOST) >= MIN_SCRIPT_RAM) { miners.push(HOST) };
         // Add each purchased server if any
         if (custom.length > 0) {
             for (let resource of custom) {
@@ -165,11 +162,8 @@ export async function main(ns) {
     function too_many_processes(miner) {
         // If too many things running, skip this server
         if (miner == "") { return true }
-        if (ns.ps(miner).length >= PROCESSES) {
-            if (miner != HOST || miner.slice(0, 5) != "Custom") {
-                return true;
-            } else if (ns.ps(miner).length >= PROCESSES + 3) { return true };
-        } else { return false };
+        if (miner == HOST) { if (ns.ps(HOST).length >= PROCESSES) { return true } else { return false } }
+        else if (ns.ps(miner).length >= PROCESSES / 2) { return true } else { return false };
     };
 
     function clean_working_list(working) {
