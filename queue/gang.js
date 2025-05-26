@@ -69,7 +69,7 @@ export async function main(ns) {
         }
         else if (ns.gang.respectForNextRecruit() != Infinity && gang_info.respect < ns.gang.respectForNextRecruit()) { ns.gang.setMemberTask(member, "Terrorism") }
         else if (gang_info.territory == 1) { ns.gang.setMemberTask(member, 'Human Trafficking') }
-        else if (gang_info.wantedPenalty < 0.99 && Math.random() < 0.5) { ns.gang.setMemberTask(member, "Vigilante Justice") }
+        else if (gang_info.wantedPenalty < 0.99) { if (gang_info.respect >= 99) { ns.gang.setMemberTask(member, "Vigilante Justice") } else { do_crime(member) } }
         else { ns.gang.setMemberTask(member, 'Territory Warfare') }
     }
 
