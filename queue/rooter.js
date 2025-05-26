@@ -4,6 +4,7 @@ import { ANSI } from "imports/ANSI"
 export async function main(ns) {
     let servers = get_servers().map((a) => ns.getServer(a));
     let to_root = servers.filter((a) => !a.hasAdminRights);
+    const SCRIPTS_LIST = ns.ls("home", "scripts/");
     const MIN_SCRIPT_RAM = SCRIPTS_LIST.map((a) => { ns.getScriptRam(a) }).sort((a, b) => b - a)[0]
     if (to_root.length > 0) {
         ns.tprint(`${ANSI.fg.cyan}${servers.length - to_root.length}/${servers.length} (${Math.floor(((servers.length - to_root.length) / servers.length) * 100)}%) servers rooted so far.${ANSI.reset}`);
