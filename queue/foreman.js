@@ -7,9 +7,8 @@ export async function main(ns) {
     const HOST = 'home';
     const DELAY = 1;
     const PROCESSES = 10;
-    const SCRIPTS_LIST = ns.ls("home", "scripts/");
     const QUEUE_LIST = ns.ls("home", "queue/");
-    const MIN_FREE_HOME_RAM = QUEUE_LIST.map((a) => { ns.getScriptRam(a) }).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js")
+    const MIN_FREE_HOME_RAM = QUEUE_LIST.map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js")
     // Create Working variable
     let working = {};
     // If not running on home, say so and return
@@ -23,7 +22,7 @@ export async function main(ns) {
     resize_tail();
     // Repeat ad-nauseam
     while (true) {
-        await ns.asleep(200);
+        await ns.asleep(100);
         // Clean working list of any 
         working = clean_working_list(working);
         // Get list of jobs as queue
@@ -52,6 +51,7 @@ export async function main(ns) {
                 if (too_many_processes(miner)) { continue };
                 // Get free RAM on miner (-12 if HOST)
                 let free_ram = ns.getServerMaxRam(miner) - ns.getServerUsedRam(miner);
+                // ns.print(miner, free_ram, MIN_FREE_HOME_RAM)
                 if (miner == HOST) { free_ram -= MIN_FREE_HOME_RAM };
                 // If not enough RAM, skip
                 // if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }

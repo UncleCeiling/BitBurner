@@ -28,7 +28,7 @@ export async function main(ns) {
         let servers = new Set(['home'])
         for (let server of servers) {
             for (let result of ns.scan(server)) {
-                if (result.includes('custom-') || result.includes('hacknet-server-')) { continue };
+                if (result.includes('hacknet-server-')) { continue };
                 servers.add(result)
             }
         }
@@ -40,8 +40,10 @@ export async function main(ns) {
         let miners = []
         for (let server of get_servers()) {
             let details = ns.getServer(server)
+            if (details.hostname == "home") { miners.push(server) }
+            if (details.hostname == "darkweb") { continue }
             if (!details.hasAdminRights) { continue }
-            if (details.maxRam > MIN_SCRIPT_RAM && details.hostname != "darkweb") { miners.push(server) }
+            if (details.maxRam >= MIN_SCRIPT_RAM) { miners.push(server) }
             if (details.moneyMax > 0) { mines.push(server) }
         }
         return { "mines": mines, "miners": miners }
