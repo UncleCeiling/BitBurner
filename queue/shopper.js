@@ -6,10 +6,10 @@ export async function main(ns) {
         'hashes.js',
         'darkweb.js',
         'housekeeping.js',
-        'gang_equipment.js',
         'hacknet.js',
         'servers.js',
         'sleeve_augments.js',
+        'gang_equipment.js',
         'bladeburner_skills.js',
     ]
     const SCRIPT_LOC = 'shopping/'
