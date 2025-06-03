@@ -12,6 +12,7 @@ export async function main(ns) {
         "Contracts": "Tracking",
         "General": "Field Analysis",
     }
+    const MIN_POPULATION = 1000000000
     while (true) {
         ns.clearLog();
         let current_action = ns.bladeburner.getCurrentAction();// Check Current Action is still viable
@@ -29,6 +30,7 @@ export async function main(ns) {
             ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
             while (get_blackop() != null && get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
                 await do_action("Black Operations", get_blackop().name);
+                ns.clearLog();
             };
         }
         // If stamina penalty too high, Train for a bit
@@ -45,17 +47,17 @@ export async function main(ns) {
         // For each city, try Ops and Contracts.
         let cities = CITIES.filter((name) => name != ns.bladeburner.getCity());
         // If no communities, look for a city with one and move there.
-        if (ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 1) {
-            for (let city of CITIES) {
-                if (ns.bladeburner.getCityCommunities(city) > 1) { ns.bladeburner.switchCity(city) }
+        if (ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 1 || ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < MIN_POPULATION) {
+            for (let city of cities) {
+                if (ns.bladeburner.getCityCommunities(city) > 1 && ns.bladeburner.getCityEstimatedPopulation(city) > MIN_POPULATION) {
+                    ns.print(`Travelling to ${city}...`);
+                    ns.bladeburner.switchCity(city);
+                    await ns.bladeburner.nextUpdate();
+                    break
+                }
             }
         }
-        if (ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < 1000000) {
-            ns.print(`Checking ${city}...`);
-            ns.bladeburner.switchCity(city);
-            await ns.bladeburner.nextUpdate();
-        }
-        for (let city of cities) {
+        for (let city of CITIES) {
             if (ns.bladeburner.getCityEstimatedPopulation(city) < 1000000) { continue }
             // Check recruitment; recruit if 100%
             ns.print("Checking recruitment...")
@@ -83,6 +85,8 @@ export async function main(ns) {
                 }
                 break
             }
+            // If Raid available - do it
+            if (ns.bladeburner.getActionCountRemaining("Operations", "Raid") > 0 && ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Raid")[0] >= 1) { await do_action("Operations", "Raid"); break }
             // If Operation available and probable: do it
             let operation_list = [];
             for (let operation of OPERATIONS) {
@@ -139,12 +143,10 @@ export async function main(ns) {
             if (skills.strength < 100 && skills.defense < 100 && skills.dexterity < 100 && skills.agility < 100) {
                 ns.print(`${ANSI.fg.cyan}Training to improve Combat stats${ANSI.reset}`)
                 if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
-                    ns.bladeburner.startAction("General", "Training");
+                    do_action("General", "Training");
                 }
                 break
             }
-            ns.print(`${ANSI.fg.cyan}Performing Training to improve skills.${ANSI.reset}`);
-            if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") { ns.bladeburner.startAction("General", "Training") };
             ns.print(`Checking ${city}...`);
             ns.bladeburner.switchCity(city);
             await ns.bladeburner.nextUpdate()

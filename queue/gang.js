@@ -83,7 +83,7 @@ export async function main(ns) {
         }
         if (candidates.length < 1) { ns.gang.setMemberTask(member, "Train Combat") }
         let chosen = candidates.sort((a, b) => b.respect - a.respect)[0];
-        if (chosen.crime == undefined) { ns.gang.setMemberTask(member, 'Train Combat') }
+        if (chosen?.crime == undefined) { ns.gang.setMemberTask(member, 'Train Combat') }
         ns.gang.setMemberTask(member, chosen.crime)
     }
 
