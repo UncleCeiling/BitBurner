@@ -62,7 +62,8 @@ export async function main(ns) {
         let respect_gain = -1;
         let respect_rate = gang_info.respectGainRate;
         if (ns.fileExists("Formulas.exe", "home")) { respect_gain = ns.formulas.gang.respectGain(gang_info, ns.gang.getMemberInformation(member), ns.gang.getTaskStats("Terrorism")) }
-        if ((wanted_level > respect || wanted_rate > respect_rate) && gang_info.respect > 1) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
+        if (member == "Dave 0" && wanted_level > 0 && gang_info.respect > 10) { ns.gang.setMemberTask(member, "Vigilante Justice") }
+        if ((wanted_level > respect || wanted_rate > respect_rate) && gang_info.respect > 10) { ns.gang.setMemberTask(member, 'Vigilante Justice') }
         else if (respect_gain != -1 && respect_gain <= 0) {
             if (Math.random() < 0.5) { do_crime(member) }
             else { ns.gang.setMemberTask(member, 'Train Combat') }
@@ -75,15 +76,14 @@ export async function main(ns) {
 
     function do_crime(member) {
         let gang_info = ns.gang.getGangInformation();
-        if (!ns.fileExists("Formulas.exe", "home")) { ns.gang.setMemberTask(member, "Mug People") }
+        if (!ns.fileExists("Formulas.exe", "home")) { ns.gang.setMemberTask(member, "Mug People"); return }
         let candidates = [];
         for (let crime of CRIMES) {
             let respect = ns.formulas.gang.respectGain(gang_info, ns.gang.getMemberInformation(member), ns.gang.getTaskStats(crime));
             if (respect > 0) { candidates.push({ "crime": crime, "respect": respect }) }
         }
-        if (candidates.length < 1) { ns.gang.setMemberTask(member, "Train Combat") }
+        if (candidates.length < 1) { ns.gang.setMemberTask(member, "Train Combat"); return }
         let chosen = candidates.sort((a, b) => b.respect - a.respect)[0];
-        if (chosen?.crime == undefined) { ns.gang.setMemberTask(member, 'Train Combat') }
         ns.gang.setMemberTask(member, chosen.crime)
     }
 

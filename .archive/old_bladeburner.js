@@ -1,0 +1,211 @@
+import { ANSI } from "imports/ANSI";
+/** @param {NS} ns */
+export async function main(ns) {
+    ns.disableLog("ALL");
+    if (!ns.bladeburner.inBladeburner()) { return }
+    const OPERATIONS = ns.bladeburner.getOperationNames();
+    const CONTRACTS = ns.bladeburner.getContractNames();
+    const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
+    const ACCURACY_ACTIONS = {
+        "Operations": "Undercover Operation",
+        "Operations": "Investigation",
+        "Contracts": "Tracking",
+        "General": "Field Analysis",
+    }
+    const MIN_POPULATION = 1000000000
+    while (true) {
+        ns.clearLog();
+        let current_action = ns.bladeburner.getCurrentAction();// Check Current Action is still viable
+        if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
+            ns.print(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`);
+            ns.bladeburner.stopBladeburnerAction();
+        }
+        if (current_action != null && ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 1) {
+            ns.print(`${ANSI.fg.red}${current_action.name} ran out - stopping.${ANSI.reset}`);
+            ns.bladeburner.stopBladeburnerAction();
+        }
+        ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
+        // If BlackOp available and probable: do it, then wait for it to finish
+        if (get_blackop() != null) {
+            ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
+            while (get_blackop() != null && get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
+                await do_action("Black Operations", get_blackop().name);
+                ns.clearLog();
+            };
+        }
+        // If stamina penalty too high, Train for a bit
+        let stamina = ns.bladeburner.getStamina()
+        if (stamina[0] / stamina[1] <= 0.5) {
+            while (stamina[0] / stamina[1] <= 0.6) {
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
+                    ns.bladeburner.startAction("General", "Training"); ns.print(`${ANSI.fg.yellow}Recovering Stamina while Training${ANSI.reset}`)
+                }
+                stamina = ns.bladeburner.getStamina();
+                await ns.bladeburner.nextUpdate();
+            }
+        }
+        // For each city, try Ops and Contracts.
+        let cities = CITIES.filter((name) => name != ns.bladeburner.getCity());
+        // If no communities, look for a city with one and move there.
+        if (ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 1 || ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < MIN_POPULATION) {
+            for (let city of cities) {
+                if (ns.bladeburner.getCityCommunities(city) > 1 && ns.bladeburner.getCityEstimatedPopulation(city) > MIN_POPULATION) {
+                    ns.print(`Travelling to ${city}...`);
+                    ns.bladeburner.switchCity(city);
+                    await ns.bladeburner.nextUpdate();
+                    break
+                }
+            }
+        }
+        for (let city of CITIES) {
+            if (ns.bladeburner.getCityEstimatedPopulation(city) < 1000000) { continue }
+            // Check recruitment; recruit if 100%
+            ns.print("Checking recruitment...")
+            let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
+            if (recruit >= 1) {
+                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()} => ${ns.bladeburner.getTeamSize() + 1}).${ANSI.reset}`);
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Recruitment") {
+                    ns.bladeburner.startAction("General", "Recruitment");
+                }
+                break
+            }
+            // Check accuracy of data and do Field Analysis if not good, otherwise Train
+            ns.print("Checking estimates...");
+            let estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination")
+            if (get_blackop() != null && estimate[0] >= 1) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
+            if (estimate[1] - estimate[0] > 0) {
+                for (let i in Object.keys(ACCURACY_ACTIONS)) {
+                    if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] >= 1 && ns.bladeburner.getActionCountRemaining(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) >= 1) {
+                        if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) { await do_action(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) }
+                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates.\n(${(estimate[1] - estimate[0])} > 0).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
+                        break
+                    }
+                }
+                break
+            }
+            // If Raid available - do it
+            if (ns.bladeburner.getActionCountRemaining("Operations", "Raid") > 0 && ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Raid")[0] >= 1) { await do_action("Operations", "Raid"); break }
+            // If Operation available and probable: do it
+            let operation_list = [];
+            for (let operation of OPERATIONS) {
+                let remaining = ns.bladeburner.getActionCountRemaining("Operations", operation);
+                if (remaining < 1) {
+                    // ns.print(`No ${operation} remaining`);
+                    continue
+                }; // Can't do them
+                let success = ns.bladeburner.getActionEstimatedSuccessChance("Operations", operation);
+                if (success[0] < 1) {
+                    // ns.print(`${operation} success chance ${Math.floor(success[0] * 100)}%`);
+                    continue
+                }; // Won't do them
+                ns.print(`Checking ${operation} operation: | Rank: +${ns.bladeburner.getActionRepGain("Operations", operation).toExponential(1)}`)
+                operation_list.push({
+                    "name": operation,
+                    "success": success,
+                    "remaining": remaining,
+                    "rep_gain": ns.bladeburner.getActionRepGain("Operations", operation),
+                });
+            };
+            operation_list = operation_list.sort((a, b) => a.rep_gain - b.rep_gain);
+            // ns.print("Operations: ", operation_list);
+            if (operation_list.length > 0) { await do_action("Operations", operation_list.pop().name); break };
+            // If Contract is available and probable: do it
+            let contract_list = [];
+            for (let contract of CONTRACTS) {
+                let remaining = ns.bladeburner.getActionCountRemaining("Contracts", contract);
+                if (remaining < 1) {
+                    // ns.print(`No ${contract} remaining`);
+                    continue
+                }; // Can't do them
+                let success = ns.bladeburner.getActionEstimatedSuccessChance("Contracts", contract);
+                if (success[0] < 1) {
+                    // ns.print(`${contract} success chance ${Math.floor(success[0] * 100)}%`);
+                    continue
+                }; // Won't do them
+                ns.print(`Checking ${contract} contract: | Rank: +${ns.bladeburner.getActionRepGain("Contracts", contract).toExponential(1)}`)
+                contract_list.push({
+                    "name": contract,
+                    "success": success,
+                    "remaining": remaining,
+                    "rep_gain": ns.bladeburner.getActionRepGain("Contracts", contract),
+                });
+            };
+            contract_list = contract_list.sort((a, b) => a.rep_gain - b.rep_gain);
+            // ns.print("Contracts: ", operation_list);
+            if (contract_list.length > 0) { await do_action("Contracts", contract_list.pop().name); break };
+            let current_action = ns.bladeburner.getCurrentAction();
+            if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); break };
+            // Check skills; train if any under 100
+            ns.print("Checking skills...")
+            let skills = ns.getPlayer().skills
+            if (skills.strength < 100 && skills.defense < 100 && skills.dexterity < 100 && skills.agility < 100) {
+                ns.print(`${ANSI.fg.cyan}Training to improve Combat stats${ANSI.reset}`)
+                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
+                    await do_action("General", "Training");
+                }
+                break
+            }
+            ns.print(`Checking ${city}...`);
+            ns.bladeburner.switchCity(city);
+            await ns.bladeburner.nextUpdate()
+        }
+        // If no action was chosen, wait for the next update. <== REMOVE (after General Actions section is added)
+        await ns.bladeburner.nextUpdate()
+    };
+
+
+    // ===== FUNCTIONS =====
+    /**
+     * Attempts to start the action, printing accordingly and waiting for the next update.
+     * @param {String} type "Black Operations" | "Contracts" | "General" | "Operations"
+     * @param {String} name Exact string of the desired action.
+     * @returns After the action is completed (BlackOps) or an Update has occurred.
+     */
+    async function do_action(type, name) {
+        let current = ns.bladeburner.getCurrentAction()
+        ns.print(`${ANSI.fg.green}Doing ${name}${ANSI.reset}`);
+        if (current != null && name == current.name) { await ns.bladeburner.nextUpdate(); return };
+        if (ns.bladeburner.startAction(type, name)) {
+            ns.print(`${ANSI.fg.green}Started ${name}${ANSI.reset}`);
+            if (type == "Black Operations") { await wait_for_blackop_end() }
+            else {
+                let time = ns.bladeburner.getActionTime(type, name) - ns.bladeburner.getActionCurrentTime();
+                if (ns.bladeburner.getBonusTime() > 0) {
+                    if (ns.bladeburner.getBonusTime() > time) { time = time / 5 }
+                    else { time = time / 5 + (ns.bladeburner.getBonusTime() - time) }
+                }
+                await ns.asleep(time);
+            };
+        } else { ns.tprint(`${ANSI.fg.red}Failed to start ${name}${ANSI.reset}`) };
+        return
+    }
+    /**
+     * Waits for the current BlackOp to complete before returning
+     * @returns on the next update after the BlackOp has completed
+     */
+    async function wait_for_blackop_end() {
+        let action = ns.bladeburner.getCurrentAction()
+        while (action != null && action.type == "Black Operations") {
+            await ns.bladeburner.nextUpdate();
+            action = ns.bladeburner.getCurrentAction();
+        };
+        return
+    }
+    /**
+     * Fetches Next BlackOp details (Name and Rank)
+     * @returns {{String:String,String:Number}} Dict with "name" and "rank"
+     */
+    function get_blackop() { return ns.bladeburner.getNextBlackOp() }
+    /**
+     * Get's the player's current Bladeburner Rank
+     * @returns {Number}
+     */
+    function get_rank() { return ns.bladeburner.getRank() }
+    /**
+     * Fetches the min and max success chance for a given action.
+     * @param {String} type "Black Operations" | "Contracts" | "General" | "Operations"
+     * @param {String} name Exact string of the desired action.
+     * @returns {[Number,Number]} Returns a Dict containing the min and max success probabilities from 0 to 1.
+    */
+    function get_success_chance(type, name) { return ns.bladeburner.getActionEstimatedSuccessChance(type, name) };
+}

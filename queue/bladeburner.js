@@ -1,206 +1,254 @@
 import { ANSI } from "imports/ANSI";
+
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog("ALL");
-    if (!ns.bladeburner.inBladeburner()) { return }
-    const OPERATIONS = ns.bladeburner.getOperationNames();
-    const CONTRACTS = ns.bladeburner.getContractNames();
-    const CITIES = ["Aevum", "Chongqing", "Ishima", "New Tokyo", "Sector-12", "Volhaven"];
-    const ACCURACY_ACTIONS = {
-        "Operations": "Undercover Operation",
-        "Operations": "Investigation",
-        "Contracts": "Tracking",
-        "General": "Field Analysis",
+
+    // ===== CLASSES =====
+
+    /** Class representing a City */
+    class City {
+        /** Create instance of the city object
+         * @param {String} name The name of the city
+         */
+        constructor(name) { this.name = name; }
+        /** Get the amount of chaos in the city
+         * @returns {Number} Amount of chaos
+         */
+        get chaos() { return ns.bladeburner.getCityChaos(this.name) }
+        /** Get the amount of communities in the city
+         * @returns {Number} Number of communities
+         */
+        get communities() { return ns.bladeburner.getCityCommunities(this.name) }
+        /** Get the estimated population of the city
+         * @returns {Number} Estimated number of Synthoids in the specified city.
+         */
+        get pop_estimate() { return ns.bladeburner.getCityEstimatedPopulation(this.name) }
     }
-    const MIN_POPULATION = 1000000000
+
+    /** Class representing an Action */
+    class Action {
+        /**
+         * @param {String} type 
+         * @param {String} name 
+         */
+        constructor(type, name) {
+            this.type = type;
+            this.name = name;
+        }
+    }
+
+    /** Class representing an individual job */
+    class Job {
+        /**
+         * @param {Action} action 
+         * @param {City} city 
+         */
+        constructor(action, city, rep_gain = 0) {
+            this.type = action.type;
+            this.name = action.name;
+            this.city = city.name;
+            this.rep_gain = rep_gain
+        }
+    }
+
+    class CurrentJob {
+        constructor() {
+            let current_action = ns.bladeburner.getCurrentAction()
+            if (current_action != null) {
+                this.name = current_action.name
+                this.type = current_action.type
+                this.rep_gain = ns.bladeburner.getActionRepGain(this.type, this.name);
+            } else {
+                this.name = ""
+                this.type = ""
+                this.rep_gain = 0
+            }
+            this.city = ns.bladeburner.getCity();
+        }
+        update() {
+            let current_action = ns.bladeburner.getCurrentAction()
+            if (current_action != null) {
+                this.name = current_action.name
+                this.type = current_action.type
+                this.rep_gain = ns.bladeburner.getActionRepGain(this.type, this.name);
+            } else {
+                this.name = ""
+                this.type = ""
+                this.rep_gain = 0
+            }
+            this.city = ns.bladeburner.getCity()
+        }
+
+    }
+
+    /** Class representing all acceptable jobs */
+    class Job_List {
+        /**
+         * @param {Job[]} jobs 
+         */
+        constructor(jobs = []) { this.jobs = jobs }
+        /** Updates the list of doable jobs and returns the new list (Will travel to all cities during this process)
+         * @returns {Job[]}
+         */
+        update() {
+            ns.print(`${ANSI.fg.cyan}Updating job list:${ANSI.reset}`)
+            this.clear();
+            const CITIES = Object.values(ns.enums.CityName).map((a) => new City(a));
+            const GENERAL = ns.bladeburner.getGeneralActionNames().map((a) => new Action("General", a));
+            const CONTRACTS = ns.bladeburner.getContractNames().map((a) => new Action("Contracts", a));
+            const OPERATIONS = ns.bladeburner.getOperationNames().map((a) => new Action("Operations", a));
+            const BLACKOP = [new Action("Black Operations", ns.bladeburner.getNextBlackOp().name)]
+            const ALL_ACTIONS = BLACKOP.name != null ? BLACKOP.concat(OPERATIONS, CONTRACTS, GENERAL) : OPERATIONS.concat(CONTRACTS, GENERAL)
+            ns.print(`${ANSI.fg.cyan}Checking ${ALL_ACTIONS.length} jobs across ${CITIES.length} cities.${ANSI.reset}`)
+            for (let city of CITIES) {
+                ns.bladeburner.switchCity(city.name);
+                for (let action of ALL_ACTIONS) {
+                    if (action.type == "Black Operations" && ns.bladeburner.getNextBlackOp().rank <= ns.bladeburner.getRank()) { continue }
+                    let job = new Job(action, city, ns.bladeburner.getActionRepGain(action.type, action.name));
+                    if (ns.bladeburner.getActionEstimatedSuccessChance(job.type, job.name) < 1) { continue }
+                    else if (ns.bladeburner.getActionCountRemaining(job.type, job.name) < 1) { continue }
+                    this.jobs.push(job);
+                }
+            }
+            ns.print(`${ANSI.fg.cyan}Found ${this.jobs.length} doable jobs.${ANSI.reset}`)
+            return this.jobs;
+        }
+        /** Clears the job list */
+        clear() { this.jobs = [] }
+
+        /**
+         * 
+         * @returns {(Job|null)}
+         */
+        best_job() {
+            if (this.jobs.length < 1) {
+                ns.print(`${ANSI.fg.red}No doable jobs in job list.${ANSI.reset}`);
+                return null
+            }
+            for (let job of this.jobs) {
+                if (job.name == "Hyperbolic Regeneration Chamber") { continue }
+                if (job.type == "Black Operations") { return job }
+                else if (job.name == "Recruitment") { return job }
+                else if (job.name == "Raid") { return job }
+            }
+            return this.jobs.sort((a, b) => b.rep_gain - a.rep_gain)[0]
+        }
+
+    }
+
+    // ===== MAIN =====
+    if (!ns.bladeburner.inBladeburner()) { return }
+    ns.disableLog("ALL");
+    ns.ui.openTail()
+    let job_list = new Job_List
+    let current_job = new CurrentJob()
     while (true) {
         ns.clearLog();
-        let current_action = ns.bladeburner.getCurrentAction();// Check Current Action is still viable
-        if (current_action != null && ns.bladeburner.getActionEstimatedSuccessChance(current_action.type, current_action.name)[0] < 1) {
-            ns.print(`${ANSI.fg.red}${current_action.name} too risky - stopping.${ANSI.reset}`);
-            ns.bladeburner.stopBladeburnerAction();
-        }
-        if (current_action != null && ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 1) {
-            ns.print(`${ANSI.fg.red}${current_action.name} ran out - stopping.${ANSI.reset}`);
-            ns.bladeburner.stopBladeburnerAction();
-        }
-        ns.print(`Current Rank: ${ns.bladeburner.getRank().toExponential(1)}`)
-        // If BlackOp available and probable: do it, then wait for it to finish
-        if (get_blackop() != null) {
-            ns.print(`Checking ${get_blackop().name} | Rank-required: ${get_blackop().rank.toExponential(1)}`);
-            while (get_blackop() != null && get_rank() >= get_blackop().rank && get_success_chance("Black Operations", get_blackop().name)[0] >= 1) {
-                await do_action("Black Operations", get_blackop().name);
-                ns.clearLog();
-            };
+        // Update stats
+        await ns.bladeburner.nextUpdate();
+        current_job.update();
+        job_list.update();
+        ns.bladeburner.switchCity(current_job.city);
+        // Run a safety check
+        if (current_job.name != "" && current_job.type != "") {
+            if (ns.bladeburner.getActionEstimatedSuccessChance(current_job.type, current_job.name)[0] < 1) {
+                ns.print(`${ANSI.fg.red}${current_job.name} too risky to continue.${ANSI.reset}`);
+                ns.bladeburner.stopBladeburnerAction();
+            } else if (ns.bladeburner.getActionCountRemaining(current_job.type, current_job.name) < 1) {
+                ns.print(`${ANSI.fg.red}${current_job.name} ran out of contracts.${ANSI.reset}`);
+                ns.bladeburner.stopBladeburnerAction();
+            }
         }
         // If stamina penalty too high, Train for a bit
-        let stamina = ns.bladeburner.getStamina()
-        if (stamina[0] / stamina[1] <= 0.5) {
-            while (stamina[0] / stamina[1] <= 0.6) {
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
-                    ns.bladeburner.startAction("General", "Training"); ns.print(`${ANSI.fg.yellow}Recovering Stamina while Training${ANSI.reset}`)
-                }
-                stamina = ns.bladeburner.getStamina();
-                await ns.bladeburner.nextUpdate();
-            }
-        }
-        // For each city, try Ops and Contracts.
-        let cities = CITIES.filter((name) => name != ns.bladeburner.getCity());
-        // If no communities, look for a city with one and move there.
-        if (ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 1 || ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < MIN_POPULATION) {
-            for (let city of cities) {
-                if (ns.bladeburner.getCityCommunities(city) > 1 && ns.bladeburner.getCityEstimatedPopulation(city) > MIN_POPULATION) {
-                    ns.print(`Travelling to ${city}...`);
-                    ns.bladeburner.switchCity(city);
-                    await ns.bladeburner.nextUpdate();
-                    break
-                }
-            }
-        }
-        for (let city of CITIES) {
-            if (ns.bladeburner.getCityEstimatedPopulation(city) < 1000000) { continue }
-            // Check recruitment; recruit if 100%
-            ns.print("Checking recruitment...")
-            let recruit = ns.bladeburner.getActionEstimatedSuccessChance("General", "Recruitment")[0]
-            if (recruit >= 1) {
-                ns.print(`${ANSI.fg.cyan}Recruiting team members (${ns.bladeburner.getTeamSize()} => ${ns.bladeburner.getTeamSize() + 1}).${ANSI.reset}`);
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Recruitment") {
-                    ns.bladeburner.startAction("General", "Recruitment");
-                }
-                break
-            }
-            // Check accuracy of data and do Field Analysis if not good, otherwise Train
-            ns.print("Checking estimates...");
-            let estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination")
-            if (get_blackop() != null && estimate[0] >= 1) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", get_blackop().name) }
-            if (estimate[1] - estimate[0] > 0) {
-                for (let i in Object.keys(ACCURACY_ACTIONS)) {
-                    if (ns.bladeburner.getActionEstimatedSuccessChance(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])[0] >= 1 && ns.bladeburner.getActionCountRemaining(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i]) >= 1) {
-                        if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != Object.values(ACCURACY_ACTIONS)[i]) {
-                            ns.bladeburner.startAction(Object.keys(ACCURACY_ACTIONS)[i], Object.values(ACCURACY_ACTIONS)[i])
-                        }
-                        ns.print(`${ANSI.fg.cyan}Performing ${Object.values(ACCURACY_ACTIONS)[i]} to improve estimates.\n(${(estimate[1] - estimate[0])} > 0).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
-                        break
-                    }
-                }
-                break
-            }
-            // If Raid available - do it
-            if (ns.bladeburner.getActionCountRemaining("Operations", "Raid") > 0 && ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Raid")[0] >= 1) { await do_action("Operations", "Raid"); break }
-            // If Operation available and probable: do it
-            let operation_list = [];
-            for (let operation of OPERATIONS) {
-                let remaining = ns.bladeburner.getActionCountRemaining("Operations", operation);
-                if (remaining < 1) {
-                    // ns.print(`No ${operation} remaining`);
-                    continue
-                }; // Can't do them
-                let success = ns.bladeburner.getActionEstimatedSuccessChance("Operations", operation);
-                if (success[0] < 1) {
-                    // ns.print(`${operation} success chance ${Math.floor(success[0] * 100)}%`);
-                    continue
-                }; // Won't do them
-                ns.print(`Checking ${operation} operation: | Rank: +${ns.bladeburner.getActionRepGain("Operations", operation).toExponential(1)}`)
-                operation_list.push({
-                    "name": operation,
-                    "success": success,
-                    "remaining": remaining,
-                    "rep_gain": ns.bladeburner.getActionRepGain("Operations", operation),
-                });
-            };
-            operation_list = operation_list.sort((a, b) => a.rep_gain - b.rep_gain);
-            // ns.print("Operations: ", operation_list);
-            if (operation_list.length > 0) { await do_action("Operations", operation_list.pop().name); break };
-            // If Contract is available and probable: do it
-            let contract_list = [];
-            for (let contract of CONTRACTS) {
-                let remaining = ns.bladeburner.getActionCountRemaining("Contracts", contract);
-                if (remaining < 1) {
-                    // ns.print(`No ${contract} remaining`);
-                    continue
-                }; // Can't do them
-                let success = ns.bladeburner.getActionEstimatedSuccessChance("Contracts", contract);
-                if (success[0] < 1) {
-                    // ns.print(`${contract} success chance ${Math.floor(success[0] * 100)}%`);
-                    continue
-                }; // Won't do them
-                ns.print(`Checking ${contract} contract: | Rank: +${ns.bladeburner.getActionRepGain("Contracts", contract).toExponential(1)}`)
-                contract_list.push({
-                    "name": contract,
-                    "success": success,
-                    "remaining": remaining,
-                    "rep_gain": ns.bladeburner.getActionRepGain("Contracts", contract),
-                });
-            };
-            contract_list = contract_list.sort((a, b) => a.rep_gain - b.rep_gain);
-            // ns.print("Contracts: ", operation_list);
-            if (contract_list.length > 0) { await do_action("Contracts", contract_list.pop().name); break };
-            let current_action = ns.bladeburner.getCurrentAction();
-            if (current_action != null && current_action.type != "General") { await ns.bladeburner.nextUpdate(); break };
-            // Check skills; train if any under 100
-            ns.print("Checking skills...")
-            let skills = ns.getPlayer().skills
-            if (skills.strength < 100 && skills.defense < 100 && skills.dexterity < 100 && skills.agility < 100) {
-                ns.print(`${ANSI.fg.cyan}Training to improve Combat stats${ANSI.reset}`)
-                if (ns.bladeburner.getCurrentAction() == null || ns.bladeburner.getCurrentAction().name != "Training") {
-                    do_action("General", "Training");
-                }
-                break
-            }
-            ns.print(`Checking ${city}...`);
-            ns.bladeburner.switchCity(city);
-            await ns.bladeburner.nextUpdate()
-        }
-        // If no action was chosen, wait for the next update. <== REMOVE (after General Actions section is added)
-        await ns.bladeburner.nextUpdate()
-    };
-
+        await stamina_check(current_job);
+        // Check accuracy of data and do Field Analysis if not good, otherwise Train
+        if (await improve_accuracy(current_job)) { continue }
+        // Do the best job available
+        if (await do_job(job_list.best_job(), current_job)) { continue }
+        // Otherwise just train
+        await do_job(new Job(new Action("General", "Training"), ns.bladeburner.getCity()));
+    }
 
     // ===== FUNCTIONS =====
-    /**
-     * Attempts to start the action, printing accordingly and waiting for the next update.
-     * @param {String} type "Black Operations" | "Contracts" | "General" | "Operations"
-     * @param {String} name Exact string of the desired action.
-     * @returns After the action is completed (BlackOps) or an Update has occurred.
+    /** Starts the job by checking the current job and moving to the correct city.
+     * @param {Job} job The job to be started
+     * @returns {Promise<Boolean>} True if successful
      */
-    async function do_action(type, name) {
-        let current = ns.bladeburner.getCurrentAction()
-        ns.print(`${ANSI.fg.green}Doing ${name}${ANSI.reset}`);
-        if (current != null && name == current.name) { await ns.bladeburner.nextUpdate(); return };
-        if (ns.bladeburner.startAction(type, name)) {
-            ns.print(`${ANSI.fg.green}Started ${name}${ANSI.reset}`);
-            if (type == "Black Operations") { await wait_for_blackop_end() }
-            else { await ns.bladeburner.nextUpdate() };
-        } else { ns.tprint(`${ANSI.fg.red}Failed to start ${name}${ANSI.reset}`) };
-        return
+    async function do_job(job, current_job) {
+        if (job.city != current_job.city) { ns.bladeburner.switchCity(job.city) }
+        let remaining = ns.bladeburner.getActionTime(job.type, job.name) - ns.bladeburner.getActionCurrentTime();
+        let sleep = bonus_time_calc(remaining);
+        if (job.name == current_job.name) {
+            ns.print(`${ANSI.fg.cyan}Continuing ${job.name}.${ANSI.reset}`);
+            await ns.asleep(sleep);
+            return true;
+        } else if (ns.bladeburner.startAction(job.type, job.name)) {
+            remaining = ns.bladeburner.getActionTime(job.type, job.name) - ns.bladeburner.getActionCurrentTime();
+            sleep = bonus_time_calc(remaining);
+            ns.print(`${ANSI.fg.cyan}Starting ${job.name}.${ANSI.reset}`);
+            await ns.asleep(sleep);
+            return true;
+        } else {
+            ns.print(`${ANSI.fg.red}Failed to start ${job.name}.${ANSI.reset}`);
+            return false;
+        }
     }
-    /**
-     * Waits for the current BlackOp to complete before returning
-     * @returns on the next update after the BlackOp has completed
+
+    /** Calculates how much real time a bladeburner action should take.
+     * @param {Number} time Milliseconds of Bladeburner time
+     * @returns {Number} Milliseconds of real time
      */
-    async function wait_for_blackop_end() {
-        let action = ns.bladeburner.getCurrentAction()
-        while (action != null && action.type == "Black Operations") {
-            await ns.bladeburner.nextUpdate();
-            action = ns.bladeburner.getCurrentAction();
-        };
-        return
+    function bonus_time_calc(time) {
+        let bonus_time = ns.bladeburner.getBonusTime();
+        let time_left = 1000
+        if (bonus_time > time) { time_left = time / 5 }
+        else if (bonus_time > 1000) { time_left = (time - bonus_time) + (time / 5) }
+        return time_left
     }
-    /**
-     * Fetches Next BlackOp details (Name and Rank)
-     * @returns {{String:String,String:Number}} Dict with "name" and "rank"
+
+    /** Recovers stamina if necessary. */
+    async function stamina_check(current_job) {
+        const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), ns.bladeburner.getCity())
+        const TRAINING = new Job(new Action("General", "Training"), ns.bladeburner.getCity())
+        let stamina = ns.bladeburner.getStamina()
+        if (stamina[0] / stamina[1] <= 0.5) {
+            ns.print(`${ANSI.fg.yellow}Recovering Stamina${ANSI.reset}`)
+            while (stamina[0] / stamina[1] <= 0.6) {
+                let hp = ns.getPlayer().hp;
+                if (hp.current < hp.max) { await do_job(REGENERATION) }
+                else { await do_job(TRAINING, current_job) }
+                stamina = ns.bladeburner.getStamina();
+            }
+        }
+    }
+    /** Improves accuracy if necessary
+     * @param {Job} current_job 
+     * @returns {Promise<Boolean>} True if successful
      */
-    function get_blackop() { return ns.bladeburner.getNextBlackOp() }
-    /**
-     * Get's the player's current Bladeburner Rank
-     * @returns {Number}
-     */
-    function get_rank() { return ns.bladeburner.getRank() }
-    /**
-     * Fetches the min and max success chance for a given action.
-     * @param {String} type "Black Operations" | "Contracts" | "General" | "Operations"
-     * @param {String} name Exact string of the desired action.
-     * @returns {[Number,Number]} Returns a Dict containing the min and max success probabilities from 0 to 1.
-    */
-    function get_success_chance(type, name) { return ns.bladeburner.getActionEstimatedSuccessChance(type, name) };
+    async function improve_accuracy(current_job) {
+        const ACCURACY_ACTIONS = [
+            new Action("Operations", "Undercover Operation"),
+            new Action("Operations", "Investigation"),
+            new Action("Contracts", "Tracking"),
+            new Action("General", "Field Analysis")
+        ]
+        let estimate = ns.bladeburner.getNextBlackOp() != null ? ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", ns.bladeburner.getNextBlackOp().name) : ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination")
+        if (estimate[0] != estimate[1]) {
+            for (let action of ACCURACY_ACTIONS) {
+                if (
+                    ns.bladeburner.getActionEstimatedSuccessChance(action.type, action.name)[0] >= 1 &&
+                    ns.bladeburner.getActionCountRemaining(action.type, action.name) >= 1
+                ) {
+                    ns.print(`${ANSI.fg.green}Performing ${action.name} to improve estimates.\n(${(estimate[1] - estimate[0])} > 0).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
+                    let city = new City(ns.bladeburner.getCity())
+                    let job = new Job(action, city);
+                    ns.print(job.city);
+                    await do_job(job, current_job);
+                    return true
+                }
+            }
+            return false
+        }
+        return false
+    }
 }
