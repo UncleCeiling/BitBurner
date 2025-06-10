@@ -51,6 +51,7 @@ export async function main(ns) {
         }
     }
 
+    /** Class for maintaining the current job */
     class CurrentJob {
         constructor() {
             let current_action = ns.bladeburner.getCurrentAction()
@@ -91,33 +92,33 @@ export async function main(ns) {
          * @returns {Job[]}
          */
         update() {
-            ns.print(`${ANSI.fg.cyan}Updating job list:${ANSI.reset}`)
-            this.clear();
+            ns.print(`${ANSI.fg.cyan}Updating job list:${ANSI.reset}`);
+            this.clear();;
             const CITIES = Object.values(ns.enums.CityName).map((a) => new City(a));
             const GENERAL = ns.bladeburner.getGeneralActionNames().map((a) => new Action("General", a));
             const CONTRACTS = ns.bladeburner.getContractNames().map((a) => new Action("Contracts", a));
             const OPERATIONS = ns.bladeburner.getOperationNames().map((a) => new Action("Operations", a));
-            const BLACKOP = [new Action("Black Operations", ns.bladeburner.getNextBlackOp().name)]
-            const ALL_ACTIONS = BLACKOP.name != null ? BLACKOP.concat(OPERATIONS, CONTRACTS, GENERAL) : OPERATIONS.concat(CONTRACTS, GENERAL)
-            ns.print(`${ANSI.fg.cyan}Checking ${ALL_ACTIONS.length} jobs across ${CITIES.length} cities.${ANSI.reset}`)
+            let next_black_op = ns.bladeburner.getNextBlackOp()
+            const BLACKOP = next_black_op != null ? [new Action("Black Operations", ns.bladeburner.getNextBlackOp().name)] : [new Action("Black Operations", "")]
+            const ALL_ACTIONS = BLACKOP[0].name != "" ? BLACKOP.concat(OPERATIONS, CONTRACTS, GENERAL) : OPERATIONS.concat(CONTRACTS, GENERAL);
+            ns.print(`${ANSI.fg.cyan}Checking ${ALL_ACTIONS.length} jobs across ${CITIES.length} cities.${ANSI.reset}`);
             for (let city of CITIES) {
                 ns.bladeburner.switchCity(city.name);
                 for (let action of ALL_ACTIONS) {
-                    if (action.type == "Black Operations" && ns.bladeburner.getNextBlackOp().rank <= ns.bladeburner.getRank()) { continue }
+                    if (action.type == "Black Operations" && ns.bladeburner.getNextBlackOp().rank >= ns.bladeburner.getRank()) { continue }
                     let job = new Job(action, city, ns.bladeburner.getActionRepGain(action.type, action.name));
-                    if (ns.bladeburner.getActionEstimatedSuccessChance(job.type, job.name) < 1) { continue }
+                    if (ns.bladeburner.getActionEstimatedSuccessChance(job.type, job.name)[0] < 1) { continue }
                     else if (ns.bladeburner.getActionCountRemaining(job.type, job.name) < 1) { continue }
                     this.jobs.push(job);
                 }
             }
-            ns.print(`${ANSI.fg.cyan}Found ${this.jobs.length} doable jobs.${ANSI.reset}`)
+            ns.print(`${ANSI.fg.cyan}Found ${this.jobs.length} doable jobs.${ANSI.reset}`);
             return this.jobs;
         }
         /** Clears the job list */
         clear() { this.jobs = [] }
-
-        /**
-         * 
+        /** Finds the best job in the list
+         * Preferences Black-ops, Raids and recruitment
          * @returns {(Job|null)}
          */
         best_job() {
@@ -126,10 +127,12 @@ export async function main(ns) {
                 return null
             }
             for (let job of this.jobs) {
-                if (job.name == "Hyperbolic Regeneration Chamber") { continue }
                 if (job.type == "Black Operations") { return job }
-                else if (job.name == "Recruitment") { return job }
-                else if (job.name == "Raid") { return job }
+            }
+            for (let job of this.jobs) {
+                if (job.name == "Hyperbolic Regeneration Chamber") { continue }
+                if (job.name == "Recruitment") { return job }
+                if (job.name == "Raid" && ns.bladeburner.getCityCommunities(job.city)) { return job }
             }
             return this.jobs.sort((a, b) => b.rep_gain - a.rep_gain)[0]
         }
@@ -166,16 +169,18 @@ export async function main(ns) {
         // Do the best job available
         if (await do_job(job_list.best_job(), current_job)) { continue }
         // Otherwise just train
-        await do_job(new Job(new Action("General", "Training"), ns.bladeburner.getCity()));
+        await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);
     }
 
     // ===== FUNCTIONS =====
+
     /** Starts the job by checking the current job and moving to the correct city.
      * @param {Job} job The job to be started
      * @returns {Promise<Boolean>} True if successful
      */
     async function do_job(job, current_job) {
-        if (job.city != current_job.city) { ns.bladeburner.switchCity(job.city) }
+        current_job.update();
+        ns.bladeburner.switchCity(job.city);
         let remaining = ns.bladeburner.getActionTime(job.type, job.name) - ns.bladeburner.getActionCurrentTime();
         let sleep = bonus_time_calc(remaining);
         if (job.name == current_job.name) {
@@ -208,9 +213,10 @@ export async function main(ns) {
 
     /** Recovers stamina if necessary. */
     async function stamina_check(current_job) {
-        const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), ns.bladeburner.getCity())
-        const TRAINING = new Job(new Action("General", "Training"), ns.bladeburner.getCity())
-        let stamina = ns.bladeburner.getStamina()
+        const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), ns.bladeburner.getCity());
+        const TRAINING = new Job(new Action("General", "Training"), ns.bladeburner.getCity());
+        let stamina = ns.bladeburner.getStamina();
+        current_job.update();
         if (stamina[0] / stamina[1] <= 0.5) {
             ns.print(`${ANSI.fg.yellow}Recovering Stamina${ANSI.reset}`)
             while (stamina[0] / stamina[1] <= 0.6) {
@@ -221,6 +227,7 @@ export async function main(ns) {
             }
         }
     }
+
     /** Improves accuracy if necessary
      * @param {Job} current_job 
      * @returns {Promise<Boolean>} True if successful
@@ -232,7 +239,8 @@ export async function main(ns) {
             new Action("Contracts", "Tracking"),
             new Action("General", "Field Analysis")
         ]
-        let estimate = ns.bladeburner.getNextBlackOp() != null ? ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", ns.bladeburner.getNextBlackOp().name) : ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination")
+        let estimate = ns.bladeburner.getNextBlackOp() != null ? ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", ns.bladeburner.getNextBlackOp().name) : ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination");
+        current_job.update();
         if (estimate[0] != estimate[1]) {
             for (let action of ACCURACY_ACTIONS) {
                 if (
@@ -240,7 +248,7 @@ export async function main(ns) {
                     ns.bladeburner.getActionCountRemaining(action.type, action.name) >= 1
                 ) {
                     ns.print(`${ANSI.fg.green}Performing ${action.name} to improve estimates.\n(${(estimate[1] - estimate[0])} > 0).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
-                    let city = new City(ns.bladeburner.getCity())
+                    let city = new City(ns.bladeburner.getCity());
                     let job = new Job(action, city);
                     ns.print(job.city);
                     await do_job(job, current_job);
