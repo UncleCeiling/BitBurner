@@ -185,19 +185,22 @@ export async function main(ns) {
             }
             return true
         }
-        if (ns.sleeve.getTask(sleeve_num).type == "BLADEBURNER" && ns.sleeve.getTask(sleeve_num).actionName != "Field Analysis") { return true }
-        if (Math.random() < 0.5) {
-            ns.print(`${sleeve_num} Infiltrating Synthoids`);
-            if (ns.sleeve.getTask(sleeve_num).actionName != "Infiltrate Synthoids") {
-                ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
+        let current_action = ns.bladeburner.getCurrentAction()
+        if (current_action != null) {
+            if (ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 100) {
+                ns.print(`${sleeve_num} Infiltrating Synthoids`);
+                if (ns.sleeve.getTask(sleeve_num).actionName != "Infiltrate Synthoids") {
+                    ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
+                }
                 return true
             }
-        } else {
+        }
+        else {
             ns.print(`${sleeve_num} Supporting main sleeve`);
             if (ns.sleeve.getTask(sleeve_num).actionName != "Support main sleeve") {
                 ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
-                return true
             }
+            return true
         }
     }
 

@@ -163,11 +163,12 @@ export async function main(ns) {
             }
         }
         // If stamina penalty too high, Train for a bit
-        await stamina_check(current_job);
+        await stamina_check(0.5, 0.6, current_job);
         // Check accuracy of data and do Field Analysis if not good, otherwise Train
         if (await improve_accuracy(current_job)) { continue }
         // Do the best job available
         if (await do_job(job_list.best_job(), current_job)) { continue }
+        await stamina_check(0.9, 0.95, current_job)
         // Otherwise just train
         await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);
     }
@@ -212,14 +213,14 @@ export async function main(ns) {
     }
 
     /** Recovers stamina if necessary. */
-    async function stamina_check(current_job) {
+    async function stamina_check(start, stop, current_job) {
         const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), ns.bladeburner.getCity());
         const TRAINING = new Job(new Action("General", "Training"), ns.bladeburner.getCity());
         let stamina = ns.bladeburner.getStamina();
         current_job.update();
-        if (stamina[0] / stamina[1] <= 0.5) {
+        if (stamina[0] / stamina[1] <= start) {
             ns.print(`${ANSI.fg.yellow}Recovering Stamina${ANSI.reset}`)
-            while (stamina[0] / stamina[1] <= 0.6) {
+            while (stamina[0] / stamina[1] <= stop) {
                 let hp = ns.getPlayer().hp;
                 if (hp.current < hp.max) { await do_job(REGENERATION) }
                 else { await do_job(TRAINING, current_job) }
