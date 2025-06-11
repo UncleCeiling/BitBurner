@@ -195,13 +195,11 @@ export async function main(ns) {
                 return true
             }
         }
-        else {
-            ns.print(`${sleeve_num} Supporting main sleeve`);
-            if (ns.sleeve.getTask(sleeve_num).actionName != "Support main sleeve") {
-                ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
-            }
-            return true
+        ns.print(`${sleeve_num} Supporting main sleeve`);
+        if (ns.sleeve.getTask(sleeve_num).actionName != "Support main sleeve") {
+            ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
         }
+        return true
     }
 
     /**

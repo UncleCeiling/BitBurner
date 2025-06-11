@@ -18,10 +18,7 @@ export async function main(ns) {
                     points = get_skill_points()
                     if (ns.bladeburner.upgradeSkill("Overclock")) {
                         ns.tprint(`${ANSI.fg.green}Bought Overclock for ${cost} points (Level: ${level + 1})${ANSI.reset}`);
-                    } else {
-                        ns.tprint(`${ANSI.fg.red}Failed to buy Overclock for ${cost} points (Current points: ${points})${ANSI.reset}`);
-                        success = false
-                    }
+                    } else { success = false }
                 }
                 return
             } else if (cost < Infinity) { skill_levels.push({ "name": skill, "level": level, "cost": cost }) };
