@@ -125,7 +125,7 @@ export async function main(ns) {
             job.threads = get_grow_threads(server);
             job.time = ns.getGrowTime(job.host);
             job.ram = ns.getScriptRam(job.script, HOST);
-        } else { ns.print(`${server.hostname}, ${server.moneyAvailable}, ${server.moneyMax}`); return false };
+        } else { return false };
         return job;
     };
 
