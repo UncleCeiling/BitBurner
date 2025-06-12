@@ -102,7 +102,7 @@ export async function main(ns) {
             if (next_black_op != null) { ns.bladeburner.setTeamSize("Black Operations", next_black_op.name, max_team) }
             const BLACKOP = next_black_op != null ? [new Action("Black Operations", ns.bladeburner.getNextBlackOp().name)] : [new Action("Black Operations", "")];
             const ALL_ACTIONS = BLACKOP[0].name != "" ? BLACKOP.concat(OPERATIONS, CONTRACTS, GENERAL) : OPERATIONS.concat(CONTRACTS, GENERAL);
-            ns.print(`${ANSI.fg.cyan}Checking ${ALL_ACTIONS.length} jobs across ${CITIES.length} cities.${ANSI.reset}`);
+            ns.print(`${ANSI.fg.cyan}Checking ${ALL_ACTIONS.length * CITIES.length} jobs across ${CITIES.length} cities.${ANSI.reset}`);
             for (let city of CITIES) {
                 ns.bladeburner.switchCity(city.name);
                 for (let action of ALL_ACTIONS) {
@@ -130,15 +130,15 @@ export async function main(ns) {
                 return null;
             }
             for (let job of this.jobs) {
-                if (job.name == "Raid" && ns.bladeburner.getCityCommunities(job.city) > 0) { return job }
-                else if (job.type == "General") { continue }
+                if (job.type == "General") { continue }
                 else if ((
                     job.name == "Stealth Retirement Operation" ||
                     job.name == "Assassination" ||
                     job.name == "Sting Operation" ||
                     job.name == "Retirement" ||
                     job.name == "Bounty Hunter"
-                ) && ns.bladeburner.getCityEstimatedPopulation(job.city) < 1000000000) { continue };
+                ) && ns.bladeburner.getCityEstimatedPopulation(job.city) < 1000000000) { continue }
+                else if (job.name == "Raid" && ns.bladeburner.getCityCommunities(job.city) > 0) { return job }
                 rep_jobs.push(job);
             }
             return rep_jobs.sort((a, b) => b.rep_gain - a.rep_gain)[0];
@@ -229,7 +229,7 @@ export async function main(ns) {
         // Make money
         if (await do_job(job_list.cash_job(), current_job)) { continue }
         // If stamina penalty too high, Train for a bit
-        await stamina_check(0.5, 0.5, current_job);
+        if (await stamina_check(0.5, 0.5, current_job)) { continue }
         // Otherwise just train
         await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);
     }
@@ -282,7 +282,8 @@ export async function main(ns) {
                 await ns.bladeburner.nextUpdate()
                 stamina = ns.bladeburner.getStamina();
             }
-        }
+            return true
+        } else { return false }
     }
 
     /** Improves accuracy if necessary
