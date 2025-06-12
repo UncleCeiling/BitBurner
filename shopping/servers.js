@@ -38,8 +38,8 @@ export async function main(ns) {
     // Upgrade each server
     servers = ns.getPurchasedServers()
     if (servers.length == 0) { return }
-    let success = false
-    do {
+    let success = true
+    while (success) {
         success = false
         for (let server of servers) {
             // Find out how much RAM the server has
@@ -59,7 +59,7 @@ export async function main(ns) {
             success = ns.upgradePurchasedServer(server, currentRam * 2)
             ns.tprint(`${ANSI.fg.green}Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})${ANSI.reset}`)
         }
-    } while (success)
+    }
 
     // Deploy foreman to each server
     for (let server of servers) {

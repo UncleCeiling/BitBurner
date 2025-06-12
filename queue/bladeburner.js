@@ -47,7 +47,7 @@ export async function main(ns) {
             this.type = action.type;
             this.name = action.name;
             this.city = city.name;
-            this.rep_gain = rep_gain
+            this.rep_gain = rep_gain;
         }
     }
 
@@ -81,7 +81,6 @@ export async function main(ns) {
         }
 
     }
-
     /** Class representing all acceptable jobs */
     class Job_List {
         /**
@@ -98,7 +97,9 @@ export async function main(ns) {
             const GENERAL = ns.bladeburner.getGeneralActionNames().map((a) => new Action("General", a));
             const CONTRACTS = ns.bladeburner.getContractNames().map((a) => new Action("Contracts", a));
             const OPERATIONS = ns.bladeburner.getOperationNames().map((a) => new Action("Operations", a));
+            let max_team = ns.bladeburner.getTeamSize()
             let next_black_op = ns.bladeburner.getNextBlackOp();
+            if (next_black_op != null) { ns.bladeburner.setTeamSize("Black Operations", next_black_op.name, max_team) }
             const BLACKOP = next_black_op != null ? [new Action("Black Operations", ns.bladeburner.getNextBlackOp().name)] : [new Action("Black Operations", "")];
             const ALL_ACTIONS = BLACKOP[0].name != "" ? BLACKOP.concat(OPERATIONS, CONTRACTS, GENERAL) : OPERATIONS.concat(CONTRACTS, GENERAL);
             ns.print(`${ANSI.fg.cyan}Checking ${ALL_ACTIONS.length} jobs across ${CITIES.length} cities.${ANSI.reset}`);
@@ -107,6 +108,7 @@ export async function main(ns) {
                 for (let action of ALL_ACTIONS) {
                     if (action.type == "Black Operations" && ns.bladeburner.getNextBlackOp().rank >= ns.bladeburner.getRank()) { continue }
                     let job = new Job(action, city, ns.bladeburner.getActionRepGain(action.type, action.name));
+                    ns.bladeburner.setTeamSize(job.type, job.name, max_team)
                     if (ns.bladeburner.getActionEstimatedSuccessChance(job.type, job.name)[0] < 1) { continue }
                     else if (ns.bladeburner.getActionCountRemaining(job.type, job.name) < 1) { continue }
                     this.jobs.push(job);
@@ -117,23 +119,18 @@ export async function main(ns) {
         }
         /** Clears the job list */
         clear() { this.jobs = [] }
-        /** Finds the best job in the list
-         * Preferences Black-ops, Raids and recruitment
+        /** Finds the best rep job in the list
+         * Preferences Raids
          * @returns {(Job|null)}
          */
-        best_job() {
+        rep_job() {
             let rep_jobs = [];
             if (this.jobs.length < 1) {
                 ns.print(`${ANSI.fg.red}No doable jobs in job list.${ANSI.reset}`);
                 return null;
             }
             for (let job of this.jobs) {
-                if (job.type == "Black Operations") { return job }
-            }
-            for (let job of this.jobs) {
-                if (job.name == "Recruitment") { return job }
-                else if (job.name == "Raid" && ns.bladeburner.getCityCommunities(job.city) > 0) { return job }
-                else if (job.name == "Diplomacy" && ns.bladeburner.getCityChaos(job.city) > 100) { return job }
+                if (job.name == "Raid" && ns.bladeburner.getCityCommunities(job.city) > 0) { return job }
                 else if (job.name == "Hyperbolic Regeneration Chamber") { continue }
                 else if ((
                     job.name == "Stealth Retirement Operation" ||
@@ -145,6 +142,55 @@ export async function main(ns) {
                 rep_jobs.push(job);
             }
             return rep_jobs.sort((a, b) => b.rep_gain - a.rep_gain)[0];
+        }/** Finds the blackop job
+         * @returns {(Job|null)}
+        */
+        black_job() {
+            if (this.jobs.length < 1) {
+                ns.print(`${ANSI.fg.red}No doable BlackOps in job list.${ANSI.reset}`);
+                return null;
+            }
+            for (let job of this.jobs) {
+                if (job.type == "Black Operations") { return job }
+            }
+            return null
+        }
+        /** Finds the best money job in the list
+         * @returns {(Job|null)}
+        */
+        cash_job() {
+            if (this.jobs.length < 1) {
+                ns.print(`${ANSI.fg.red}No doable jobs in job list.${ANSI.reset}`);
+                return null;
+            }
+            return this.jobs.filter((a) => a.type == "Contracts").sort((a, b) => ns.bladeburner.getActionCountRemaining(b.type, b.name) - ns.bladeburner.getActionCountRemaining(a.type, a.name))[0]
+        }
+        /** Finds the best chaos job in the list
+         * @returns {(Job|null)}
+        */
+        chaos_job() {
+            if (this.jobs.length < 1) {
+                ns.print(`${ANSI.fg.red}No doable jobs in job list.${ANSI.reset}`);
+                return null;
+            }
+            for (let job of this.jobs) {
+                if (job.name == "Diplomacy" && ns.bladeburner.getCityChaos(job.city) > 100) { return job }
+            }
+            return null
+        }
+
+        /** Finds the best recruiting job in the list
+         * @returns {(Job|null)}
+        */
+        recruit_job() {
+            if (this.jobs.length < 1) {
+                ns.print(`${ANSI.fg.red}No doable jobs in job list.${ANSI.reset}`);
+                return null;
+            }
+            for (let job of this.jobs) {
+                if (job.name == "Recruitment") { return job }
+            }
+            return null
         }
     }
 
@@ -174,8 +220,18 @@ export async function main(ns) {
         await stamina_check(0.5, 0.6, current_job);
         // Check accuracy of data and do Field Analysis if not good, otherwise Train
         if (await improve_accuracy(current_job)) { continue }
-        // Do the best job available
-        if (await do_job(job_list.best_job(), current_job) == true) { continue }
+        // Do BlackOp if doable
+        let next_black_op = ns.bladeburner.getNextBlackOp()
+        if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue }
+        // Recruit if possible
+        if (await do_job(job_list.recruit_job(), current_job)) { continue }
+        // Reduce Chaos
+        if (await do_job(job_list.chaos_job(), current_job)) { continue }
+        // Gain Rep
+        if (next_black_op?.rank > ns.bladeburner.getRank()) { if (await do_job(job_list.rep_job(), current_job)) { continue } }
+        // Make money
+        if (await do_job(job_list.cash_job(), current_job)) { continue }
+        // More Stamina
         await stamina_check(0.9, 0.95, current_job)
         // Otherwise just train
         await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);

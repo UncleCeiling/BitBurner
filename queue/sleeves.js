@@ -163,7 +163,7 @@ export async function main(ns) {
     function homicide(sleeve_num) {
         let current_task = ns.sleeve.getTask(sleeve_num)
         let success_chance = calc_crime_success(sleeve_num, "Homicide");
-        if (success_chance < 1) {
+        if (success_chance < 1 || ns.getPlayer().numPeopleKilled < 30) {
             if (current_task != null && current_task.crimeType != null && current_task.crimeType == "Homicide") { return true }
             ns.sleeve.setToCommitCrime(sleeve_num, "Homicide"); return true
         };
@@ -178,26 +178,26 @@ export async function main(ns) {
     function bladeburn(sleeve_num) {
         if (!ns.bladeburner.inBladeburner()) { ns.print(`${sleeve_num} Not in Bladeburners`); return false };
         if (ns.bladeburner.getNextBlackOp() == null) { ns.print("No BlackOps"); return false };
-        if (ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity()) < 1000000000) {
-            ns.print(`${sleeve_num} Field Analysis`);
-            if (ns.sleeve.getTask(sleeve_num) == null || ns.sleeve.getTask(sleeve_num).actionName != "Field Analysis") {
-                ns.sleeve.setToBladeburnerAction(sleeve_num, "Field Analysis");
-            }
-            return true
-        }
         let current_action = ns.bladeburner.getCurrentAction()
         if (current_action != null) {
-            if (ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 100) {
+            if (ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 100 && current_action.type != "Black Operations") {
                 ns.print(`${sleeve_num} Infiltrating Synthoids`);
-                if (ns.sleeve.getTask(sleeve_num).actionName != "Infiltrate Synthoids") {
+                if (ns.sleeve.getTask(sleeve_num)?.actionName != "Infiltrate Synthoids") {
                     ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
                 }
                 return true
             }
         }
-        ns.print(`${sleeve_num} Supporting main sleeve`);
-        if (ns.sleeve.getTask(sleeve_num).actionName != "Support main sleeve") {
-            ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
+        let next_black_op = ns.bladeburner.getNextBlackOp()
+        if (next_black_op?.rank <= ns.bladeburner.getRank()) {
+            ns.print(`${sleeve_num} Supporting main sleeve`);
+            if (ns.sleeve.getTask(sleeve_num)?.actionName != "Support main sleeve") {
+                ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
+            }
+            return true
+        }
+        if (ns.sleeve.getTask(sleeve_num)?.actionName != "Training") {
+            ns.sleeve.setToBladeburnerAction(sleeve_num, "Training")
         }
         return true
     }
