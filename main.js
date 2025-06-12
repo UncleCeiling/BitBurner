@@ -1,5 +1,5 @@
 import { ANSI } from "imports/ANSI"
-
+import * as util from "imports/utils"
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL")
@@ -12,7 +12,7 @@ export async function main(ns) {
     while (true) {
         if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", true); await ns.singularity.getCurrentWork().completion }
         if (!ns.fileExists("NUKE.exe", "home")) { ns.singularity.createProgram("NUKE.exe", true); await ns.singularity.getCurrentWork().completion }
-        map()
+        util.write_map(ns)
         server_stats()
         achievements()
         await queue() // Run scripts in `queue/` folder
@@ -29,30 +29,6 @@ export async function main(ns) {
                 ns.tprint(`${ANSI.fg.magenta}${ANSI.font.underline}Running ${script.replace(QUEUE_LOC, '')}${ANSI.reset}`)
                 ns.run(script)
                 await ns.asleep(1000) // Give it a second
-            }
-        }
-
-        function map() {
-            ns.rm('map.txt', 'home') // Remove the old map
-            var servers = new Set() // I know this is icky
-            var map_data = [] // I'm so sorry
-            map_servers('home', 0) // I'll fix this awful recursion some other time
-            ns.write('map.txt', map_data.join('\n'), 'w') // Write the new one
-            ns.tprint(`${ANSI.fg.magenta}Wrote ${map_data.length} lines to 'map.txt'${ANSI.reset}`) // Report
-            /**
-             * Recursively builds a map of the network, storing it in `var servers` and `var map_data`
-             * @param {String} server 
-             * @param {Number} depth 
-             */
-            function map_servers(server, depth) { // Icky recursion using variables outside the function :(
-                if (ns.getServer(result).purchasedByPlayer || server.includes("darkweb") || server.includes("hacknet-server-")) { return } // Don't mess with special servers
-                let current = ns.getServer(server) // Get current server's info
-                map_data.push(`${'|>'.padStart((depth * 2), '| ')}${current.hasAdminRights ? "R" : "X"}${current.backdoorInstalled ? "B" : "X"} \`${current.hostname}\` ${current.requiredHackingSkill}`) // Add this server's data to the map_data
-                depth++ // increment depth
-                let children = new Set(ns.scan(current.hostname)) // Make a list of the children of this server (filtering out servers we've already checked)
-                servers.add(current.hostname) // Add this server to the set of lists we've already checked
-                if (children.length == 0) { return }
-                for (let child of children) { if (!servers.has(child)) { map_servers(child, depth) } } // Map all the children
             }
         }
 

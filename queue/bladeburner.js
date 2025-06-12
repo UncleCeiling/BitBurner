@@ -286,7 +286,7 @@ export async function main(ns) {
         const ACCURACY_ACTIONS = [
             new Action("Operations", "Undercover Operation"),
             new Action("Operations", "Investigation"),
-            new Action("Contracts", "Tracking"),
+            // new Action("Contracts", "Tracking"),
             new Action("General", "Field Analysis")
         ]
         let black_op = ns.bladeburner.getNextBlackOp()
@@ -298,7 +298,7 @@ export async function main(ns) {
                     ns.bladeburner.getActionEstimatedSuccessChance(action.type, action.name)[0] >= 1 &&
                     ns.bladeburner.getActionCountRemaining(action.type, action.name) >= 1
                 ) {
-                    ns.print(`${ANSI.fg.green}Performing ${action.name} to improve estimates.\n(${(estimate[1] - estimate[0])} > 0).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
+                    ns.print(`${ANSI.fg.green}Performing ${action.name} to improve estimates.\n(${((estimate[1] - estimate[0]) * 100).toPrecision(3)}% > 0%).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
                     let city = new City(ns.bladeburner.getCity());
                     let job = new Job(action, city);
                     ns.print(job.city);
