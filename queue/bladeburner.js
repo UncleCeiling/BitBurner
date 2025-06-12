@@ -225,10 +225,10 @@ export async function main(ns) {
         if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue }
         // Recruit if possible
         if (await do_job(job_list.recruit_job(), current_job)) { continue }
-        // Reduce Chaos
-        if (await do_job(job_list.chaos_job(), current_job)) { continue }
         // Gain Rep
         if (next_black_op?.rank > ns.bladeburner.getRank()) { if (await do_job(job_list.rep_job(), current_job)) { continue } }
+        // Reduce Chaos
+        if (await do_job(job_list.chaos_job(), current_job)) { continue }
         // Make money
         if (await do_job(job_list.cash_job(), current_job)) { continue }
         // More Stamina

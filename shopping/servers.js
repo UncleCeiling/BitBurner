@@ -40,24 +40,24 @@ export async function main(ns) {
     if (servers.length == 0) { return }
     let success = true
     while (success) {
-        success = false
+        success = false;
         for (let server of servers) {
             // Find out how much RAM the server has
-            let currentRam = ns.getServerMaxRam(server)
-            let usedRam = ns.getServerUsedRam(server)
+            let currentRam = ns.getServerMaxRam(server);
+            let usedRam = ns.getServerUsedRam(server);
             // If not using more than half the ram AND too many things running, skip this server
-            if (usedRam <= currentRam / 2) { continue }
+            if (usedRam <= currentRam / 2) { continue };
             // If at max RAM, skip this server
-            if (currentRam >= ns.getPurchasedServerMaxRam()) { continue }
+            if (currentRam >= ns.getPurchasedServerMaxRam()) { continue };
             // Find how much it will cost to get the next upgrade
-            let upgradeCost = ns.getPurchasedServerUpgradeCost(server, currentRam * 2)
+            let upgradeCost = ns.getPurchasedServerUpgradeCost(server, currentRam * 2);
             // Refresh teh budget
-            budget = ns.getServerMoneyAvailable('home')
+            budget = ns.getServerMoneyAvailable('home');
             // If too expensive, skip this server
-            if (upgradeCost > budget) { continue }
+            if (upgradeCost > budget) { continue };
             // Buy upgrade
-            success = ns.upgradePurchasedServer(server, currentRam * 2)
-            ns.tprint(`${ANSI.fg.green}Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})${ANSI.reset}`)
+            success = ns.upgradePurchasedServer(server, currentRam * 2);
+            ns.tprint(`${ANSI.fg.green}Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})${ANSI.reset}`);
         }
     }
 
