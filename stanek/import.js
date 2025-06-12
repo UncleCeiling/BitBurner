@@ -5,7 +5,8 @@ export async function main(ns) {
     ns.clearLog();
     let dimensions = `${ns.stanek.giftWidth()}.${ns.stanek.giftHeight()}`; // Get dimensions
     let options = ns.ls("home", "stanek/");
-    let file = await ns.prompt(`Choose a grid to import. (Current Dimensions: ${dimensions})`, { type: "select", choices: options })
+    let choice_list = options.filter((a) => a.includes(".txt"))
+    let file = await ns.prompt(`Choose a grid to import. (Current Dimensions: ${dimensions})`, { type: "select", choices: choice_list })
     ns.ui.openTail();
     let lines = ns.read(file).split("\n");
     if (lines.length <= 0) { ns.print(`${ANSI.fg.red}Empty File${ANSI.reset}`); return }

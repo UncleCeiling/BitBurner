@@ -4,7 +4,7 @@ export async function main(ns) {
     let servers = new Set(['home'])
     for (let server of servers) {
         for (let result of ns.scan(server)) {
-            if (result.includes('custom-')) { continue }
+            if (ns.getServer(result).purchasedByPlayer) { continue }
             servers.add(result)
         }
     }
@@ -16,7 +16,7 @@ export async function main(ns) {
     let toRoot = []
     for (let server of serverDetails) {
         // Skip rooted and custom servers
-        if (server['hostname'].includes('custom-')) { continue }
+        if (ns.getServer(result).purchasedByPlayer) { continue }
         // Add the rest to the list
         toRoot.push(server['hostname'])
     }

@@ -12,7 +12,7 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
-        if (calm_sleeve(sleeve, 90)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 90% shock${ANSI.reset}`); continue };
+        if (calm_sleeve(sleeve, 99)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`); continue };
         if (farm_karma(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`); continue };
         if (farm_hacking(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`); continue };
         if (calm_sleeve(sleeve, 0)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 0% shock${ANSI.reset}`); continue };

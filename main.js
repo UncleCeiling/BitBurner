@@ -10,6 +10,8 @@ export async function main(ns) {
     ns.rm("mines.txt")
     ns.rm("miners.txt")
     while (true) {
+        if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", true); await ns.singularity.getCurrentWork().completion }
+        if (!ns.fileExists("NUKE.exe", "home")) { ns.singularity.createProgram("NUKE.exe", true); await ns.singularity.getCurrentWork().completion }
         map()
         server_stats()
         achievements()
@@ -43,7 +45,7 @@ export async function main(ns) {
              * @param {Number} depth 
              */
             function map_servers(server, depth) { // Icky recursion using variables outside the function :(
-                if (server.includes("custom-") || server.includes("darkweb") || server.includes("hacknet-server-")) { return } // Don't mess with special servers
+                if (ns.getServer(result).purchasedByPlayer || server.includes("darkweb") || server.includes("hacknet-server-")) { return } // Don't mess with special servers
                 let current = ns.getServer(server) // Get current server's info
                 map_data.push(`${'|>'.padStart((depth * 2), '| ')}${current.hasAdminRights ? "R" : "X"}${current.backdoorInstalled ? "B" : "X"} \`${current.hostname}\` ${current.requiredHackingSkill}`) // Add this server's data to the map_data
                 depth++ // increment depth

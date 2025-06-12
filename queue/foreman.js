@@ -49,7 +49,6 @@ export async function main(ns) {
                 // ns.print(miner, free_ram, MIN_FREE_HOME_RAM)
                 if (miner == HOST) { free_ram -= MAX_FREE_HOME_RAM };
                 // If not enough RAM, skip
-                // if (free_ram < job.ram) { ns.print(`WARN - ${miner} - Not enough RAM.`); continue }
                 if (free_ram < job.ram) { continue };
                 // Find max threads
                 let max_threads = Math.floor(free_ram / job.ram);
@@ -111,22 +110,22 @@ export async function main(ns) {
             'time': 0,
             'ram': 0
         };
-        if (server.minDifficulty < server.hackDifficulty) {
-            job.script = 'scripts/_weaken.js';
-            job.threads = get_weaken_threads(server);
-            job.time = ns.getWeakenTime(job.host);
-            job.ram = ns.getScriptRam(job.script, HOST);
-        } else if (server.moneyAvailable < server.moneyMax && server.moneyMax > 0 && server.moneyAvailable > 0) {
-            job.script = 'scripts/_grow.js';
-            job.threads = get_grow_threads(server);
-            job.time = ns.getGrowTime(job.host);
-            job.ram = ns.getScriptRam(job.script, HOST);
-        } else if (server.moneyAvailable == server.moneyMax && server.moneyMax > 0 && server.moneyAvailable > 0) {
+        if (server.moneyAvailable == server.moneyMax && ns.formulas.hacking.hackChance(server, ns.getPlayer()) == 1) {
             job.script = 'scripts/_hack.js';
             job.threads = get_hack_threads(server);
             job.time = ns.getHackTime(job.host);
             job.ram = ns.getScriptRam(job.script, HOST);
-        } else { return false };
+        } else if (server.minDifficulty < server.hackDifficulty) {
+            job.script = 'scripts/_weaken.js';
+            job.threads = get_weaken_threads(server);
+            job.time = ns.getWeakenTime(job.host);
+            job.ram = ns.getScriptRam(job.script, HOST);
+        } else if (server.moneyAvailable < server.moneyMax) {
+            job.script = 'scripts/_grow.js';
+            job.threads = get_grow_threads(server);
+            job.time = ns.getGrowTime(job.host);
+            job.ram = ns.getScriptRam(job.script, HOST);
+        } else { ns.print(`${server.hostname}, ${server.moneyAvailable}, ${server.moneyMax}`); return false };
         return job;
     };
 
@@ -136,11 +135,7 @@ export async function main(ns) {
         // Get list of purchased servers
         let custom = ns.getPurchasedServers();
         // Add each purchased server if any
-        if (custom.length > 0) {
-            for (let resource of custom) {
-                miners.push(resource);
-            };
-        };
+        if (custom.length > 0) { for (let resource of custom) { miners.push(resource) } };
         return miners;
     };
 
@@ -162,7 +157,6 @@ export async function main(ns) {
      */
     function too_many_processes(miner) {
         // If too many things running, skip this server
-        if (miner == "") { return true }
         if (miner == HOST) { if (ns.ps(HOST).length >= PROCESSES) { return true } else { return false } }
         else if (ns.ps(miner).length >= Math.ceil(Math.log2(ns.getServerMaxRam(miner)) / 2)) { return true } else { return false };
     };
