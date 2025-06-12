@@ -131,7 +131,7 @@ export async function main(ns) {
             }
             for (let job of this.jobs) {
                 if (job.name == "Raid" && ns.bladeburner.getCityCommunities(job.city) > 0) { return job }
-                else if (job.name == "Hyperbolic Regeneration Chamber") { continue }
+                else if (job.type == "General") { continue }
                 else if ((
                     job.name == "Stealth Retirement Operation" ||
                     job.name == "Assassination" ||
@@ -178,7 +178,6 @@ export async function main(ns) {
             }
             return null
         }
-
         /** Finds the best recruiting job in the list
          * @returns {(Job|null)}
         */
@@ -216,8 +215,6 @@ export async function main(ns) {
                 ns.bladeburner.stopBladeburnerAction();
             }
         }
-        // If stamina penalty too high, Train for a bit
-        await stamina_check(0.5, 0.6, current_job);
         // Check accuracy of data and do Field Analysis if not good, otherwise Train
         if (await improve_accuracy(current_job)) { continue }
         // Do BlackOp if doable
@@ -231,8 +228,8 @@ export async function main(ns) {
         if (await do_job(job_list.chaos_job(), current_job)) { continue }
         // Make money
         if (await do_job(job_list.cash_job(), current_job)) { continue }
-        // More Stamina
-        await stamina_check(0.9, 0.95, current_job)
+        // If stamina penalty too high, Train for a bit
+        await stamina_check(0.5, 0.5, current_job);
         // Otherwise just train
         await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);
     }
@@ -247,7 +244,7 @@ export async function main(ns) {
         if (job == null) { return false };
         ns.bladeburner.switchCity(job.city);
         current_job.update();
-        if (job.name === current_job.name) {
+        if (job.name == current_job.name) {
             ns.print(`${ANSI.fg.cyan}Continuing ${job.name}.${ANSI.reset}`);
             await ns.bladeburner.nextUpdate();
             return true;
@@ -261,18 +258,28 @@ export async function main(ns) {
         }
     }
 
-    /** Recovers stamina if necessary. */
+    /** Recovers stamina if necessary. 
+     * @param {Number} start 
+     * @param {Number} stop 
+     * @param {Job} current_job
+    */
     async function stamina_check(start, stop, current_job) {
-        const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), ns.bladeburner.getCity());
-        const TRAINING = new Job(new Action("General", "Training"), ns.bladeburner.getCity());
+        const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), new City(ns.bladeburner.getCity()));
+        const TRAINING = new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity()));
         let stamina = ns.bladeburner.getStamina();
-        current_job.update();
         if (stamina[0] / stamina[1] <= start) {
             ns.print(`${ANSI.fg.yellow}Recovering Stamina${ANSI.reset}`);
             while (stamina[0] / stamina[1] <= stop) {
                 let hp = ns.getPlayer().hp;
-                if (hp.current < hp.max) { await do_job(REGENERATION, current_job) }
-                else { await do_job(TRAINING, current_job) }
+                current_job.update();
+                if (hp.current < hp.max) {
+                    if (current_job.name != REGENERATION.name) {
+                        await do_job(REGENERATION, current_job);
+                    }
+                } else if (current_job.name != TRAINING.name) {
+                    await do_job(TRAINING, current_job);
+                }
+                await ns.bladeburner.nextUpdate()
                 stamina = ns.bladeburner.getStamina();
             }
         }
@@ -298,7 +305,7 @@ export async function main(ns) {
                     ns.bladeburner.getActionEstimatedSuccessChance(action.type, action.name)[0] >= 1 &&
                     ns.bladeburner.getActionCountRemaining(action.type, action.name) >= 1
                 ) {
-                    ns.print(`${ANSI.fg.green}Performing ${action.name} to improve estimates.\n(${((estimate[1] - estimate[0]) * 100).toPrecision(3)}% > 0%).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
+                    ns.print(`${ANSI.fg.green}Performing ${action.name} to improve estimates. (${((estimate[1] - estimate[0]) * 100).toPrecision(3)}%).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
                     let city = new City(ns.bladeburner.getCity());
                     let job = new Job(action, city);
                     ns.print(job.city);
