@@ -216,13 +216,13 @@ export async function main(ns) {
                 ns.bladeburner.stopBladeburnerAction();
             }
         }
-        // Check accuracy of data and do Field Analysis if not good, otherwise Train
-        if (await improve_accuracy(current_job)) { continue }
         // Do BlackOp if doable
         let next_black_op = ns.bladeburner.getNextBlackOp()
         if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue }
         // Recruit if possible
         if (await do_job(job_list.recruit_job(), current_job)) { continue }
+        // Check accuracy of data and do Field Analysis if not good, otherwise Train
+        if (await improve_accuracy(current_job)) { continue }
         // If stamina penalty too high, Train for a bit
         if (await stamina_check(0.45, 0.9, current_job)) { continue }
         // Gain Rep
