@@ -166,15 +166,16 @@ export async function main(ns) {
             return this.jobs.filter((a) => a.type == "Contracts").sort((a, b) => ns.bladeburner.getActionCountRemaining(b.type, b.name) - ns.bladeburner.getActionCountRemaining(a.type, a.name))[0]
         }
         /** Finds the best chaos job in the list
+         * @param {Number} chaos Chaos to aim for
          * @returns {(Job|null)}
         */
-        chaos_job() {
+        chaos_job(chaos = 50) { // 50 is the effective floor for chaos (see src/Bladeburner/data/Constants.ts - line 31)
             if (this.jobs.length < 1) {
                 ns.print(`${ANSI.fg.red}No doable jobs in job list.${ANSI.reset}`);
                 return null;
             }
             for (let job of this.jobs) {
-                if (job.name == "Diplomacy" && ns.bladeburner.getCityChaos(job.city) > 100) { return job }
+                if (job.name == "Diplomacy" && ns.bladeburner.getCityChaos(job.city) > chaos) { return job }
             }
             return null
         }
@@ -223,7 +224,7 @@ export async function main(ns) {
         // Recruit if possible
         if (await do_job(job_list.recruit_job(), current_job)) { continue }
         // If stamina penalty too high, Train for a bit
-        if (await stamina_check(0.5, 0.5, current_job)) { continue }
+        if (await stamina_check(0.45, 0.9, current_job)) { continue }
         // Gain Rep
         if (next_black_op?.rank > ns.bladeburner.getRank()) { if (await do_job(job_list.rep_job(), current_job)) { continue } }
         // Reduce Chaos
