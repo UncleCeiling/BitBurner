@@ -11,7 +11,7 @@ export async function main(ns) {
         for (let result of ns.scan(server)) {
             let candidate = ns.getServer(result);
             if (candidate.hostname == "home" || candidate.purchasedByPlayer) { continue }
-            // if (candidate.hostname == "w0r1d_d43m0n") { continue }
+            if (candidate.hostname == "w0r1d_d43m0n") { continue }
             else if (!candidate.backdoorInstalled && candidate.hasAdminRights && candidate.hostname != "home" && candidate.requiredHackingSkill <= ns.getPlayer().skills.hacking) {
                 let eta_secs = Math.ceil(ns.getHackTime(candidate.hostname) / 4000)
                 ns.print(`${ANSI.fg.cyan}Backdooring ${candidate.hostname} (${eta_secs} secs)${ANSI.reset}`);

@@ -30,7 +30,7 @@ export async function main(ns) {
             return;
         };
         let wait = Date.now() - start
-        if (ns.gang.inGang()) { if (ns.gang.getGangInformation().territory >= 1) { wait = wait / 2 } }
+        // if (ns.gang.inGang()) { if (ns.gang.getGangInformation().territory >= 1) { wait = wait / 2 } }
         await ns.asleep(wait)
     }
 }

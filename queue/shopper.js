@@ -3,14 +3,14 @@ import { ANSI } from "imports/ANSI"
 /** @param {NS} ns */
 export async function main(ns) {
     const SCRIPTS = [
+        'bladeburner_skills.js',
         'hashes.js',
         'darkweb.js',
         'housekeeping.js',
+        'sleeve_augments.js',
         'hacknet.js',
         'servers.js',
-        'sleeve_augments.js',
         'gang_equipment.js',
-        'bladeburner_skills.js',
     ]
     const SCRIPT_LOC = 'shopping/'
     for (let script of SCRIPTS) {

@@ -20,7 +20,7 @@ export async function main(ns) {
                         ns.tprint(`${ANSI.fg.green}Bought Overclock for ${cost} points (Level: ${level + 1})${ANSI.reset}`);
                     } else { success = false }
                 }
-                return
+                if (cost < (2 * points)) { return }
             } else if (cost < Infinity) { skill_levels.push({ "name": skill, "level": level, "cost": cost }) };
         };
         success = false;
