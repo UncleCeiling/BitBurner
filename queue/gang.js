@@ -2,6 +2,11 @@ import { ANSI } from "imports/ANSI"
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL')
+    let achievements = ns.read("achievements.txt").split("\n")
+    if (ns.getResetInfo().currentNode == 2 && !achievements.includes("CHALLENGE_BN2")) { // If in BitNode 2 and achievement not got  don't join the gang
+        ns.tprint(`${ANSI.fg.magenta}BitNode 2 detected - Preventing Gang${ANSI.reset}`);
+        return;
+    }
     const GANG_FACTION = "Slum Snakes" // My Chosen Faction
     const ENEMY_FACTIONS = [ // List of enemies
         "Tetrads",

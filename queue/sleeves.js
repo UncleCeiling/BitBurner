@@ -34,7 +34,7 @@ export async function main(ns) {
         let current_work = ns.singularity.getCurrentWork()
         if (current_work != null && current_work.type == "FACTION" && sleeve_num == 0) {
             let current_task = ns.sleeve.getTask(sleeve_num)
-            if (current_task.type == "FACTION" && current_task.factionName == current_work.factionName) { return true }
+            if (current_task?.type == "FACTION" && current_task?.factionName == current_work.factionName) { return true }
             let success = false
             try { success = ns.sleeve.setToFactionWork(sleeve_num, current_work.factionName, current_work.factionWorkType) }
             catch (error) { ns.print(error) };
