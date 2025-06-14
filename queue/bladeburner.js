@@ -219,7 +219,7 @@ export async function main(ns) {
         let next_black_op = ns.bladeburner.getNextBlackOp()
         if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue }
         // Gain Rep
-        if (next_black_op?.rank > ns.bladeburner.getRank()) { if (await do_job(job_list.rep_job(), current_job)) { continue } }
+        if (next_black_op != null) { if (await do_job(job_list.rep_job(), current_job)) { continue } }
         // Check accuracy of data and do Field Analysis if not good, otherwise Train
         if (await improve_accuracy(current_job)) { continue }
         // If stamina penalty too high, Train for a bit

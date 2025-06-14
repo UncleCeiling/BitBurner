@@ -7,9 +7,9 @@ export async function main(ns) {
         'hashes.js',
         'darkweb.js',
         'housekeeping.js',
-        'sleeve_augments.js',
         'hacknet.js',
         'servers.js',
+        'sleeve_augments.js',
         'gang_equipment.js',
     ]
     const SCRIPT_LOC = 'shopping/'
