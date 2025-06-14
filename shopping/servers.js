@@ -25,7 +25,7 @@ export async function main(ns) {
         // Buy as many as we can
         while (budget > cost && serverNum < limit) {
             // Work out the name
-            let serverName = `home-${String(serverNum).padStart(2, '0')}`
+            let serverName = `server-${String(serverNum).padStart(2, '0')}`
             // Buy the server
             ns.purchaseServer(serverName, buyRam)
             ns.tprint(`${ANSI.fg.green}Bought ${buyRam}GB server: ${serverName} ($${cost})${ANSI.reset}`)
