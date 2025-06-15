@@ -5,7 +5,7 @@ export async function main(ns) {
     ns.disableLog("ALL");
     // Set Constants
     const HOST = 'home';
-    const DELAY = 10;
+    const DELAY = 5;
     const PROCESSES = 10;
     const QUEUE_LIST = ns.ls("home", "queue/");
     const MIN_FREE_HOME_RAM = QUEUE_LIST.map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js");
@@ -73,8 +73,10 @@ export async function main(ns) {
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
                 return;
             };
+            ns.print(`${ANSI.fg.magenta}Sleeping for ${DELAY} secs...${ANSI.reset}`)
             await ns.asleep((DELAY * 1000));
         };
+        ns.print(`${ANSI.fg.magenta}Refreshing queue in ${DELAY} secs...${ANSI.reset}`)
         await ns.asleep((DELAY * 1000));
     };
 
