@@ -1,8 +1,8 @@
-export class Server {
+export class UtilServer {
     /**
      * @param {NS} ns 
      * @param {String} name Name of server
-     * @param {Server} parent Name of parent
+     * @param {String} parent Name of parent
      * @param {Number} depth Depth of parent
      */
     constructor(ns, name, parent = null, depth = 0) {
@@ -13,7 +13,7 @@ export class Server {
     }
     get details() { return this.ns.getServer(this.name) }
     get children() {
-        return this.ns.scan(this.name).filter((a) => a != this.parent).map((a) => new Server(this.ns, a, this.name, this.depth + 1))
+        return this.ns.scan(this.name).filter((a) => a != this.parent).map((a) => new UtilServer(this.ns, a, this.name, this.depth + 1))
     }
 }
 
@@ -24,7 +24,7 @@ export class AllServers {
     */
     constructor(ns) { this.ns = ns }
     get set() {
-        let map = new Set([new Server(this.ns, "home")]);
+        let map = new Set([new UtilServer(this.ns, "home")]);
         for (let item of map) {
             for (let child of item.children) { map.add(child); };
         };
@@ -41,11 +41,11 @@ export class AllServers {
  */
 export function write_map(ns) {
     ns.rm("map.txt", "home"); // Remove old map
-    let data = iterate(new Server(ns, "home"))
+    let data = iterate(new UtilServer(ns, "home"))
     ns.write("map.txt", data.join("\n"), "w"); // Write the new one
 
     /** Checks the stats of the children of the specified server in a depth-first manner.
-     * @param {Server} server 
+     * @param {UtilServer} server 
      */
     function iterate(server) {
         let output = [`${"|>".padStart((server.depth * 2), "  ")}${server.details.hasAdminRights ? "R" : "X"}${server.details.backdoorInstalled ? "B" : "X"} \`${server.name}\` ${server.details.requiredHackingSkill}`];

@@ -1,5 +1,5 @@
 import { ANSI } from "imports/ANSI";
-
+import * as util from "imports/utils"
 /** @param {NS} ns */
 export async function main(ns) {
     // ===== CLASSES =====
@@ -29,34 +29,33 @@ export async function main(ns) {
     }
 
     // ===== MAIN =====
-
-    // Init Spend History
-    let history = new History
-    // Attempt to buy Contracts
-    while (buy_hash_upgrade("Generate Coding Contract")) { history.contracts++ }
-    // Assist in Bladeburner overclock
-    if (ns.bladeburner.inBladeburner() && ns.bladeburner.getSkillUpgradeCost("Overclock") < Infinity) { while (buy_hash_upgrade("Exchange for Bladeburner SP")) { history.bladeburner_sp++ } }
-    // Downgrade Server Sec
-    if (ns.getServer("n00dles").minDifficulty > 1) { while (buy_hash_upgrade("Reduce Minimum Security", "n00dles")) { history.sec_down++ } }
-    // Upgrade Server Money
-    if (ns.getServer("n00dles").moneyMax < 10_000_000_000_000) { while (buy_hash_upgrade("Increase Maximum Money", "n00dles")) { history.money_up++ } }
-    // Check if it"s worth buying cash
-    let cash_buy = (ns.hacknet.numHashes() / ns.hacknet.hashCost("Sell for Money")) * 1_000_000
+    let history = new History; // Init Spend History
+    while (buy_hash_upgrade("Generate Coding Contract")) { history.contracts++ }; // Attempt to buy Contracts
+    if (ns.bladeburner.inBladeburner() && ns.bladeburner.getSkillUpgradeCost("Overclock") < Infinity) { while (buy_hash_upgrade("Exchange for Bladeburner SP")) { history.bladeburner_sp++ } }; // Assist in Bladeburner overclock
+    server_upgrade(); // Use Hashes to upgrade servers
+    let cash_buy = (ns.hacknet.numHashes() / ns.hacknet.hashCost("Sell for Money")) * 1_000_000;  // Check if it"s worth buying cash
     let cash_on_hand = ns.getServerMoneyAvailable("home");
-    ns.print(cash_buy, " > ", cash_on_hand)
-    // Attempt to buy cash
-    if (cash_buy > (cash_on_hand / 2)) { while (buy_hash_upgrade("Sell for Money")) { history.money++ } }
-    // Check the history and report what we spent
-    history.report()
+    if (cash_buy > (cash_on_hand / 2)) { while (buy_hash_upgrade("Sell for Money")) { history.money++ } }; // Attempt to buy cash
+    history.report(); // Check the history and report what we spent
 
     // ===== FUNCTIONS =====
     function buy_hash_upgrade(upgrade, target = "") {
-        let cost = ns.hacknet.hashCost(upgrade)
-        let hashes = ns.hacknet.numHashes()
+        let cost = ns.hacknet.hashCost(upgrade);
+        let hashes = ns.hacknet.numHashes();
         if (cost > hashes) { return false }
         else if (target != "") { ns.hacknet.spendHashes(upgrade, target) }
-        else { ns.hacknet.spendHashes(upgrade) }
-        history.spent += cost
-        return true
+        else { ns.hacknet.spendHashes(upgrade) };
+        history.spent += cost;
+        return true;
+    }
+
+    function server_upgrade() {
+        let servers = new util.AllServers(ns).array
+        for (let server of servers.sort((a, b) => b.details.minDifficulty - a.details.minDifficulty)) {
+            if (ns.getServer(server.name).minDifficulty > 1) { while (buy_hash_upgrade("Reduce Minimum Security", server.name)) { history.sec_down++ } }; // Downgrade Server Sec
+        }
+        for (let server of servers.sort((a, b) => b.details.moneyMax - a.details.moneyMax)) {
+            if (ns.getServer(server.name).moneyMax < 10_000_000_000_000) { while (buy_hash_upgrade("Increase Maximum Money", server.name)) { history.money_up++ } }; // Upgrade Server Money
+        }
     }
 }
