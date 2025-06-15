@@ -25,7 +25,7 @@ export async function main(ns) {
         // Buy as many as we can
         while (budget > cost && serverNum < limit) {
             // Work out the name
-            let serverName = `server-${String(serverNum).padStart(2, '0')}`;
+            let serverName = `miner-${String(serverNum).padStart(2, '0')}`;
             // Buy the server
             ns.purchaseServer(serverName, buyRam);
             ns.tprint(`${ANSI.fg.green}Bought ${buyRam}GB server: ${serverName} ($${cost})${ANSI.reset}`);
@@ -55,10 +55,11 @@ export async function main(ns) {
             // If too expensive, skip this server
             if (upgradeCost > budget) { continue };
             // Buy upgrade
-            if (ns.upgradePurchasedServer(server, currentRam * 2)) { success = true };
+            let upgrade = ns.upgradePurchasedServer(server, currentRam * 2)
+            if (upgrade) { success = true };
             ns.tprint(`${ANSI.fg.green}Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})${ANSI.reset}`);
         };
-        if (success == false) { break };
+        if (success == false) { break } else { await ns.asleep(100) };
     };
 
     // Deploy foreman to each server

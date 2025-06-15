@@ -5,7 +5,7 @@ export async function main(ns) {
     ns.disableLog("ALL");
     // Set Constants
     const HOST = 'home';
-    const DELAY = 1;
+    const DELAY = 10;
     const PROCESSES = 10;
     const QUEUE_LIST = ns.ls("home", "queue/");
     const MIN_FREE_HOME_RAM = QUEUE_LIST.map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js");
@@ -18,9 +18,9 @@ export async function main(ns) {
         ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}`, "error");
         return;
     };
-    ns.ui.openTail();
-    await ns.asleep(100);
-    resize_tail();
+    // ns.ui.openTail();
+    // await ns.asleep(100);
+    // resize_tail();
     // Repeat ad-nauseam
     while (true) {
         await ns.asleep(100);
@@ -158,7 +158,8 @@ export async function main(ns) {
     function too_many_processes(miner) {
         // If too many things running, skip this server
         if (miner == HOST) { if (ns.ps(HOST).length >= PROCESSES) { return true } else { return false } }
-        else if (ns.ps(miner).length >= Math.ceil(Math.log2(ns.getServerMaxRam(miner)) / 2)) { return true } else { return false };
+        // else if (ns.ps(miner).length >= Math.ceil(Math.log2(ns.getServerMaxRam(miner)) / 2)) { return true }
+        else { return false };
     };
 
     function clean_working_list(working) {

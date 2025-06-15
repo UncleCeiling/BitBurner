@@ -191,7 +191,7 @@ export async function main(ns) {
     // ===== MAIN =====
     if (!ns.bladeburner.inBladeburner()) { return }
     ns.disableLog("ALL");
-    ns.ui.openTail();
+    // ns.ui.openTail();
     let job_list = new Job_List;
     let current_job = new CurrentJob();
     while (true) {

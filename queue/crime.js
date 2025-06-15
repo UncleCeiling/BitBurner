@@ -28,6 +28,11 @@ export async function main(ns) {
     /** Farm Karma */
     function farm_karma() {
         if (karma > -54000) {
+            let achievements = ns.read("achievements.txt").split("\n")
+            if (ns.getResetInfo().currentNode == 2 && !achievements.includes("CHALLENGE_BN2")) { // If in BitNode 2 and achievement not got  don't join the gang
+                ns.tprint(`${ANSI.fg.magenta}BitNode 2 detected - Skipping Karma Farm${ANSI.reset}`);
+                return false;
+            }
             if (ns.singularity.getCurrentWork() == null) { do_homicide() } else if (ns.singularity.getCurrentWork().type != "CRIME") { do_homicide() } else if (ns.singularity.getCurrentWork().crimeType != "Homicide") {
                 do_homicide();
                 ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);

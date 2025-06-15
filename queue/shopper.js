@@ -6,6 +6,7 @@ export async function main(ns) {
         'bladeburner_skills.js',
         'hashes.js',
         'darkweb.js',
+        'player_augments.js',
         'housekeeping.js',
         'servers.js',
         'hacknet.js',

@@ -12,6 +12,7 @@ export async function main(ns) {
     for (let i = 1; i <= num_sleeves; i++) { sleeves.push(i) };
     // For each sleeve
     for (let sleeve in sleeves) {
+        if (ns.singularity.getCurrentWork()?.cyclesWorked === 0) { await ns.singularity.getCurrentWork().completion }
         if (calm_sleeve(sleeve, 99)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`); continue };
         if (farm_karma(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`); continue };
         if (farm_hacking(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`); continue };
@@ -177,7 +178,7 @@ export async function main(ns) {
      */
     function bladeburn(sleeve_num) {
         if (!ns.bladeburner.inBladeburner()) { ns.print(`${sleeve_num} Not in Bladeburners`); return false };
-        if (ns.bladeburner.getNextBlackOp() == null) { ns.print("No BlackOps"); return false };
+        // if (ns.bladeburner.getNextBlackOp() == null) { ns.print("No BlackOps"); return false };
         let current_action = ns.bladeburner.getCurrentAction();
         if (current_action != null) {
             if ((ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 100 || ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 10) && current_action.type != "Black Operations") {
