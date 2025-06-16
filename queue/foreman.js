@@ -31,7 +31,6 @@ export async function main(ns) {
         if (queue[0] == '') { continue };
         // While there are jobs in the queue
         while (queue.length > 0) {
-            await ns.asleep(200);
             // Get list of miners
             let miners = get_miners();
             // If no miners, stop
@@ -73,6 +72,7 @@ export async function main(ns) {
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
                 return;
             };
+            ns.print(`${ANSI.fg.magenta}${queue.length} jobs in the queue.${ANSI.reset}`);
             ns.print(`${ANSI.fg.magenta}Sleeping for ${DELAY} secs...${ANSI.reset}`)
             await ns.asleep((DELAY * 1000));
         };

@@ -36,10 +36,10 @@ export async function main(ns) {
                 if (server.details.maxRam >= MAX_POSSIBLE_RAM) { continue }; // Skip if maxed out
                 if (server.details.ramUsed <= server.details.maxRam / 2) { continue }; // Skip if not using at least 50% of the RAM
                 if (server.upgrade_cost > ns.getPlayer().money) { continue }; // Skip if too expensive
-                if (ns.upgradePurchasedServer(server.name, server.details.maxRam * 2)) {
+                while (ns.upgradePurchasedServer(server.name, server.details.maxRam * 2)) {
                     exit = false;
                     ns.tprint(`${ANSI.fg.green}Upgraded ${server.name} from ${ns.formatRam(server.details.maxRam / 2)} to ${ns.formatRam(server.details.maxRam)}.${ANSI.reset}`);
-                } else { ns.tprint(`${ANSI.fg.red}Failed to upgrade ${server.name} from ${ns.formatRam(server.details.maxRam / 2)} to ${ns.formatRam(server.details.maxRam)} - $${server.upgrade_cost}/$${ns.getPlayer().money}.${ANSI.reset}`) };
+                };
             };
             if (exit) { return };
         };
