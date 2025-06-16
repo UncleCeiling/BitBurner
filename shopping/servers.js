@@ -1,70 +1,56 @@
 import { ANSI } from "imports/ANSI";
-
+import * as util from "imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
-    // Get info
-    let servers = ns.getPurchasedServers();
-    let limit = ns.getPurchasedServerLimit();
-    let budget = ns.getServerMoneyAvailable('home');
-    let minRam = Math.max(ns.getScriptRam('scripts/_hack.js'), ns.getScriptRam('scripts/_grow.js'), ns.getScriptRam('scripts/_weaken.js'));
-    let buyRam = 1;
-    let maxRam = ns.getPurchasedServerMaxRam();
-    // Recursively multiply buyRam by 2 until larger than minRam
-    while (buyRam < minRam) {
-        buyRam *= 2;
-        // If we somehow top out then something is very wrong
-        if (buyRam > maxRam) {
-            ns.tprint(`${ANSI.fg.red}RAM too large: Reduce size of mining scripts.${ANSI.reset}`);
-            break;
-        };
-    };
-    // If less than the limit of servers are owned, buy more
-    if (servers.length < limit) {
-        let cost = ns.getPurchasedServerCost(buyRam);
-        let serverNum = servers.length;
-        // Buy as many as we can
-        while (budget > cost && serverNum < limit) {
-            // Work out the name
-            let serverName = `miner-${String(serverNum).padStart(2, '0')}`;
-            // Buy the server
-            ns.purchaseServer(serverName, buyRam);
-            ns.tprint(`${ANSI.fg.green}Bought ${buyRam}GB server: ${serverName} ($${cost})${ANSI.reset}`);
-            // Refresh the budget & increment the server num
-            budget = ns.getServerMoneyAvailable('home');
-            serverNum++
-        };
-    };
+    let servers = new util.AllServers(ns).purchased;
+    upgrade_servers(servers);
+    buy_servers(servers);
+    deploy_foreman(servers);
 
-    // Upgrade each server
-    servers = ns.getPurchasedServers();
-    if (servers.length == 0) { return };
-    while (true) {
-        let success = false;
+    // ===== FUNCTIONS =====
+
+    /** Upgrades each server based on current and used ram.
+     * @param {Array<util.Server>} servers 
+    */
+    function buy_servers(servers) {
+        const RAM = 2
+        if (servers.length >= ns.getPurchasedServerLimit()) { return }; // If already reached limit, dip out
+        let server_num = servers.length;
+        while (ns.getPlayer().money >= ns.getPurchasedServerCost(RAM) && server_num < ns.getPurchasedServerLimit()) {
+            let server_name = `miner-${String(server_num).padStart(2, '0')}`;
+            ns.purchaseServer(server_name, RAM);
+            ns.tprint(`${ANSI.fg.green}Bought ${RAM}GB server: ${server_name} ($${ns.getPurchasedServerCost(RAM)})${ANSI.reset}`);
+            server_num++;
+        }
+    }
+
+    /** Upgrades each server based on current and used ram.
+     * @param {Array<util.Server>} servers 
+    */
+    function upgrade_servers(servers) {
+        const MAX_POSSIBLE_RAM = ns.getPurchasedServerMaxRam();
+        if (servers.length == 0) { return };
+        while (true) {
+            let exit = true;
+            for (let server of servers) {
+                if (server.details.maxRam >= MAX_POSSIBLE_RAM) { continue }; // Skip if maxed out
+                if (server.details.ramUsed <= server.details.maxRam / 2) { continue }; // Skip if not using at least 50% of the RAM
+                if (server.upgrade_cost > ns.getPlayer().money) { continue }; // Skip if too expensive
+                if (ns.upgradePurchasedServer(server.name, server.details.maxRam * 2)) {
+                    exit = false;
+                    ns.tprint(`${ANSI.fg.green}Upgraded ${server.name} from ${ns.formatRam(server.details.maxRam / 2)} to ${ns.formatRam(server.details.maxRam)}.${ANSI.reset}`);
+                };
+            };
+            if (exit) { return };
+        };
+    }
+
+    /** Deploys copies of the scripts in the `scripts/` folder to the servers.
+     * @param {Array<util.Server>} servers 
+     */
+    function deploy_foreman(servers) {
         for (let server of servers) {
-            // Find out how much RAM the server has
-            let currentRam = ns.getServerMaxRam(server);
-            let usedRam = ns.getServerUsedRam(server);
-            // If not using more than half the ram AND too many things running, skip this server
-            if (usedRam <= currentRam / 2) { continue };
-            // If at max RAM, skip this server
-            if (currentRam >= ns.getPurchasedServerMaxRam()) { continue };
-            // Find how much it will cost to get the next upgrade
-            let upgradeCost = ns.getPurchasedServerUpgradeCost(server, currentRam * 2);
-            // Refresh teh budget
-            budget = ns.getServerMoneyAvailable('home');
-            // If too expensive, skip this server
-            if (upgradeCost > budget) { continue };
-            // Buy upgrade
-            let upgrade = ns.upgradePurchasedServer(server, currentRam * 2)
-            if (upgrade) { success = true };
-            ns.tprint(`${ANSI.fg.green}Upgraded ${server} from ${currentRam.toLocaleString()}GB to ${(currentRam * 2).toLocaleString()}GB ($${upgradeCost.toLocaleString()})${ANSI.reset}`);
+            ns.scp(['scripts/_hack.js', 'scripts/_grow.js', 'scripts/_weaken.js'], server.name, 'home');
         };
-        if (success == false) { break } else { await ns.asleep(100) };
-    };
-
-    // Deploy foreman to each server
-    for (let server of servers) {
-        // Copy scripts to servers
-        ns.scp(['scripts/_hack.js', 'scripts/_grow.js', 'scripts/_weaken.js'], server, 'home');
-    };
+    }
 }

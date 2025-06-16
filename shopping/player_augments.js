@@ -50,13 +50,16 @@ export async function main(ns) {
          * @returns {Array<FactionAugment>} 
         */
         get faction() {
-            let set = new Set()
+            let set = new Set();
             for (let faction of ns.getPlayer().factions) {
-                for (let augment of ns.singularity.getAugmentationsFromFaction(faction)) {
-                    set.add(augment)
-                }
+                let augments = ns.singularity.getAugmentationsFromFaction(faction)
+                    .filter((a) => !this.purchased.includes(a))
+                    .sort((a, b) => ns.singularity.getAugmentationRepReq(b) - ns.singularity.getAugmentationRepReq(a))
+                    .map((a) => new FactionAugment(a));
+                if (augments.map((a) => a.rep).sort((a, b) => b - a)[0] > ns.singularity.getFactionRep(faction)) { continue }
+                else { for (let augment of augments) { set.add(augment.name) } };
             }
-            let array = Array.from(set).filter((a) => !this.purchased.includes(a))
+            let array = Array.from(set);
             return array.map((a) => new FactionAugment(a))
         }
         /** Returns an array of installed augments
@@ -83,19 +86,18 @@ export async function main(ns) {
     }
 
     // ===== MAIN =====
-    if (ns.grafting.getAugmentationGraftPrice("violet Congruity Implant") < ns.getPlayer().money) {
+
+    if (ns.grafting.getAugmentationGraftPrice("violet Congruity Implant") < ns.getPlayer().money) { // Install vCI if available
         ns.singularity.travelToCity("New Tokyo");
         ns.grafting.graftAugmentation("violet Congruity Implant");
         await ns.grafting.waitForOngoingGrafting();
     }
-    if (ns.singularity.getOwnedAugmentations().includes("violet Congruity Implant")) {
-        await do_grafting()
-    } else {
-        await buy_augments()
-    }
+    if (ns.singularity.getOwnedAugmentations().includes("violet Congruity Implant")) { await do_grafting() } // If vCI is installed, do grafting
+    else { await buy_augments() }; // Else buy faction augments
 
     // ===== FUNCTIONS =====
 
+    /** Attempts to graft each item possible */
     async function do_grafting() {
         let augments = new AugmentArray();
         while (augments.graftable.length > 0) {
@@ -103,12 +105,13 @@ export async function main(ns) {
             ns.singularity.travelToCity("New Tokyo");
             ns.grafting.graftAugmentation(graft.name);
             await ns.grafting.waitForOngoingGrafting();
-        }
-    }
+        };
+    };
 
+    /** Attempts to buy faction augments - If augments are awaiting install, will buy NFG and install. */
     async function buy_augments() {
         let augments = new AugmentArray();
-        let install = true
+        let install = true;
         for (let augment of augments.faction.sort((a, b) => b.price - a.price)) {
             if (augment.purchasable) {
                 if (ns.singularity.purchaseAugmentation(augment.factions[0], augment.name)) {
@@ -116,9 +119,9 @@ export async function main(ns) {
                     install = false;
                 } else {
                     ns.tprint(`${ANSI.fg.red}Error buying ${augment.name} from ${augment.factions[0]}.\nPurchasable: ${augment.purchasable}\nPrice: ${augment.price}\nRep: ${ns.singularity.getFactionRep(augment.factions[0])}/${augment.rep}${ANSI.reset}`);
-                }
-            }
-        }
+                };
+            };
+        };
         if (augments.only_purchased.length > 0 && install) {
             while (augments.neuroflux_governor.purchasable) {
                 if (ns.singularity.purchaseAugmentation(augments.neuroflux_governor.factions[0], augments.neuroflux_governor.name)) {
@@ -128,8 +131,8 @@ export async function main(ns) {
                     ns.tprint(`${ANSI.fg.red}Error buying ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`);
                 };
                 await ns.asleep(100);
-            }
-            ns.singularity.installAugmentations("boot.js")
-        }
-    }
+            };
+            ns.singularity.installAugmentations("boot.js");
+        };
+    };
 }

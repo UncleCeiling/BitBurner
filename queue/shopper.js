@@ -3,8 +3,8 @@ import { ANSI } from "imports/ANSI"
 /** @param {NS} ns */
 export async function main(ns) {
     const SCRIPTS = [
-        'bladeburner_skills.js',
         'hashes.js',
+        'bladeburner_skills.js',
         'darkweb.js',
         'player_augments.js',
         'housekeeping.js',

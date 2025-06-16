@@ -263,8 +263,8 @@ export async function main(ns) {
         const TRAINING = new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity()));
         let stamina = ns.bladeburner.getStamina();
         if (stamina[0] / stamina[1] <= start) {
-            ns.print(`${ANSI.fg.yellow}Recovering Stamina${ANSI.reset}`);
             while (stamina[0] / stamina[1] <= stop) {
+                ns.print(`${ANSI.fg.yellow}Recovering Stamina: ${(100 * ((stamina[0] - (stamina[1] * start)) / (stamina[1] * stop))).toPrecision(3)}% Complete${ANSI.reset}`);
                 let hp = ns.getPlayer().hp;
                 current_job.update();
                 if (hp.current < hp.max) {
@@ -274,8 +274,9 @@ export async function main(ns) {
                 } else if (current_job.name != TRAINING.name) {
                     await do_job(TRAINING, current_job);
                 }
-                await ns.bladeburner.nextUpdate()
+                await ns.bladeburner.nextUpdate();
                 stamina = ns.bladeburner.getStamina();
+                ns.clearLog();
             }
             return true
         } else { return false }
