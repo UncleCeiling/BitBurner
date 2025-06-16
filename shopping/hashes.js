@@ -50,12 +50,12 @@ export async function main(ns) {
     }
 
     function server_upgrade() {
-        let servers = new util.AllServers(ns).array
+        let servers = new util.AllServers(ns).array.filter((a) => a.details.backdoorInstalled)
         for (let server of servers.sort((a, b) => b.details.minDifficulty - a.details.minDifficulty)) {
-            if (ns.getServer(server.name).minDifficulty > 1) { while (buy_hash_upgrade("Reduce Minimum Security", server.name)) { history.sec_down++ } }; // Downgrade Server Sec
+            if (server.details.minDifficulty > 1) { while (buy_hash_upgrade("Reduce Minimum Security", server.name)) { history.sec_down++ } }; // Downgrade Server Sec
         }
         for (let server of servers.sort((a, b) => b.details.moneyMax - a.details.moneyMax)) {
-            if (ns.getServer(server.name).moneyMax < 10_000_000_000_000) { while (buy_hash_upgrade("Increase Maximum Money", server.name)) { history.money_up++ } }; // Upgrade Server Money
+            if (server.details.moneyMax < 10_000_000_000_000) { while (buy_hash_upgrade("Increase Maximum Money", server.name)) { history.money_up++ } }; // Upgrade Server Money
         }
     }
 }
