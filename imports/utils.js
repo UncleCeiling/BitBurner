@@ -17,7 +17,7 @@ export class Server {
         return this.ns.scan(this.name).filter((a) => a != this.parent).map((a) => new Server(this.ns, a, this.name, this.depth + 1))
     }
     /** @returns {Number} */
-    get upgrade_cost() { this.ns.getPurchasedServerUpgradeCost(this.name, this.details.maxRam * 2) }
+    get upgrade_cost() { return this.ns.getPurchasedServerUpgradeCost(this.name, this.details.maxRam * 2) }
 }
 
 export class AllServers {
