@@ -1,4 +1,5 @@
 import { ANSI } from "imports/ANSI";
+import * as util from "imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
     // Initialise variables
@@ -12,11 +13,21 @@ export async function main(ns) {
     if (check_grafting()) { return };
     if (farm_karma()) { return };
     if (farm_kills()) { return };
+    await create_programs();
     work_for_factions();
     // Search for more factions to get invites from?
     next_city();
 
     //#region ===== FUNCTIONS =====
+
+    async function create_programs() {
+        let exes = new util.AllExes(ns).objects;
+        for (let exe of exes) {
+            if (exe.exists) { continue };
+            if (ns.getPlayer().skills.hacking < exe.skill_req) { continue };
+            if (ns.singularity.createProgram(exe.name, true)) { await ns.singularity.getCurrentWork().completion; };
+        };
+    };
 
     /** Check for Grafting */
     function check_grafting() {
