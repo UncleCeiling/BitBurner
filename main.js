@@ -33,13 +33,15 @@ export async function main(ns) {
         }
 
         function server_stats() {
-            ns.rm('server_stats.txt') // Remove old file
-            var servers = ns.getPurchasedServers() // Get servers
-            if (servers.length <= 0) { ns.tprint(`${ANSI.fg.yellow}No Purchased Servers${ANSI.reset}`); return } // Can't map what doesn't exist
-            let data = servers.map((a) => `${ns.getServer(a).hostname}: ${ns.getServer(a).maxRam.toLocaleString()} GB`) // Turn servers into string to add to file
-            ns.write('server_stats.txt', data.join('\n'), 'w') // Write new file
-            ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`)
-        }
+            ns.rm('server_stats.txt'); // Remove old file
+            var servers = new util.AllServers(ns).purchased; // Get servers
+            if (servers.length <= 0) {
+                ns.tprint(`${ANSI.fg.yellow}No Purchased Servers${ANSI.reset}`); return;
+            }; // Can't map what doesn't exist
+            let data = servers.map((a) => `${a.name}: ${ns.formatRam(a.details.maxRam)} GB`); // Turn servers into string to add to file
+            ns.write('server_stats.txt', data.join('\n'), 'w'); // Write new file
+            ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`);
+        };
 
         function achievements() {
             ns.rm("achievements.txt") // Remove old file

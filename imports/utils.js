@@ -18,6 +18,10 @@ export class Server {
     }
     /** @returns {Number} */
     get upgrade_cost() { return this.ns.getPurchasedServerUpgradeCost(this.name, this.details.maxRam * 2) }
+    /** @returns {Boolean} */
+    get is_mine() { return (this.details.moneyMax > 0 && this.details.backdoorInstalled) ? true : false }
+    /** @returns {Boolean} */
+    get is_miner() { return (this.details.maxRam >= 2 && this.details.backdoorInstalled) ? true : false }
 }
 
 export class AllServers {

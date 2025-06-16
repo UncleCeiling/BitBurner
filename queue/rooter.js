@@ -1,97 +1,74 @@
 import { ANSI } from "imports/ANSI"
-
+import * as util from "imports/utils"
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog("ALL")
-    let servers = get_servers().map((a) => ns.getServer(a));
-    let to_root = servers.filter((a) => !a.hasAdminRights);
-    const SCRIPTS_LIST = ns.ls("home", "scripts/");
-    const MIN_SCRIPT_RAM = SCRIPTS_LIST.map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0];
-    if (to_root.length > 0) {
-        ns.tprint(`${ANSI.fg.cyan}${servers.length - to_root.length}/${servers.length} (${Math.floor(((servers.length - to_root.length) / servers.length) * 100)}%) servers rooted so far.${ANSI.reset}`);
-        for (let target of to_root) {
-            let req = ns.getServerRequiredHackingLevel(target.hostname);
-            if (req > ns.getHackingLevel()) { ns.print(`${ANSI.fg.yellow} Skipping ${target.hostname}. (Needs hacking level ${req})${ANSI.reset}`); continue };
-            do_root(target.hostname);
 
-        }
-    } else { ns.tprint(`${ANSI.fg.green} All ${servers.length} servers have been rooted.${ANSI.reset}`) }
+    // ===== MAIN =====
+    ns.disableLog("ALL");
+    let servers = new util.AllServers(ns);
+    for (let server of servers.array) {
+        if (server.details.openPortCount < 5) { crack_ports(server) }; // Crack ports if any are closed
+        if (server.details.purchasedByPlayer || server.details.backdoorInstalled || server.details.hasAdminRights) { continue }; // Skip servers that don't need nuking
+        do_root(server);
+    };
+    report(servers);
+    export_mines(servers);
 
-    let mine_lists = get_mine_lists();
-    ns.rm('mines.txt', 'home');
-    ns.write('mines.txt', mine_lists.mines.join('\n'), 'w');
-    ns.print(`${ANSI.fg.cyan}Updated 'mines.txt' with ${mine_lists.mines.length} entries.${ANSI.reset}`);
-    ns.rm('miners.txt', 'home');
-    ns.write('miners.txt', mine_lists.miners.join('\n'), 'w');
-    ns.print(`${ANSI.fg.cyan}Updated 'miners.txt' with ${mine_lists.miners.length} entries.${ANSI.reset}`);
+    // ===== FUNCTIONS =====
 
-    function get_servers() {
-        let servers = new Set(['home'])
-        for (let server of servers) {
-            for (let result of ns.scan(server)) {
-                if (result.includes('hacknet-server-')) { continue };
-                servers.add(result);
-            }
-        }
-        return Array.from(servers);
-    }
+    /** Tries to crack ports on the target
+     * @param {util.AllServers} servers
+     */
+    function export_mines(servers) {
+        let mines = servers.array.filter((a) => a.is_mine);
+        let miners = servers.array.filter((a) => a.is_miner);
+        ns.rm('mines.txt', 'home');
+        ns.write('mines.txt', mines.map((a) => a.name).join('\n'), 'w');
+        ns.print(`${ANSI.fg.cyan}Updated 'mines.txt' with ${mines.length} entries.${ANSI.reset}`);
+        ns.rm('miners.txt', 'home');
+        ns.write('miners.txt', miners.map((a) => a.name).join('\n'), 'w');
+        ns.print(`${ANSI.fg.cyan}Updated 'miners.txt' with ${miners.length} entries.${ANSI.reset}`);
+    };
 
-    function get_mine_lists() {
-        let mines = [];
-        let miners = [];
-        for (let server of get_servers()) {
-            let details = ns.getServer(server);
-            if (details.hostname == "darkweb") { continue };
-            if (details.maxRam >= MIN_SCRIPT_RAM && details.backdoorInstalled) { miners.push(server) };
-            if (details.moneyMax > 0 && details.hasAdminRights) { mines.push(server) };
-        };
-        return { "mines": mines, "miners": miners };
-    }
-
-    function do_root(target) {
-        const EXE_LIST = [
-            "BruteSSH.exe",
-            "FTPCrack.exe",
-            "HTTPWorm.exe",
-            "SQLInject.exe",
-            "relaySMTP.exe",
-        ]
-        let req_level = ns.getServerRequiredHackingLevel(target)
-        let player_level = ns.getHackingLevel()
-        if (req_level > player_level) { ns.print(`${ANSI.fg.red}Hacking level not high enough to hack ${target} - ${player_level}/${req_level}${ANSI.reset}`) }
-        let currentPorts = 0
-        for (let exe of EXE_LIST) {
-            if (!open_port(exe, target)) { continue };
-            ns.print(`${ANSI.fg.green}Used ${exe} on ${target}${ANSI.reset}`);
-            currentPorts++
-        }
-        if (ns.getServerNumPortsRequired(target) > currentPorts) {
-            ns.tprint(`WARN - Opened ${currentPorts}/${ns.getServerNumPortsRequired(target)} ports on ${target}.`)
+    /** Reports the proportions of servers that have been Nukes/Backdoored
+     * @param {util.AllServers} servers
+     */
+    function report(servers) {
+        let nuke_able = servers.array.filter((a) => !a.details.purchasedByPlayer);
+        let nuked = nuke_able.filter((a) => a.details.hasAdminRights);
+        if (nuked.length == nuke_able.length) {
+            ns.tprint(`${ANSI.fg.green}All Servers are Nuked.`);
         } else {
-            ns.nuke(target); ns.tprint(`${ANSI.fg.green}Nuked ${target}.${ANSI.reset}`)
-        }
-    }
+            ns.tprint(`${ANSI.fg.cyan}${nuked.length}/${nuke_able.length} (${((nuked.length / nuke_able.length) * 100).toPrecision(3)}%) servers nuked so far.${ANSI.reset}`);
+        };
+        let backdoored = nuke_able.filter((a) => a.details.backdoorInstalled);
+        if (backdoored.length != nuke_able.length) {
+            ns.tprint(`${ANSI.fg.cyan}${backdoored.length} /${nuke_able.length} (${((backdoored.length / nuke_able.length) * 100).toPrecision(3)}%) servers backdoored so far.${ANSI.reset}`);
+        };
+    };
 
-    function open_port(exe, target) {
-        if (ns.fileExists(exe)) {
-            switch (exe) {
-                case "BruteSSH.exe":
-                    ns.brutessh(target);
-                    break;
-                case "FTPCrack.exe":
-                    ns.ftpcrack(target);
-                    break;
-                case "HTTPWorm.exe":
-                    ns.httpworm(target);
-                    break;
-                case "SQLInject.exe":
-                    ns.sqlinject(target);
-                    break;
-                case "relaySMTP.exe":
-                    ns.relaysmtp(target);
-                    break;
-            }
-            return true
-        } else { return false }
-    }
+    /** Tries to crack ports on the target
+     * @param {util.Server} target 
+     */
+    function crack_ports(target) {
+        if (!target.details.sshPortOpen && ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(target.name) }; // SSH
+        if (!target.details.ftpPortOpen && ns.fileExists("FTPCrack.exe", "home")) { ns.ftpcrack(target.name) }; // FTP
+        if (!target.details.httpPortOpen && ns.fileExists("HTTPWorm.exe", "home")) { ns.httpworm(target.name) }; // HTTP
+        if (!target.details.sqlPortOpen && ns.fileExists("SQLInject.exe", "home")) { ns.sqlinject(target.name) }; // SQL
+        if (!target.details.smtpPortOpen && ns.fileExists("relaySMTP.exe", "home")) { ns.relaysmtp(target.name) }; // SMTP
+    };
+
+    /** Tries to root the target
+     * @param {util.Server} target 
+     */
+    function do_root(target) {
+        if (target.details.openPortCount < target.details.numOpenPortsRequired) { // Error if not enough ports open
+            ns.tprint(`${ANSI.fg.yellow}${target.details.openPortCount}/${target.details.numOpenPortsRequired} ports open on ${target.name}.${ANSI.reset}`); return;
+        } else if (target.details.requiredHackingSkill > ns.getPlayer().skills.hacking) { // Error if not high enough skill
+            ns.print(`${ANSI.fg.red}Hacking level not high enough to hack ${target.name} - ${ns.getPlayer().skills.hacking}/${target.details.requiredHackingSkill}${ANSI.reset}`); return;
+        } else { // Otherwise Nuke the target
+            if (ns.nuke(target.name)) { ns.tprint(`${ANSI.fg.green}Nuked ${target.name}.${ANSI.reset}`); return; }
+            else { ns.tprint(`${ANSI.fg.red}Failed to Nuke ${target.name}.${ANSI.reset}`); return; };
+        };
+    };
 }

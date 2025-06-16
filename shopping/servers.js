@@ -2,10 +2,10 @@ import { ANSI } from "imports/ANSI";
 import * as util from "imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
-    let servers = new util.AllServers(ns).purchased;
-    upgrade_servers(servers);
-    buy_servers(servers);
-    deploy_foreman(servers);
+    let servers = new util.AllServers(ns);
+    upgrade_servers(servers.purchased);
+    buy_servers(servers.purchased);
+    deploy_foreman(servers.purchased);
 
     // ===== FUNCTIONS =====
 
