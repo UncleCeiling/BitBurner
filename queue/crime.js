@@ -25,7 +25,8 @@ export async function main(ns) {
         for (let exe of exes) {
             if (exe.exists) { continue };
             if (ns.getPlayer().skills.hacking < exe.skill_req) { continue };
-            if (ns.singularity.createProgram(exe.name, true)) { await ns.singularity.getCurrentWork().completion; };
+            let focus = ns.singularity.isFocused()
+            if (ns.singularity.createProgram(exe.name, focus)) { await ns.singularity.getCurrentWork().completion; };
         };
     };
 
@@ -99,9 +100,10 @@ export async function main(ns) {
         if (faction_details.length > 0) {
             faction_details = faction_details.sort((a, b) => a.augments_to_buy[0].rep - b.augments_to_buy[0].rep);
             let faction_choice = faction_details[0];
-            if (ns.singularity.workForFaction(faction_choice.name, "field", false)) { ns.tprint(`${ANSI.fg.green}Working in the field for ${faction_choice.name}.${ANSI.reset}`); return true }
-            else if (ns.singularity.workForFaction(faction_choice.name, "security", false)) { ns.tprint(`${ANSI.fg.green}Working Security for ${faction_choice.name}.${ANSI.reset}`); return true }
-            else if (ns.singularity.workForFaction(faction_choice.name, "hacking", false)) { ns.tprint(`${ANSI.fg.green}Hacking for ${faction_choice.name}.${ANSI.reset}`); return true }
+            let focus = ns.singularity.isFocused()
+            if (ns.singularity.workForFaction(faction_choice.name, "field", focus)) { ns.tprint(`${ANSI.fg.green}Working in the field for ${faction_choice.name}.${ANSI.reset}`); return true }
+            else if (ns.singularity.workForFaction(faction_choice.name, "security", focus)) { ns.tprint(`${ANSI.fg.green}Working Security for ${faction_choice.name}.${ANSI.reset}`); return true }
+            else if (ns.singularity.workForFaction(faction_choice.name, "hacking", focus)) { ns.tprint(`${ANSI.fg.green}Hacking for ${faction_choice.name}.${ANSI.reset}`); return true }
             else { ns.tprint(`${ANSI.fg.red}Failed to start ${work_choice} work for ${faction_choice.name}.${ANSI.reset}`); return false }
         } else { return false }
     }

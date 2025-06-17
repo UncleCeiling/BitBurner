@@ -10,14 +10,15 @@ export async function main(ns) {
     ns.rm("mines.txt");
     ns.rm("miners.txt");
     while (true) {
-        if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", true); await ns.singularity.getCurrentWork().completion }
-        if (!ns.fileExists("NUKE.exe", "home")) { ns.singularity.createProgram("NUKE.exe", true); await ns.singularity.getCurrentWork().completion }
-        util.write_map(ns)
-        server_stats()
-        write_achievements()
-        await queue() // Run scripts in `queue/` folder
-        ns.print(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
-        await ns.asleep(break_secs * 1000)// Pause for a bit
+        let focus = ns.singularity.isFocused();
+        if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", focus); await ns.singularity.getCurrentWork().completion };
+        if (!ns.fileExists("NUKE.exe", "home")) { ns.singularity.createProgram("NUKE.exe", focus); await ns.singularity.getCurrentWork().completion };
+        util.write_map(ns);
+        server_stats();
+        write_achievements();
+        await queue(); // Run scripts in `queue/` folder
+        ns.print(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`);
+        await ns.asleep(break_secs * 1000); // Pause for a bit
 
         async function queue() {
             var scripts = ns.ls('home', QUEUE_LOC)// Fetch scripts and flag from queue
