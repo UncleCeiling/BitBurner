@@ -55,7 +55,7 @@ export async function main(ns) {
                 let augments = ns.singularity.getAugmentationsFromFaction(faction) // Get the augments that the faction provides
                     .filter((a) => !this.purchased.includes(a)) // Filter out already purchased augments
                     .map((a) => new FactionAugment(a));
-                if (augments.map((a) => a.rep).sort((a, b) => b - a)[0] > ns.singularity.getFactionRep(faction)) { continue } // Skip faction if don't have enough rep for the most expensive aug
+                if (augments.map((a) => a.rep).sort((a, b) => b - a)[0] > ns.singularity.getFactionRep(faction) && this.only_purchased.length == 0) { continue } // Skip faction if don't have enough rep for the most expensive aug (only if there aren't any other purchased augs)
                 else { for (let augment of augments) { set.add(augment.name) } }; // Add augments to set
             };
             return Array.from(set).map((a) => new FactionAugment(a));

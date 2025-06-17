@@ -50,10 +50,11 @@ export async function main(ns) {
         let grow_queue = Array.from(queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax).sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable));
         let items = Array.from(queue.jobs);
         while (items.length > 0) {
-            let item = items.pop();
+            let item = items.shift();
             for (let miner of miners) {
                 if (miner.free_RAM > item.total_RAM(miner.details.cpuCores) && !ns.getRunningScript("scripts/_weaken.js", miner.name, item.name, 200)) {
                     do_entire_job(item, miner);
+                    continue;
                 };
                 if (miner.details.maxRam < queue.jobs.sort((a, b) => a.total_RAM(miner.details.cpuCores) - b.total_RAM(miner.details.cpuCores))[0].total_RAM(miner.details.cpuCores)) {
                     if (sec_queue.length > 0) { do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js") }

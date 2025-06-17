@@ -186,7 +186,7 @@ export async function main(ns) {
             };
             return true;
         } else if (current_action != null) {
-            if ((ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 10 && current_action.type != "Black Operations") || current_action.type != "General") {
+            if (ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 10 && (current_action.type != "Black Operations" || current_action.type != "General")) {
                 ns.print(`${sleeve_num} Infiltrating Synthoids`);
                 if (ns.sleeve.getTask(sleeve_num)?.type != "INFILTRATE") {
                     ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");

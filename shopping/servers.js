@@ -34,7 +34,7 @@ export async function main(ns) {
             let exit = true;
             for (let server of servers) {
                 if (server.details.maxRam >= MAX_POSSIBLE_RAM) { continue }; // Skip if maxed out
-                if (server.details.ramUsed <= server.details.maxRam / 2) { continue }; // Skip if not using at least 50% of the RAM
+                // if (server.details.ramUsed <= server.details.maxRam / 2) { continue }; // Skip if not using at least 50% of the RAM
                 if (server.upgrade_cost > ns.getPlayer().money) { continue }; // Skip if too expensive
                 while (ns.upgradePurchasedServer(server.name, server.details.maxRam * 2)) {
                     exit = false;
