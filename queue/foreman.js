@@ -38,6 +38,7 @@ export async function main(ns) {
         get jobs() { return this.mines.map((a) => new MineJob(a)).sort((a, b) => b.total_RAM() - a.total_RAM()) }
     };
     // ===== MAIN =====
+    const MIN_FREE_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     ns.disableLog("ALL");
     ns.clearLog("")
     ns.ui.openTail();
@@ -60,6 +61,12 @@ export async function main(ns) {
                     if (sec_queue.length > 0) { do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js") }
                     else if (grow_queue.length > 0) { do_single_job(grow_queue.shift(), miner, "scripts/_grow.js") };
                 };
+            };
+            if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
+                ns.ui.closeTail();
+                ns.tprint(`${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
+                ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
+                return;
             };
             await ns.asleep(100)
         };

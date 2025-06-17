@@ -189,6 +189,7 @@ export async function main(ns) {
     }
 
     // ===== MAIN =====
+    const MIN_FREE_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     if (!ns.bladeburner.inBladeburner()) { return }
     ns.disableLog("ALL");
     // ns.ui.openTail();
@@ -218,6 +219,14 @@ export async function main(ns) {
         if (await improve_accuracy(current_job)) { continue }
         // Gain Rep
         if (await do_job(job_list.rep_job(), current_job)) { continue }
+        // If taking up too much RAM - stop
+        if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
+            ns.ui.closeTail();
+            ns.tprint(`${ANSI.fg.red}Bladeburner Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
+            ns.toast("Bladeburner Stopped - Not enough spare RAM on 'home'.", "error");
+            await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);
+            return;
+        };
         // If stamina penalty too high, Train for a bit
         if (await stamina_check(0.45, 0.9, current_job)) { continue }
         // Make money
