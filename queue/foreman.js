@@ -46,20 +46,23 @@ export async function main(ns) {
     while (true) {
         let miners = servers.miners;
         let queue = new JobQueue(servers.mines.map((a) => a.name));
-        let sec_queue = queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty)
-        let grow_queue = queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax)
-        for (let miner of miners) {
-            for (let item of queue.jobs) {
+        let sec_queue = queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty);
+        let grow_queue = queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax);
+        let items = Array.from(queue.jobs);
+        while (items.length > 0) {
+            let item = items.pop();
+            for (let miner of miners) {
                 if (miner.free_RAM > item.total_RAM(miner.details.cpuCores) && !ns.getRunningScript("scripts/_weaken.js", miner.name, item.name, 200)) {
                     do_entire_job(item, miner);
                 };
+                if (miner.details.maxRam < queue.jobs.sort((a, b) => a.total_RAM(miner.details.cpuCores) - b.total_RAM(miner.details.cpuCores))[0].total_RAM(miner.details.cpuCores)) {
+                    if (sec_queue.length > 0) { do_single_job(sec_queue.pop(), miner, "scripts/_weaken.js") }
+                    else if (grow_queue.length > 0) { do_single_job(grow_queue.pop(), miner, "scripts/_grow.js") };
+                };
             };
-            if (miner.details.maxRam < queue.jobs.sort((a, b) => a.total_RAM(miner.details.cpuCores) - b.total_RAM(miner.details.cpuCores))[0].total_RAM(miner.details.cpuCores)) {
-                if (sec_queue.length > 0) { do_single_job(sec_queue.pop(), miner, "scripts/_weaken.js") }
-                else if (grow_queue.length > 0) { do_single_job(grow_queue.pop(), miner, "scripts/_grow.js") };
-            };
+            await ns.asleep(100)
         };
-        await ns.asleep(1000);
+        await ns.asleep(5000);
     };
 
     // ===== FUNCTIONS =====
