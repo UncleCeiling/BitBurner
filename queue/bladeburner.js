@@ -212,6 +212,7 @@ export async function main(ns) {
         }
         // Do BlackOp if doable
         let next_black_op = ns.bladeburner.getNextBlackOp()
+        if (next_black_op == null) { ns.tprint(`${ANSI.fg.green}Bladeburner complete - Destroy Node to continue${ANSI.reset}`) }
         if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue }
         // Check accuracy of data and do Field Analysis if not good, otherwise Train
         if (await improve_accuracy(current_job)) { continue }
@@ -220,6 +221,7 @@ export async function main(ns) {
         // If stamina penalty too high, Train for a bit
         if (await stamina_check(0.45, 0.9, current_job)) { continue }
         // Reduce Chaos
+        await chaos_reduction(current_job);
         if (await do_job(job_list.chaos_job(), current_job)) { continue }
         // Make money
         if (await do_job(job_list.cash_job(), current_job)) { continue }
@@ -233,6 +235,7 @@ export async function main(ns) {
 
     /** Starts the job by checking the current job and moving to the correct city.
      * @param {Job} job The job to be started
+     * @param {CurrentJob} current_job 
      * @returns {Promise<Boolean>} True if successful
      */
     async function do_job(job, current_job) {
@@ -256,7 +259,7 @@ export async function main(ns) {
     /** Recovers stamina if necessary. 
      * @param {Number} start 
      * @param {Number} stop 
-     * @param {Job} current_job
+     * @param {CurrentJob} current_job
     */
     async function stamina_check(start, stop, current_job) {
         const REGENERATION = new Job(new Action("General", "Hyperbolic Regeneration Chamber"), new City(ns.bladeburner.getCity()));
@@ -282,8 +285,16 @@ export async function main(ns) {
         } else { return false }
     }
 
+    /** Reduces Chaos if necessary
+     * @param {CurrentJob} current_job 
+     */
+    async function chaos_reduction(current_job) {
+        current_job.update();
+        while (await do_job(job_list.chaos_job(), current_job)) { ns.clearLog(); current_job.update() };
+    }
+
     /** Improves accuracy if necessary
-     * @param {Job} current_job 
+     * @param {CurrentJob} current_job 
      * @returns {Promise<Boolean>} True if successful
      */
     async function improve_accuracy(current_job) {

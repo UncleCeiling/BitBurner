@@ -1,13 +1,10 @@
-import { ANSI } from "imports/ANSI"
+import { ANSI } from "imports/ANSI";
+import * as util from "imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL');
-    let achievements = ns.read("achievements.txt").split("\n");
-    if (ns.getResetInfo().currentNode == 2 && !achievements.includes("CHALLENGE_BN2")) { // If in BitNode 2 and achievement not got  don't join the gang
-        ns.tprint(`${ANSI.fg.magenta}BitNode 2 detected - Preventing Gang${ANSI.reset}`);
-        return;
-    }
-    const GANG_FACTION = "Slum Snakes" // My Chosen Faction
+    if (util.node_achievement_check(ns, 2, "CHALLENGE_BN2", "Preventing Gang")) { return };
+    const GANG_FACTION = "Slum Snakes"; // My Chosen Faction
     const ENEMY_FACTIONS = [ // List of enemies
         "Tetrads",
         "The Syndicate",
@@ -15,10 +12,10 @@ export async function main(ns) {
         "Speakers for the Dead",
         "NiteSec",
         "The Black Hand"
-    ]
-    const ASCENSION_MULTIPLIER = 1.6487212707 // Minimum increase in stats for ascension
-    const MAX_MEMBERS = 12 // Max num of gang members
-    const MIN_WIN_PERCENT = 0.55 // Min win-rate for territory warfare
+    ];
+    const ASCENSION_MULTIPLIER = 1.6487212707; // Minimum increase in stats for ascension
+    const MAX_MEMBERS = 12; // Max num of gang members
+    const MIN_WIN_PERCENT = 0.55; // Min win-rate for territory warfare
     const CRIMES = [
         "Mug People",
         "Deal Drugs",
@@ -28,15 +25,15 @@ export async function main(ns) {
         "Traffick Illegal Arms",
         "Threaten & Blackmail",
         "Human Trafficking"
-    ]
+    ];
 
-    function get_members() { return ns.gang.getMemberNames() }
+    function get_members() { return ns.gang.getMemberNames() };
 
     function get_karma() {
-        let karma = Math.floor(ns.heart.break())
-        ns.print(`Karma: ${karma}/-54000`)
-        return karma
-    }
+        let karma = Math.floor(ns.heart.break());
+        ns.print(`Karma: ${karma}/-54000`);
+        return karma;
+    };
 
     function create_gang() {
         if (ns.gang.inGang()) { ns.print(`${ANSI.fg.yellow}Gang already made${ANSI.reset}`); return true }

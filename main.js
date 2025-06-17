@@ -1,20 +1,20 @@
-import { ANSI } from "imports/ANSI"
-import * as util from "imports/utils"
+import { ANSI } from "imports/ANSI";
+import * as util from "imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog("ALL")
-    const QUEUE_LOC = 'queue/'
-    const ARGUMENT = ns.args[0]
-    var break_secs = 10
-    if (ARGUMENT != null && typeof ARGUMENT != Number) { ns.tprint(`${ANSI.fg.red}${ARGUMENT} is not a valid argument (must be an integer > 0)${ANSI.reset}`); return } else if (ARGUMENT != null && ARGUMENT > 0) { break_secs = ARGUMENT } // Set break time if set
-    ns.rm("mines.txt")
-    ns.rm("miners.txt")
+    ns.disableLog("ALL");
+    const QUEUE_LOC = 'queue/';
+    const ARGUMENT = ns.args[0];
+    var break_secs = 10;
+    if (ARGUMENT != null && typeof ARGUMENT != Number) { ns.tprint(`${ANSI.fg.red}${ARGUMENT} is not a valid argument (must be an integer > 0)${ANSI.reset}`); return } else if (ARGUMENT != null && ARGUMENT > 0) { break_secs = ARGUMENT }; // Set break time if set
+    ns.rm("mines.txt");
+    ns.rm("miners.txt");
     while (true) {
         if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", true); await ns.singularity.getCurrentWork().completion }
         if (!ns.fileExists("NUKE.exe", "home")) { ns.singularity.createProgram("NUKE.exe", true); await ns.singularity.getCurrentWork().completion }
         util.write_map(ns)
         server_stats()
-        achievements()
+        write_achievements()
         await queue() // Run scripts in `queue/` folder
         ns.print(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`)
         await ns.asleep(break_secs * 1000)// Pause for a bit
@@ -38,12 +38,12 @@ export async function main(ns) {
             if (servers.length <= 0) {
                 ns.tprint(`${ANSI.fg.yellow}No Purchased Servers${ANSI.reset}`); return;
             }; // Can't map what doesn't exist
-            let data = servers.map((a) => `${a.name}: ${ns.formatRam(a.details.maxRam)} GB`); // Turn servers into string to add to file
+            let data = servers.map((a) => `${a.name}: ${ns.formatRam(a.details.maxRam)}`); // Turn servers into string to add to file
             ns.write('server_stats.txt', data.join('\n'), 'w'); // Write new file
             ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`);
         };
 
-        function achievements() {
+        function write_achievements() {
             ns.rm("achievements.txt") // Remove old file
             let doc = globalThis["document"]
             let list = []

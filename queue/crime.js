@@ -11,7 +11,7 @@ export async function main(ns) {
     accept_invites();
     join_bladeburners();
     if (check_grafting()) { return };
-    if (farm_karma()) { return };
+    if (farm_karma(karma)) { return };
     if (farm_kills()) { return };
     await create_programs();
     work_for_factions();
@@ -37,20 +37,17 @@ export async function main(ns) {
     }
 
     /** Farm Karma */
-    function farm_karma() {
+    function farm_karma(karma) {
+        ns.print(`Karma:${karma}`)
         if (karma > -54000) {
-            let achievements = ns.read("achievements.txt").split("\n")
-            if (ns.getResetInfo().currentNode == 2 && !achievements.includes("CHALLENGE_BN2")) { // If in BitNode 2 and achievement not got  don't join the gang
-                ns.tprint(`${ANSI.fg.magenta}BitNode 2 detected - Skipping Karma Farm${ANSI.reset}`);
-                return false;
-            }
+            if (util.node_achievement_check(ns, 2, "CHALLENGE_BN2", "Skipping Karma Farm")) { return false };
             if (ns.singularity.getCurrentWork() == null) { do_homicide() } else if (ns.singularity.getCurrentWork().type != "CRIME") { do_homicide() } else if (ns.singularity.getCurrentWork().crimeType != "Homicide") {
                 do_homicide();
                 ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);
-                return true
+                return true;
             } else { ns.tprint(`${ANSI.fg.cyan}Continuing to commit Homicide to decrease Karma${ANSI.reset}`); return true };
-        } else { return false }
-    }
+        } else { return false };
+    };
 
     /** Join Bladeburners*/
     function join_bladeburners() {

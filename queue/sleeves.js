@@ -178,30 +178,29 @@ export async function main(ns) {
      */
     function bladeburn(sleeve_num) {
         if (!ns.bladeburner.inBladeburner()) { ns.print(`${sleeve_num} Not in Bladeburners`); return false };
-        // if (ns.bladeburner.getNextBlackOp() == null) { ns.print("No BlackOps"); return false };
+        let next_black_op = ns.bladeburner.getNextBlackOp();
         let current_action = ns.bladeburner.getCurrentAction();
-        if (current_action != null) {
-            if ((ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 100 || ns.bladeburner.getCityCommunities(ns.bladeburner.getCity()) < 10) && current_action.type != "Black Operations") {
+        if (next_black_op != null && next_black_op?.rank <= ns.bladeburner.getRank()) {
+            if (ns.sleeve.getTask(sleeve_num)?.actionName != "Training") {
+                ns.sleeve.setToBladeburnerAction(sleeve_num, "Training")
+            };
+            return true;
+        } else if (current_action != null) {
+            if ((ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 10 && current_action.type != "Black Operations") || current_action.type != "General") {
                 ns.print(`${sleeve_num} Infiltrating Synthoids`);
                 if (ns.sleeve.getTask(sleeve_num)?.type != "INFILTRATE") {
                     ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
-                }
+                };
                 return true;
-            }
-        }
-        let next_black_op = ns.bladeburner.getNextBlackOp()
-        if (next_black_op?.rank <= ns.bladeburner.getRank()) {
-            ns.print(`${sleeve_num} Supporting main sleeve`);
+            };
+        } else if (next_black_op?.rank > ns.bladeburner.getRank()) {
+            ns.print();
             if (ns.sleeve.getTask(sleeve_num)?.type != "SUPPORT") {
                 ns.sleeve.setToBladeburnerAction(sleeve_num, "Support main sleeve");
-            }
-            return true
-        }
-        if (ns.sleeve.getTask(sleeve_num)?.actionName != "Training") {
-            ns.sleeve.setToBladeburnerAction(sleeve_num, "Training")
-        }
-        return true
-    }
+            };
+            return true;
+        } else { return false; };
+    };
 
     /**
      * Decides if a sleeve should do homicide, then makes them if they should

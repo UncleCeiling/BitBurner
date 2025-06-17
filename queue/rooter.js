@@ -43,7 +43,7 @@ export async function main(ns) {
         };
         let backdoored = nuke_able.filter((a) => a.details.backdoorInstalled);
         if (backdoored.length != nuke_able.length) {
-            ns.tprint(`${ANSI.fg.cyan}${backdoored.length} /${nuke_able.length} (${((backdoored.length / nuke_able.length) * 100).toPrecision(3)}%) servers backdoored so far.${ANSI.reset}`);
+            ns.tprint(`${ANSI.fg.cyan}${backdoored.length}/${nuke_able.length} (${((backdoored.length / nuke_able.length) * 100).toPrecision(3)}%) servers backdoored so far.${ANSI.reset}`);
         };
     };
 
@@ -63,7 +63,7 @@ export async function main(ns) {
      */
     function do_root(target) {
         if (target.details.openPortCount < target.details.numOpenPortsRequired) { // Error if not enough ports open
-            ns.tprint(`${ANSI.fg.yellow}${target.details.openPortCount}/${target.details.numOpenPortsRequired} ports open on ${target.name}.${ANSI.reset}`); return;
+            ns.print(`${ANSI.fg.yellow}${target.details.openPortCount}/${target.details.numOpenPortsRequired} ports open on ${target.name}.${ANSI.reset}`); return;
         } else if (target.details.requiredHackingSkill > ns.getPlayer().skills.hacking) { // Error if not high enough skill
             ns.print(`${ANSI.fg.red}Hacking level not high enough to hack ${target.name} - ${ns.getPlayer().skills.hacking}/${target.details.requiredHackingSkill}${ANSI.reset}`); return;
         } else { // Otherwise Nuke the target

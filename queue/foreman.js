@@ -1,26 +1,131 @@
 import { ANSI } from "../imports/ANSI";
+import * as util from "imports/utils"
 /** @param {NS} ns */
 export async function main(ns) {
-    // Disable logs
+    // ===== CLASSES =====
+    class MineJob {
+        constructor(name) {
+            this.name = name
+        }
+        get details() { return ns.getServer(this.name) }
+        get hack_time() { return ns.getHackTime(this.name) };
+        get hack_delay() { return this.weaken_time - this.hack_time - 100 }
+        get hack_threads() { let threads = Math.floor(ns.hackAnalyzeThreads(this.name, this.details.moneyMax * 0.49)); return threads <= 0 ? 1 : threads; };
+        get hack_security_increase() { return ns.hackAnalyzeSecurity(this.hack_threads, this.name) };
+        get weaken_time() { return ns.getWeakenTime(this.name) };
+        get weaken_hack_delay() { return 0 }
+        get weaken_grow_delay() { return 200 }
+        weaken_threads(cores = 1, decrease) { let threads = 1; while (ns.weakenAnalyze(threads, cores) <= decrease) { threads++ }; return threads };
+        weaken_threads_hack(cores = 1) { return this.weaken_threads(cores, this.hack_security_increase) };
+        get grow_time() { return ns.getGrowTime(this.name) };
+        get grow_delay() { return this.weaken_time - this.grow_time + 100 }
+        grow_threads(cores = 1) { return Math.ceil(ns.growthAnalyze(this.name, 2.1, cores)) };
+        grow_security_increase(cores = 1) { return ns.growthAnalyzeSecurity(this.grow_threads(cores), this.name, cores) };
+        weaken_threads_grow(cores = 1) { return this.weaken_threads(cores, this.grow_security_increase(cores)) };
+        get hack_RAM() { return ns.getScriptRam("scripts/_hack.js") * this.hack_threads }
+        weaken_hack_RAM(cores = 1) { return ns.getScriptRam("scripts/_weaken.js", "home") * this.weaken_threads_hack(cores) }
+        grow_RAM(cores = 1) { return ns.getScriptRam("scripts/_grow.js", "home") * this.grow_threads(cores) }
+        weaken_grow_RAM(cores = 1) { return ns.getScriptRam("scripts/_hack.js", "home") * this.weaken_threads_grow(cores) }
+        total_RAM(cores = 1) { return this.hack_RAM + this.weaken_hack_RAM(cores) + this.grow_RAM(cores) + this.weaken_grow_RAM(cores) }
+
+    };
+    class JobQueue {
+        /** @param {Array<String>} mines  */
+        constructor(mines) {
+            this.mines = mines
+        };
+        /** @returns {Array<MineJob>} */
+        get jobs() { return this.mines.map((a) => new MineJob(a)).sort((a, b) => b.total_RAM() - a.total_RAM()) }
+    };
+    // ===== MAIN =====
     ns.disableLog("ALL");
+    ns.clearLog("")
+    ns.ui.openTail();
+    if (check_host() == false) { return };
+    var servers = new util.AllServers(ns);
+    while (true) {
+        let miners = servers.miners;
+        let queue = new JobQueue(servers.mines.map((a) => a.name));
+        let sec_queue = queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty)
+        let grow_queue = queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax)
+        for (let miner of miners) {
+            for (let item of queue.jobs) {
+                if (miner.free_RAM > item.total_RAM(miner.details.cpuCores) && !ns.getRunningScript("scripts/_weaken.js", miner.name, item.name, 200)) {
+                    do_entire_job(item, miner);
+                };
+            };
+            if (miner.details.maxRam < queue.jobs.sort((a, b) => a.total_RAM(miner.details.cpuCores) - b.total_RAM(miner.details.cpuCores))[0].total_RAM(miner.details.cpuCores)) {
+                if (sec_queue.length > 0) { do_single_job(sec_queue.pop(), miner, "scripts/_weaken.js") }
+                else if (grow_queue.length > 0) { do_single_job(grow_queue.pop(), miner, "scripts/_grow.js") };
+            };
+        };
+        await ns.asleep(1000);
+    };
+
+    // ===== FUNCTIONS =====
+    /**
+     * 
+     * @param {MineJob} item 
+     * @param {util.UtilServer} miner 
+     * @param {String} script 
+     */
+    function do_single_job(item, miner, script) {
+        let threads = Math.floor(miner.free_RAM / ns.getScriptRam(script, "home"))
+        if (threads <= 0) { return }
+        if (ns.getRunningScript(script, miner.name, item.name, 0)) { return }
+        ns.scp(script, miner.name, "home")
+        if (ns.exec(script, miner.name, threads, item.name, 0) > 0) {
+            ns.print(`${ANSI.fg.green}'${script.replace("scripts/", "")}'|${ns.formatRam(threads * ns.getScriptRam(script, "home"))}|${ANSI.fg.cyan}${miner.name} >> ${item.name}${ANSI.reset}`)
+        }
+    }
+
+    /**
+     * 
+     * @param {MineJob} item 
+     * @param {util.UtilServer} miner 
+     */
+    function do_entire_job(item, miner) {
+        ns.scp(ns.ls("home", "scripts/"), miner.name, "home");
+        let failure = false
+        if (0 == ns.exec("scripts/_weaken.js", miner.name, item.weaken_threads_hack(miner.details.cpuCores), item.name, item.weaken_hack_delay)) {
+            ns.print(`${ANSI.fg.red}Failed to execute "scripts/_weaken.js" | ${miner.name} >> ${item.name} | t=${item.weaken_threads_hack(miner.details.cpuCores)}${ANSI.reset}`);
+            failure = true
+        }
+        if (0 == ns.exec("scripts/_hack.js", miner.name, item.hack_threads, item.name, item.hack_delay)) {
+            ns.print(`${ANSI.fg.red}Failed to execute "scripts/_hack.js" | ${miner.name} >> ${item.name} | t=${item.hack_threads}${ANSI.reset}`);
+            failure = true
+        }
+        if (0 == ns.exec("scripts/_weaken.js", miner.name, item.weaken_threads_grow(miner.details.cpuCores), item.name, item.weaken_grow_delay)) {
+            ns.print(`${ANSI.fg.red}Failed to execute "scripts/_weaken.js" | ${miner.name} >> ${item.name} | t=${item.weaken_threads_grow(miner.details.cpuCores)}${ANSI.reset}`);
+            failure = true
+        }
+        if (0 == ns.exec("scripts/_grow.js", miner.name, item.grow_threads(miner.details.cpuCores), item.name, item.grow_delay)) {
+            ns.print(`${ANSI.fg.red}Failed to execute "scripts/_grow.js" | ${miner.name} >> ${item.name} | t=${item.grow_threads(miner.details.cpuCores)}${ANSI.reset}`);
+            failure = true
+        }
+        if (!failure) { ns.print(`${ANSI.fg.magenta}RAM=${ns.formatRam(item.total_RAM(miner.details.cpuCores))}|${ANSI.fg.cyan}${miner.name} >> ${item.name}${ANSI.reset}`) }
+    }
+
+    /** @returns {Boolean} `true` if running on host, otherwise `false`*/
+    function check_host() {
+        if (ns.getHostname() != "home") { // If not running on home, say so and return
+            ns.tprint(`${ANSI.fg.red}Script must be run on 'home', not '${ns.getHostname()}'.${ANSI.reset}`);
+            ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}'.`, "error");
+            return false;
+        } else { return true };
+    };
+
+
+    // =====OLD=====
+    var working = {}; // Init working variable
+    ns.disableLog("ALL"); // Disable logs
+
     // Set Constants
     const HOST = 'home';
     const DELAY = 5;
     const PROCESSES = 10;
-    const QUEUE_LIST = ns.ls("home", "queue/");
-    const MIN_FREE_HOME_RAM = QUEUE_LIST.map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js");
-    const MAX_FREE_HOME_RAM = QUEUE_LIST.reduce((a, b) => a + ns.getScriptRam(b), 0) + ns.getScriptRam("main.js");
-    // Create Working variable
-    let working = {};
-    // If not running on home, say so and return
-    if (ns.getHostname() != HOST) {
-        ns.tprint(`${ANSI.fg.red}Script must be run on 'home', not '${ns.getHostname()}'.${ANSI.reset}`);
-        ns.toast(`Foreman Stopped - Script must be run on 'home', not '${ns.getHostname()}`, "error");
-        return;
-    };
-    // ns.ui.openTail();
-    // await ns.asleep(100);
-    // resize_tail();
+    const MIN_FREE_HOME_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js");
+    const MAX_FREE_HOME_RAM = ns.ls("home", "queue/").reduce((a, b) => a + ns.getScriptRam(b), 0) + ns.getScriptRam("main.js");
     // Repeat ad-nauseam
     while (true) {
         await ns.asleep(100);
@@ -40,7 +145,7 @@ export async function main(ns) {
                 // Pull first job and get details
                 if (queue.length <= 0) { continue };
                 let job = get_job_details(queue[0]);
-                if (job == false) { continue };
+                if (job == false) { queue.shift(); continue };
                 // If too many processes, skip
                 if (too_many_processes(miner)) { continue };
                 // Get free RAM on miner (-12 if HOST)
@@ -52,17 +157,17 @@ export async function main(ns) {
                 // Find max threads
                 let max_threads = Math.floor(free_ram / job.ram);
                 // If job is already working, subtract those threads
-                if (job.host in Object.keys(working)) { job.threads = job.threads - working[job.host].threads };
+                if (item.name in Object.keys(working)) { job.threads = job.threads - working[item.name].threads };
                 // If max threads too small for job, make job.threads = max threads , else remove the job from the queue
                 if (max_threads < job.threads) { job.threads = max_threads } else { queue.shift() };
                 // If job already has working threads, update the threads
-                if (job.host in Object.keys(working)) {
+                if (item.name in Object.keys(working)) {
                     // Add threads
-                    working[job.host].threads += job.threads;
+                    working[item.name].threads += job.threads;
                     // If this job will end after the previous, update the time.
                     let end_time = Date.now() + job.time;
-                    if (working[job.host].end < end_time) { working[job.host].end = end_time };
-                } else { working[job.host] = { 'threads': job.threads, 'end': Date.now() + job.time } };
+                    if (working[item.name].end < end_time) { working[item.name].end = end_time };
+                } else { working[item.name] = { 'threads': job.threads, 'end': Date.now() + job.time } };
                 // Run the job
                 run_job(job, miner);
             };
@@ -73,6 +178,7 @@ export async function main(ns) {
                 return;
             };
             ns.print(`${ANSI.fg.magenta}${queue.length} jobs in the queue.${ANSI.reset}`);
+            ns.print(`${ANSI.fg.magenta}Next job in queue: ${get_job_details(queue[0]).host} | ${get_job_details(queue[0]).script}${ANSI.reset}`)
             ns.print(`${ANSI.fg.magenta}Sleeping for ${DELAY} secs...${ANSI.reset}`)
             await ns.asleep((DELAY * 1000));
         };
@@ -82,9 +188,9 @@ export async function main(ns) {
 
     function run_job(job, miner) {
         ns.scp(job.script, miner, HOST);
-        let success = ns.exec(job.script, miner, job.threads, job.host);
-        if (success > 0) { ns.print(`${ANSI.fg.green}${job.script}|t=${job.threads}|${ANSI.fg.cyan}${miner} >> ${job.host}${ANSI.reset}`) }
-        else { ns.print(`${ANSI.fg.red}Failed to execute ${job.script} | ${miner} >> ${job.host} | t=${job.threads}${ANSI.reset}`) };
+        let success = ns.exec(job.script, miner, job.threads, item.name);
+        if (success > 0) { ns.print(`${ANSI.fg.green}${job.script}|t=${job.threads}|${ANSI.fg.cyan}${miner} >> ${item.name}${ANSI.reset}`) }
+        else { ns.print(`${ANSI.fg.red}Failed to execute ${job.script} | ${miner} >> ${item.name} | t=${job.threads}${ANSI.reset}`) };
     };
 
     function get_weaken_threads(server) {
@@ -115,17 +221,17 @@ export async function main(ns) {
         if (server.moneyAvailable == server.moneyMax && ns.formulas.hacking.hackChance(server, ns.getPlayer()) == 1) {
             job.script = 'scripts/_hack.js';
             job.threads = get_hack_threads(server);
-            job.time = ns.getHackTime(job.host);
+            job.time = ns.getHackTime(item.name);
             job.ram = ns.getScriptRam(job.script, HOST);
         } else if (server.minDifficulty < server.hackDifficulty) {
             job.script = 'scripts/_weaken.js';
             job.threads = get_weaken_threads(server);
-            job.time = ns.getWeakenTime(job.host);
+            job.time = ns.getWeakenTime(item.name);
             job.ram = ns.getScriptRam(job.script, HOST);
         } else if (server.moneyAvailable < server.moneyMax) {
             job.script = 'scripts/_grow.js';
             job.threads = get_grow_threads(server);
-            job.time = ns.getGrowTime(job.host);
+            job.time = ns.getGrowTime(item.name);
             job.ram = ns.getScriptRam(job.script, HOST);
         } else { return false };
         return job;
@@ -169,16 +275,5 @@ export async function main(ns) {
             if (Date.now() > working[item].end) { delete working[item] };
         };
         return working;
-    };
-
-    function resize_tail() {
-        let screen = ns.ui.windowSize();
-        let characters_wide = 72;
-        let font_size = ns.ui.getStyles().tailFontSize;
-        let line_size = ns.ui.getStyles().lineHeight;
-        let tail_width = (characters_wide * font_size * 0.6) + 3;
-        let tail_height = (2 * font_size * line_size) + 9;
-        ns.ui.resizeTail(tail_width, tail_height);
-        ns.ui.moveTail((screen[0] - tail_width) / 2, 0);
     };
 };
