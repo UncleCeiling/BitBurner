@@ -126,12 +126,11 @@ export async function main(ns) {
             };
         };
         if (augments.only_purchased.length > 0 && install) {
-            while (augments.neuroflux_governor.purchasable) {
+            if (augments.neuroflux_governor.purchasable) {
                 if (ns.singularity.purchaseAugmentation(augments.neuroflux_governor.factions[0], augments.neuroflux_governor.name)) {
                     ns.tprint(`${ANSI.fg.green}Bought ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`);
                     install = false;
                 } else { ns.tprint(`${ANSI.fg.red}Error buying ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`); };
-                await ns.asleep(100);
             };
         };
         if (augments.only_purchased.length > 0 && install) { ns.singularity.installAugmentations("boot.js"); };
