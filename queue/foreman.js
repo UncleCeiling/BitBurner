@@ -46,8 +46,8 @@ export async function main(ns) {
     while (true) {
         let miners = servers.miners;
         let queue = new JobQueue(servers.mines.map((a) => a.name));
-        let sec_queue = queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty);
-        let grow_queue = queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax);
+        let sec_queue = Array.from(queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty).sort((a, b) => b.details.hackDifficulty - a.details.hackDifficulty));
+        let grow_queue = Array.from(queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax).sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable));
         let items = Array.from(queue.jobs);
         while (items.length > 0) {
             let item = items.pop();
@@ -56,8 +56,8 @@ export async function main(ns) {
                     do_entire_job(item, miner);
                 };
                 if (miner.details.maxRam < queue.jobs.sort((a, b) => a.total_RAM(miner.details.cpuCores) - b.total_RAM(miner.details.cpuCores))[0].total_RAM(miner.details.cpuCores)) {
-                    if (sec_queue.length > 0) { do_single_job(sec_queue.pop(), miner, "scripts/_weaken.js") }
-                    else if (grow_queue.length > 0) { do_single_job(grow_queue.pop(), miner, "scripts/_grow.js") };
+                    if (sec_queue.length > 0) { do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js") }
+                    else if (grow_queue.length > 0) { do_single_job(grow_queue.shift(), miner, "scripts/_grow.js") };
                 };
             };
             await ns.asleep(100)
