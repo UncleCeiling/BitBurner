@@ -220,11 +220,10 @@ export async function main(ns) {
         if (await do_job(job_list.rep_job(), current_job)) { continue }
         // If stamina penalty too high, Train for a bit
         if (await stamina_check(0.45, 0.9, current_job)) { continue }
-        // Reduce Chaos
-        await chaos_reduction(current_job);
-        if (await do_job(job_list.chaos_job(), current_job)) { continue }
         // Make money
         if (await do_job(job_list.cash_job(), current_job)) { continue }
+        // Reduce Chaos
+        await chaos_reduction(current_job);
         // Recruit if possible
         if (await do_job(job_list.recruit_job(), current_job)) { continue }
         // Otherwise just train
