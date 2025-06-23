@@ -26,7 +26,8 @@ export async function main(ns) {
             if (exe.exists) { continue };
             if (ns.getPlayer().skills.hacking < exe.skill_req) { continue };
             let focus = ns.singularity.isFocused()
-            if (ns.singularity.createProgram(exe.name, focus)) { await ns.singularity.getCurrentWork().completion; };
+            if (ns.singularity.createProgram(exe.name, focus)) { await ns.singularity.getCurrentWork().completion; return };
+            await ns.asleep(1000)
         };
     };
 

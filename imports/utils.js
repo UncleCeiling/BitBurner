@@ -99,7 +99,12 @@ export class Exe {
         this.skill_req = skill_req - (this.ns.getPlayer().skills.intelligence / 2);
     };
     /** @returns {Boolean} */
-    get exists() { return this.ns.fileExists(this.name, "home") };
+    get exists() {
+        if (!this.ns.fileExists(this.name, "home")) { return false }
+        let filename = this.ns.ls("home", this.name);
+        if (filename.includes("%")) { return false };
+        return true;
+    };
 };
 export class AllExes {
     /** @param {NS} ns  */

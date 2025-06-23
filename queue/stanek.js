@@ -4,6 +4,7 @@ export async function main(ns) {
     ns.disableLog("ALL")
     const MIN_FREE_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     if (ns.hacknet.numNodes() == 0) { ns.tprint(`${ANSI.fg.red}No Hacknet nodes.${ANSI.reset}`); return } // Nope out if no RAM to charge gifts
+    if (ns.getBitNodeMultipliers()?.StaneksGiftExtraSize <= -80) { ns.tprint(`${ANSI.fg.red}Gift size not worth it.${ANSI.reset}`); return } // Nope out if gift is too small
     if (!ns.stanek.acceptGift()) { ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's gift${ANSI.reset}`); return } // Accept the gift, otherwise nope out.
     while (true) {
         let start = Date.now()

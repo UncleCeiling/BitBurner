@@ -68,9 +68,9 @@ export async function main(ns) {
                 ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
                 return;
             };
-            await ns.asleep(100)
+            await ns.asleep(1000)
         };
-        await ns.asleep(5000);
+        await ns.asleep(1000);
     };
 
     // ===== FUNCTIONS =====
