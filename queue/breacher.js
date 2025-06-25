@@ -5,7 +5,7 @@ export async function main(ns) {
     ns.disableLog("ALL");
     ns.clearLog();
     let servers = new Set(["home"]);
-    ns.ui.openTail()
+    // ns.ui.openTail();
     for (let server of servers) {
         ns.print(`${ANSI.fg.magenta}Scanning ${server}...${ANSI.reset}`)
         for (let result of ns.scan(server)) {

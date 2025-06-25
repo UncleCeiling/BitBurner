@@ -197,6 +197,7 @@ export async function main(ns) {
     let current_job = new CurrentJob();
     while (true) {
         ns.clearLog();
+        ns.ui.openTail()
         // Update stats
         current_job.update();
         job_list.update();
@@ -228,7 +229,7 @@ export async function main(ns) {
             return;
         };
         // If stamina penalty too high, Train for a bit
-        if (await stamina_check(0.45, 0.9, current_job)) { continue }
+        if (await stamina_check(0.5, 0.6, current_job)) { continue }
         // Make money
         if (await do_job(job_list.cash_job(), current_job)) { continue }
         // Reduce Chaos
@@ -278,7 +279,11 @@ export async function main(ns) {
                 ns.print(`${ANSI.fg.yellow}Recovering Stamina: ${(100 * ((stamina[0] - (stamina[1] * start)) / (stamina[1] * stop))).toPrecision(3)}% Complete${ANSI.reset}`);
                 let hp = ns.getPlayer().hp;
                 current_job.update();
-                if (hp.current < hp.max) {
+                if ((100 * ((stamina[0] - (stamina[1] * start)) / (stamina[1] * stop))) <= 20) {
+                    if (current_job.name != REGENERATION.name) {
+                        await do_job(REGENERATION, current_job)
+                    }
+                } else if (hp.current < hp.max) {
                     if (current_job.name != REGENERATION.name) {
                         await do_job(REGENERATION, current_job);
                     }
@@ -311,9 +316,10 @@ export async function main(ns) {
             new Action("Operations", "Investigation"),
             // new Action("Contracts", "Tracking"),
             new Action("General", "Field Analysis")
-        ]
-        let black_op = ns.bladeburner.getNextBlackOp()
-        let estimate = black_op != null ? ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", black_op.name) : ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination");
+        ];
+        let black_op = ns.bladeburner.getNextBlackOp();
+        let estimate = ns.bladeburner.getActionEstimatedSuccessChance("Operations", "Assassination");
+        if (black_op != null) { estimate = ns.bladeburner.getActionEstimatedSuccessChance("Black Operations", black_op.name) };
         current_job.update();
         if (estimate[0] != estimate[1]) {
             for (let action of ACCURACY_ACTIONS) {
@@ -326,11 +332,13 @@ export async function main(ns) {
                     let job = new Job(action, city);
                     ns.print(job.city);
                     await do_job(job, current_job);
-                    return true
+                    return true;
                 }
             }
-            return false
+            ns.print(`${ANSI.fg.red}Couldn't find way to improve estimates. (${((estimate[1] - estimate[0]) * 100).toPrecision(3)}%).\nEst. Pop. ${Math.floor(ns.bladeburner.getCityEstimatedPopulation(ns.bladeburner.getCity())).toLocaleString()}${ANSI.reset}`);
+            return false;
         }
-        return false
+        // ns.print(`${((estimate[1] - estimate[0]) * 100).toPrecision(3)}%`);
+        return false;
     }
 }

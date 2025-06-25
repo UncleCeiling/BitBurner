@@ -186,7 +186,9 @@ export async function main(ns) {
             };
             return true;
         } else if (current_action != null) {
-            if (ns.bladeburner.getActionCountRemaining(current_action.type, current_action.name) < 10 && (current_action.type != "Black Operations" || current_action.type != "General")) {
+            let op_count = ns.bladeburner.getOperationNames().reduce((a, c) => a + ns.bladeburner.getActionCountRemaining("Operations", c), 0) - ns.bladeburner.getActionCountRemaining("Operations", "Raid");
+            let contract_count = ns.bladeburner.getContractNames().reduce((a, c) => a + ns.bladeburner.getActionCountRemaining("Contracts", c), 0);
+            if (op_count <= (100) || contract_count <= 100) {
                 ns.print(`${sleeve_num} Infiltrating Synthoids`);
                 if (ns.sleeve.getTask(sleeve_num)?.type != "INFILTRATE") {
                     ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
