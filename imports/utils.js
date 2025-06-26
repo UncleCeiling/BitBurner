@@ -101,8 +101,8 @@ export class Exe {
     /** @returns {Boolean} */
     get exists() {
         if (!this.ns.fileExists(this.name, "home")) { return false }
-        let filename = this.ns.ls("home", this.name);
-        if (filename.includes("%")) { return false };
+        let filename = this.ns.ls("home", this.name)[0];
+        if (filename.includes("INC")) { return false };
         return true;
     };
 };

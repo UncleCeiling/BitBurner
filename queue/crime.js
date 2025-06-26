@@ -10,25 +10,27 @@ export async function main(ns) {
     // Do the stuff
     accept_invites();
     join_bladeburners();
+    if (create_programs()) { return };
     if (check_grafting()) { return };
     if (farm_karma(karma)) { return };
     if (farm_kills()) { return };
-    await create_programs();
     work_for_factions();
     // Search for more factions to get invites from?
     next_city();
 
     //#region ===== FUNCTIONS =====
 
-    async function create_programs() {
+    function create_programs() {
         let exes = new util.AllExes(ns).objects;
         for (let exe of exes) {
             if (exe.exists) { continue };
+            // ns.tprint(`${exe.name} does not Exist - ${ns.getPlayer().skills.hacking} => ${exe.skill_req}`);
             if (ns.getPlayer().skills.hacking < exe.skill_req) { continue };
-            let focus = ns.singularity.isFocused()
-            if (ns.singularity.createProgram(exe.name, focus)) { await ns.singularity.getCurrentWork().completion; return };
-            await ns.asleep(1000)
+            let focus = ns.singularity.isFocused();
+            if (ns.singularity.createProgram(exe.name, focus)) { ns.tprint(`creating`); return true };
+            return false;
         };
+        return false;
     };
 
     /** Check for Grafting */
