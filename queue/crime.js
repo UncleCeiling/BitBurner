@@ -10,10 +10,10 @@ export async function main(ns) {
     // Do the stuff
     accept_invites();
     join_bladeburners();
-    if (create_programs()) { return };
     if (check_grafting()) { return };
-    if (farm_karma(karma)) { return };
     if (farm_kills()) { return };
+    if (create_programs()) { return };
+    if (farm_karma(karma)) { return };
     work_for_factions();
     // Search for more factions to get invites from?
     next_city();

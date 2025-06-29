@@ -197,7 +197,6 @@ export async function main(ns) {
     let current_job = new CurrentJob();
     while (true) {
         ns.clearLog();
-        ns.ui.openTail()
         // Update stats
         current_job.update();
         job_list.update();

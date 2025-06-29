@@ -51,7 +51,7 @@ export async function main(ns) {
 
     function server_upgrade() {
         let servers = new util.AllServers(ns).array.filter((a) => a.details.backdoorInstalled)
-        for (let server of servers.sort((a, b) => b.details.minDifficulty - a.details.minDifficulty)) {
+        for (let server of servers.sort((a, b) => b.details.moneyMax - a.details.moneyMax)) {
             if (server.details.minDifficulty > 1) { while (buy_hash_upgrade("Reduce Minimum Security", server.name)) { history.sec_down++ } }; // Downgrade Server Sec
         }
         for (let server of servers.sort((a, b) => b.details.moneyMax - a.details.moneyMax)) {

@@ -40,14 +40,14 @@ export async function main(ns) {
     // ===== MAIN =====
     const MIN_FREE_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     ns.disableLog("ALL");
-    ns.clearLog("")
-    ns.ui.openTail();
+    ns.clearLog();
+    // ns.ui.openTail();
     if (check_host() == false) { return };
     var servers = new util.AllServers(ns);
     while (true) {
         let miners = servers.miners;
         let queue = new JobQueue(servers.mines.map((a) => a.name));
-        let sec_queue = Array.from(queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty).sort((a, b) => b.details.hackDifficulty - a.details.hackDifficulty));
+        let sec_queue = Array.from(queue.jobs.filter((a) => a.details.hackDifficulty > a.details.minDifficulty).sort((a, b) => b.details.moneyMax - a.details.moneyMax));
         let grow_queue = Array.from(queue.jobs.filter((a) => a.details.moneyAvailable < a.details.moneyMax).sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable));
         let items = Array.from(queue.jobs);
         while (items.length > 0) {

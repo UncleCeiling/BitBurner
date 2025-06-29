@@ -13,13 +13,13 @@ export async function main(ns) {
     // For each sleeve
     for (let sleeve in sleeves) {
         if (ns.singularity.getCurrentWork()?.cyclesWorked === 0) { await ns.singularity.getCurrentWork().completion }
-        if (calm_sleeve(sleeve, 99)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`); continue };
         if (farm_karma(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`); continue };
+        if (calm_sleeve(sleeve, 99)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`); continue };
         if (farm_hacking(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`); continue };
+        if (farm_rep(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Reputation${ANSI.reset}`); continue };
         if (calm_sleeve(sleeve, 0)) { ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 0% shock${ANSI.reset}`); continue };
         if (synchronise_sleeve(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Synchronising to 100%${ANSI.reset}`); continue };
         if (homicide(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Committing Homicide${ANSI.reset}`); continue };
-        if (farm_rep(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Farming Reputation${ANSI.reset}`); continue };
         if (bladeburn(sleeve)) { ns.print(`${ANSI.fg.cyan}${sleeve} Assisting Bladeburner actions${ANSI.reset}`); continue };
         heist(sleeve);
     };
@@ -33,7 +33,8 @@ export async function main(ns) {
      */
     function farm_rep(sleeve_num) {
         let current_work = ns.singularity.getCurrentWork()
-        if (current_work != null && current_work.type == "FACTION" && sleeve_num == 0) {
+        if (sleeve_num != 0) { return false }
+        if (current_work != null && current_work.type == "FACTION") {
             let current_task = ns.sleeve.getTask(sleeve_num)
             if (current_task?.type == "FACTION" && current_task?.factionName == current_work.factionName) { return true }
             let success = false
