@@ -66,7 +66,10 @@ export async function main(ns) {
         if (ns.fileExists("Formulas.exe", "home")) { respect_gain = ns.formulas.gang.respectGain(gang_info, ns.gang.getMemberInformation(member), ns.gang.getTaskStats("Terrorism")) }; // If respect gain can be calculated, do it
         if (member == "Dave 0" && wanted_level > 0 && gang_info.respect > 10) { ns.gang.setMemberTask(member, "Vigilante Justice") }; // If first dave and wanted is too high and respect is high enough, do justice
         if ((wanted_level > respect || wanted_rate > respect_rate) && gang_info.respect > 10) { ns.gang.setMemberTask(member, 'Vigilante Justice') } // If wanted is above respect (rate or level) and there is more than 10 respect
-        else if (respect_gain != -1 && respect_gain <= 0) { ns.gang.setMemberTask(member, "Mug People") } // If we could calculate the respect gain and the respect gain is less than 0, Mug People
+        else if (respect_gain != -1 && respect_gain <= 0) {
+            if (ns.gang.getMemberNames().length >= 12) { ns.gang.setMemberTask(member, "Train Combat") }
+            else { ns.gang.setMemberTask(member, "Mug People") }
+        } // If we could calculate the respect gain and the respect gain is less than 0, Mug People
         else if (ns.gang.respectForNextRecruit() != Infinity && gang_info.respect < ns.gang.respectForNextRecruit()) { ns.gang.setMemberTask(member, "Terrorism") }
         else if (gang_info.territory == 1) { ns.gang.setMemberTask(member, 'Human Trafficking') }
         else if (gang_info.wantedPenalty < 0.99) { if (gang_info.respect >= 99) { ns.gang.setMemberTask(member, "Vigilante Justice") } else { do_crime(member) } }
