@@ -27,7 +27,7 @@ export async function main(ns) {
             // ns.tprint(`${exe.name} does not Exist - ${ns.getPlayer().skills.hacking} => ${exe.skill_req}`);
             if (ns.getPlayer().skills.hacking < exe.skill_req) { continue };
             let focus = ns.singularity.isFocused();
-            if (ns.singularity.createProgram(exe.name, focus)) { ns.tprint(`${ANSI.fg.cyan}Creating ${exe.name}...${ANSI.reset}`); return true };
+            if (ns.singularity.createProgram(exe.name, focus)) { ns.tprint(`${ANSI.fg.magenta}Creating ${exe.name}.${ANSI.reset}`); return true };
             return false;
         };
         return false;
