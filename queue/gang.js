@@ -67,7 +67,7 @@ export async function main(ns) {
         if (member == "Dave 0" && wanted_level > 0 && gang_info.respect > 10) { ns.gang.setMemberTask(member, "Vigilante Justice") }; // If first dave and wanted is too high and respect is high enough, do justice
         if ((wanted_level > respect || wanted_rate > respect_rate) && gang_info.respect > 10) { ns.gang.setMemberTask(member, 'Vigilante Justice') } // If wanted is above respect (rate or level) and there is more than 10 respect
         else if (respect_gain != -1 && respect_gain <= 0) {
-            if (respect > 100 * wanted_level) { ns.gang.setMemberTask(member, "Train Combat") }
+            if ((Math.random() * (ns.gang.getMemberNames().length / 6) * ((10 * wanted_level) / respect) > 0.5)) { ns.gang.setMemberTask(member, "Train Combat") }
             else { ns.gang.setMemberTask(member, "Mug People") }
         } // If we could calculate the respect gain and the respect gain is less than 0, Mug People
         else if (ns.gang.respectForNextRecruit() != Infinity && gang_info.respect < ns.gang.respectForNextRecruit()) { ns.gang.setMemberTask(member, "Terrorism") }
