@@ -29,6 +29,14 @@ export class UtilServer {
         if (this.name == "home") { free = free - this.ns.getScriptRam("queue/foreman.js") - this.ns.getScriptRam("queue/bladeburner.js") - this.ns.getScriptRam("queue/stanek.js") - this.ns.getScriptRam("main.js") }
         return free
     }
+    /** @returns {Boolean} */
+    get can_backdoor() {
+        if (this.details.openPortCount >= 5 && this.details.requiredHackingSkill <= this.ns.getPlayer().skills.hacking) {
+            return true
+        } else { return false }
+    }
+    /** @returns {Boolean} */
+    get backdoored() { return this.details.backdoorInstalled }
 };
 export class AllServers {
     /** Creates a dynamic object containing all servers

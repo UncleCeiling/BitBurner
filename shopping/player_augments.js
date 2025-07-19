@@ -1,4 +1,5 @@
 import { ANSI } from "imports/ANSI";
+import * as util from "imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
     // ===== CLASSES =====
@@ -133,6 +134,9 @@ export async function main(ns) {
                 } else { ns.tprint(`${ANSI.fg.red}Error buying ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`); };
             };
         };
+        for (let server of new util.AllServers(ns).array) {
+            if (!server.details.can_backdoor && server.details.backdoored) { return }
+        } // If any servers are awaiting a backdoor, skip the last step
         if (augments.only_purchased.length > 0 && install) { ns.singularity.installAugmentations("boot.js"); };
     };
 }
