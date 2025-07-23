@@ -2,10 +2,10 @@
     "version": "0.2",
     "ignorePaths": [],
     "dictionaryDefinitions": [],
-    "dictionaries": [
-        "bitburner-dictionary.txt"
+    "dictionaries": [],
+    "words": [
+        "bitburner"
     ],
-    "words": [],
     "ignoreWords": [],
     "import": []
 }
