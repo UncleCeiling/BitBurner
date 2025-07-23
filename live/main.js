@@ -25,15 +25,15 @@ export async function main(ns) {
     };
 
     // Clear all data files
-    let data_files = ns.ls("home", DATA_PATH)
-    for (let file of data_files) { if (ns.rm(file, "home")){ns.print(`Deleted ${file}`)} }
+    let data_files = ns.ls("home", DATA_PATH);
+    for (let file of data_files) { if (ns.rm(file, "home")) { ns.print(`Deleted ${file}`) } };
 
     // Create Achievements data
-    var achieves = new Achievements(ns)
-    await achieves.update_from_web();
-    ns.print(achieves.all);
+    var achieves = new Achievements(ns);
+    let achieve_update_success = await achieves.update_from_web();
+    if (!achieve_update_success) { ns.tprint(`${ANSI.fg.red}Failed to fetch achievements...${ANSI.reset}`) };
 
-
+    
     // Forever
     // while (true){
 

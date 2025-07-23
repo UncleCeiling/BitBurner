@@ -8,9 +8,11 @@ export class Achievements {
 		this.json;
 	};
 
-	/** Attempts to fetch the achievements from Github; updates `this.json` if successful. */
+	/** Attempts to fetch the achievements from Github; updates `this.json` if successful.
+	 * @returns {Promise<Boolean>} `true` if successful, `false` otherwise
+	 */
 	async update_from_web() {
-		const URL = "https://raw.githubusercontent.com/bitburner-official/bitburner-src/blob/dev/src/Achievements/AchievementData.json";
+		const URL = "https://raw.githubusercontent.com/bitburner-official/bitburner-src/refs/heads/dev/src/Achievements/AchievementData.json";
 		try {
 			this.ns.tprint(`${ANSI.fg.cyan}Fetching from github...${ANSI.reset}`)
 			let response = await fetch(URL);
@@ -21,7 +23,8 @@ export class Achievements {
 			let data = JSON.stringify(out);
 			this.ns.rm("data/achievements.txt", "home");
 			this.ns.write("data/achievements.txt", data, "w");
-		} catch (err) { this.ns.alert(`ERROR: ${err}`) };
+			return true;
+		} catch (err) { this.ns.alert(`ERROR: ${err}`); return false };
 	};
 
 	update_from_file() {
