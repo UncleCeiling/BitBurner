@@ -1,6 +1,3 @@
-import { ANSI } from "imports/ANSI";
-
-//#region SERVERS
 export class UtilServer {
     /** Creates an object for a given server name
      * @param {NS} ns 
@@ -70,13 +67,14 @@ export class AllServers {
     */
     get miners() { return this.array.filter((a) => a.is_miner) }
 };
+
 /** Removes the old map and writes a new one
  * @param {NS} ns 
  */
 export function write_map(ns) {
-    ns.rm("map.txt", "home"); // Remove old map
+    ns.rm("data/map.txt", "home"); // Remove old map
     let data = iterate(new UtilServer(ns, "home"));
-    ns.write("map.txt", data.join("\n"), "w"); // Write the new one
+    ns.write("data/map.txt", data.join("\n"), "w"); // Write the new one
 
     /** Checks the stats of the children of the specified server in a depth-first manner.
      * @param {UtilServer} server 
@@ -92,54 +90,17 @@ export function write_map(ns) {
         return output;
     };
 };
-//#endregion SERVERS
 
-//#region EXE
-export class Exe {
-    /** Creates an instance of an Exe object
-     * @param {NS} ns
-     * @param {String} name
-     * @param {Number} skill_req
-    */
-    constructor(ns, name, skill_req) {
-        this.ns = ns;
-        this.name = name;
-        this.skill_req = skill_req - (this.ns.getPlayer().skills.intelligence / 2);
-    };
-    /** @returns {Boolean} */
-    get exists() {
-        if (!this.ns.fileExists(this.name, "home")) { return false }
-        let filename = this.ns.ls("home", this.name)[0];
-        if (filename.includes("INC")) { return false };
-        return true;
-    };
-};
-export class AllExes {
-    /** @param {NS} ns  */
-    constructor(ns) {
-        this.ns = ns;
-        this.details = { "BruteSSH.exe": 50, "FTPCrack.exe": 100, "relaySMTP.exe": 250, "HTTPWorm.exe": 500, "SQLInject.exe": 750 };
-    };
-    /** @returns {Array<Exe>} */
-    get objects() { return Object.entries(this.details).map(([a, b]) => new Exe(this.ns, a, b)).sort((a, b) => a.skill_req - b.skill_req) };
-};
-//#endregion EXE
-
-//#region ACHIEVEMENTS
-
-/** Checks to see if have achievement and returns true 
+/** Removes the old server_stats file and writes a new one
  * @param {NS} ns 
- * @param {Number} node 
- * @param {String} achievement_name 
- * @param {String} message 
- * @returns {Boolean} `true` if don't have have the achievement and are on the right node.
-*/
-export function node_achievement_check(ns, node, achievement_name, message) {
-    let achievements = ns.read("achievements.txt").split("\n");
-    if (ns.getResetInfo().currentNode == node && !achievements.includes(achievement_name)) {
-        ns.tprint(`${ANSI.fg.magenta}Bitnode ${node} detected - ${message}${ANSI.reset}`);
-        return true;
-    } else { return false };
+ */
+export function server_stats(ns) {
+    ns.rm('data/server_stats.txt'); // Remove old file
+    let servers = new AllServers(ns).purchased; // Get servers
+    if (servers.length <= 0) {
+        ns.tprint(`${ANSI.fg.red}No Purchased Servers${ANSI.reset}`); return;
+    }; // Can't map what doesn't exist
+    let data = servers.map((a) => `${a.name}: ${ns.formatRam(a.details.maxRam)}`); // Turn servers into string to add to file
+    ns.write('data/server_stats.txt', data.join('\n'), 'w'); // Write new file
+    // ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`);
 };
-
-//#endregion ACHIEVEMENTS

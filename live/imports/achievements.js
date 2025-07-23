@@ -53,6 +53,19 @@ export class Achievements {
 	/** @returns {Set<String>} Set of all locked achievements */
 	get locked() { return this.all.difference(this.unlocked) }
 
+	/** Returns whether we can try to get this achievement
+	 * @param {Number} node Node required for the given achievement.
+	 * @param {String} achievement_name Name of achievement to check for.
+	 * @returns {Boolean} `true` if achievement not got and on the right node.
+	 */
+	node_check(node, achievement_name) {
+		let on_correct_node = this.ns.getResetInfo().currentNode == node
+		let achievement_is_locked = !achieves.locked.includes(achievement_name)
+		if (on_correct_node && achievement_is_locked) {
+			this.ns.print(`${ANSI.fg.magenta}Bitnode ${node} detected - ${achievement_name}${ANSI.reset}`);
+			return true;
+		} else { return false };
+	};
 };
 
 /** @param {NS} ns */

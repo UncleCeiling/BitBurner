@@ -1,12 +1,12 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/utils";
 import { Achievements } from "imports/achievements";
+import * as util from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
     const DATA_PATH = "data/"
-    const ENABLED_PATH = "enabled/";
     const MODULES_PATH = "modules/";
+    const ENABLED_PATH = "enabled/";
 
 
     // Check arg for break-time and apply
@@ -33,26 +33,22 @@ export async function main(ns) {
     let achieve_update_success = await achieves.update_from_web();
     if (!achieve_update_success) { ns.tprint(`${ANSI.fg.red}Failed to fetch achievements...${ANSI.reset}`) };
 
-    
+    // TODO Implement modules
+    let enabled_modules = ns.ls("home", ENABLED_PATH);
+    for (let enabled of enabled_modules) { ns.rm(enabled,"home") };
+    let modules = ns.ls("home", MODULES_PATH);
+    for (let module of modules) { ns.mv()};
+
     // Forever
-    // while (true){
+    while (true) {
+        util.write_map(ns);
+        util.server_stats(ns);
+        achieves.update_from_file()
 
-    // }
-
-    return
-
-
-
-
-
-
-
+    }
 
     // OLD
     while (true) {
-        let focus = ns.singularity.isFocused();
-        if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", focus); await ns.singularity.getCurrentWork().completion };
-        if (!ns.fileExists("NUKE.exe", "home")) { ns.singularity.createProgram("NUKE.exe", focus); await ns.singularity.getCurrentWork().completion };
         util.write_map(ns);
         server_stats();
         write_achievements();

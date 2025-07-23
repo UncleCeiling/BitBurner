@@ -1,5 +1,7 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/utils";
+import * as servers from "imports/servers";
+import * as exes from "imports/exes";
+import { Achievements } from "imports/achievements";
 /** @param {NS} ns */
 export async function main(ns) {
     // Initialise variables
@@ -10,9 +12,9 @@ export async function main(ns) {
     // Do the stuff
     accept_invites();
     join_bladeburners();
+    if (create_programs()) { return };
     if (check_grafting()) { return };
     if (farm_kills()) { return };
-    if (create_programs()) { return };
     if (farm_karma(karma)) { return };
     work_for_factions();
     // Search for more factions to get invites from?
@@ -21,8 +23,8 @@ export async function main(ns) {
     //#region ===== FUNCTIONS =====
 
     function create_programs() {
-        let exes = new util.AllExes(ns).objects;
-        for (let exe of exes) {
+        let exe_set = new exes.AllExes(ns).set;
+        for (let exe of exe_set) {
             if (exe.exists) { continue };
             // ns.tprint(`${exe.name} does not Exist - ${ns.getPlayer().skills.hacking} => ${exe.skill_req}`);
             if (ns.getPlayer().skills.hacking < exe.skill_req) { continue };
@@ -42,16 +44,19 @@ export async function main(ns) {
 
     /** Farm Karma */
     function farm_karma(karma) {
+        if (!ns.fileExists("enabled/gang.js", "home")) { return false }; // gang is not enabled
+        if (karma <= -54000) { return false }; // Enough Karma
         ns.print(`Karma:${karma}`)
-        if (karma > -54000) {
-            if (util.node_achievement_check(ns, 2, "CHALLENGE_BN2", "Skipping Karma Farm")) { return false };
-            if (ns.singularity.getCurrentWork() == null) { do_homicide() } else if (ns.singularity.getCurrentWork().type != "CRIME") { do_homicide() } else if (ns.singularity.getCurrentWork().crimeType != "Homicide") {
-                do_homicide();
-                ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);
-                return true;
-            } else { ns.tprint(`${ANSI.fg.cyan}Continuing to commit Homicide to decrease Karma${ANSI.reset}`); return true };
-        } else { return false };
+        let work = ns.singularity.getCurrentWork()
+        if (work != null && work.type == "CRIME" && work.crimeType == "Homicide") { // If already doing homicide, continue
+            ns.tprint(`${ANSI.fg.cyan}Continuing to commit Homicide to decrease Karma${ANSI.reset}`);
+        } else { // Otherwise, start
+            do_homicide();
+            ns.tprint(`${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`);
+        };
+        return true;
     };
+
 
     /** Join Bladeburners*/
     function join_bladeburners() {
@@ -127,8 +132,4 @@ export async function main(ns) {
 
     /** Do Homicide */
     function do_homicide() { ns.singularity.commitCrime("Homicide", false) };
-
-    //#endregion
-
-}
-
+};
