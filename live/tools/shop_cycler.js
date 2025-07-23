@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-import { ANSI } from "../imports/ANSI"
+import { ANSI } from "imports/ANSI"
 export async function main(ns) {
 
     // Disable logs
