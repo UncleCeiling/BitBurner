@@ -1,4 +1,4 @@
-//#region IMPORTS
+//#region imports
 
 import array_jumping_game_1 from "contracts/complete/array_jumping_game_1";
 import array_jumping_game_2 from "contracts/complete/array_jumping_game_2";
@@ -16,7 +16,7 @@ import spiralize_matrix from "contracts/complete/spiralize_matrix";
 import subarray_with_maximum_sum from "contracts/complete/subarray_with_maximum_sum";
 import total_ways_to_sum_1 from "contracts/complete/total_ways_to_sum_1";
 import total_ways_to_sum_2 from "contracts/complete/total_ways_to_sum_2";
-import { ANSI } from "live/imports/ANSI";
+import { ANSI } from "../imports/ANSI";
 
 //#endregion
 
