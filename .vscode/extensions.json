@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "aaron-bond.better-comments",
+        "bitburner.bitburner-vscode-integration",
+        "catppuccin.catppuccin-vsc-icons",
+        "streetsidesoftware.code-spell-checker",
+        "shinotatwu-ds.file-tree-generator",
+        "davidanson.vscode-markdownlint"
+    ]
+}
