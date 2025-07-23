@@ -1,5 +1,6 @@
+import { ANSI } from "live/imports/ANSI";
+
 /** @param {NS} ns */
-import { ANSI } from "imports/ANSI"
 export async function main(ns) {
 
     // Disable logs
@@ -9,10 +10,10 @@ export async function main(ns) {
     let duration = ns.args[0]
     if (!(duration > 0)) { ns.tprint(`${ANSI.bg.red}"${duration}" is not a valid argument (please enter an integer larger than 1)${ANSI.reset}`); return }
     let cycles = duration * 10
-    ns.tprint(`\n${ANSI.fg.cyan}Starting Shop Cycler\nDuration: ${duration} seconds\n(${cycles} cycles)${ANSI.reset}`)
+    ns.tprint(`\n${ANSI.fg.cyan}Starting Hacknet Cycler\nDuration: ${duration} seconds\n(${cycles} cycles)${ANSI.reset}`)
     // Count cycles
     for (let complete_cycles = 1; complete_cycles <= cycles; complete_cycles++) {
-        ns.run('queue/shopper.js')
+        ns.run('scripts/hacknet.js')
         // Report every tenth cycle
         if (complete_cycles % 10 == 0) {
             let estimate = Math.floor((cycles - complete_cycles) / 10)
@@ -21,5 +22,5 @@ export async function main(ns) {
         }
         await ns.asleep(100)
     }
-    ns.tprint(`${ANSI.fg.cyan}Shop Cycler complete${ANSI.reset}`)
+    ns.tprint(`${ANSI.fg.cyan}Hacknet Cycler complete${ANSI.reset}`)
 }

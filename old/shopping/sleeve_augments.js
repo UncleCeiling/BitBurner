@@ -1,4 +1,4 @@
-import { ANSI } from "imports/ANSI";
+import { ANSI } from "live/imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
     var history = { "augments": 0, "money": 0 };

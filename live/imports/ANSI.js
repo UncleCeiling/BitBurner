@@ -36,6 +36,9 @@ const ANSI = {
 
 }
 export { ANSI }
+
+// RUNS WHEN SCRIPT IS RUN
+
 /** @param {NS} ns */
 export async function main(ns) {
     // Disable and clear log

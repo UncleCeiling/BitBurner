@@ -1,5 +1,5 @@
-import { ANSI } from "imports/ANSI";
-import * as util from "imports/utils";
+import { ANSI } from "live/imports/ANSI";
+import * as util from "live/imports/utils";
 /** @param {NS} ns */
 export async function main(ns) {
     let servers = new util.AllServers(ns);
