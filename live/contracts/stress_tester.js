@@ -1,4 +1,4 @@
-import { SOLUTIONS } from "queue/contracts";
+import { SOLUTIONS } from "modules/contracts";
 
 /** @param {NS} ns */
 export async function main(ns) {

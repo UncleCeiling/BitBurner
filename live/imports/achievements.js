@@ -1,3 +1,5 @@
+import { ANSI } from "./ANSI";
+
 // Class for fetching all achievements
 export class Achievements {
 	/** @param {NS} ns */
@@ -8,28 +10,30 @@ export class Achievements {
 
 	/** Attempts to fetch the achievements from Github; updates `this.json` if successful. */
 	async update_from_web() {
-		const URL = "https://raw.githubusercontent.com/bitburner-official/bitburner-src/85094d4fb46926aafd31c534cc973697e8c0a492/src/Achievements/AchievementData.json";
+		const URL = "https://raw.githubusercontent.com/bitburner-official/bitburner-src/blob/dev/src/Achievements/AchievementData.json";
 		try {
+			this.ns.tprint(`${ANSI.fg.cyan}Fetching from github...${ANSI.reset}`)
 			let response = await fetch(URL);
 			if (!response.ok) { this.ns.alert(`${response.status}: ${response.statusText}`) };
-			out = await response.json();
-			this.json = out
+
+			let out = await response.json();
+			this.json = out;
+			let data = JSON.stringify(out);
+			this.ns.rm("data/achievements.txt", "home");
+			this.ns.write("data/achievements.txt", data, "w");
 		} catch (err) { this.ns.alert(`ERROR: ${err}`) };
-		data = JSON.stringify(out);
-		this.ns.rm("achievements.txt", "home");
-		this.ns.write("achievements.txt", data, w);
 	};
 
 	update_from_file() {
-		let json = JSON.parse(this.ns.read("achievements.txt"));
+		let json = JSON.parse(this.ns.read("data/achievements.txt"));
 		this.json = json
 	}
 
 	/** @returns {Set<String>} Set of all possible achievements. */
 	get all() {
 		let list = [];
-		for (let item of this.json.achievements) { list.push(item.ID) };
-		all = new Set(list.sort((a, b) => a.localeCompare(b)));
+		for (let key in this.json.achievements) { list.push(this.json.achievements[key].ID) };
+		let all = new Set(list.sort((a, b) => a.localeCompare(b)));
 		return all;
 	};
 

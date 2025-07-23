@@ -1,18 +1,54 @@
 import { ANSI } from "imports/ANSI";
 import * as util from "imports/utils";
+import { Achievements } from "imports/achievements";
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog("ALL")
+    ns.disableLog("ALL");
+    const DATA_PATH = "data/"
+    const ENABLED_PATH = "enabled/";
+    const MODULES_PATH = "modules/";
+
+
+    // Check arg for break-time and apply
+    const ARGUMENT = ns.args[0];
+    var break_secs = 30;
+    let arg_present = ARGUMENT != null;
+    if (arg_present) {
+        let invalid_arg_type = typeof ARGUMENT != Number;
+        let invalid_arg_value = ARGUMENT < 1;
+        if (invalid_arg_type || invalid_arg_value) {
+            ns.tprint(`${ANSI.fg.red}${ARGUMENT} is not a valid argument (must be an integer >= 1)${ANSI.reset}`);
+            return;
+        } else {
+            break_secs = Math.round(ARGUMENT);
+        };
+    };
+
+    // Clear all data files
+    let data_files = ns.ls("home", DATA_PATH)
+    for (let file of data_files) { if (ns.rm(file, "home")){ns.print(`Deleted ${file}`)} }
+
+    // Create Achievements data
+    var achieves = new Achievements(ns)
+    await achieves.update_from_web();
+    ns.print(achieves.all);
+
+
+    // Forever
+    // while (true){
+
+    // }
+
+    return
+
+
+
+
+
+
 
 
     // OLD
-    ns.disableLog("ALL");
-    const QUEUE_LOC = 'queue/';
-    const ARGUMENT = ns.args[0];
-    var break_secs = 20;
-    if (ARGUMENT != null && typeof ARGUMENT != Number) { ns.tprint(`${ANSI.fg.red}${ARGUMENT} is not a valid argument (must be an integer > 0)${ANSI.reset}`); return } else if (ARGUMENT != null && ARGUMENT > 0) { break_secs = ARGUMENT }; // Set break time if set
-    ns.rm("mines.txt");
-    ns.rm("miners.txt");
     while (true) {
         let focus = ns.singularity.isFocused();
         if (!ns.fileExists("b1t_flum3.exe", "home")) { ns.singularity.createProgram("b1t_flum3.exe", focus); await ns.singularity.getCurrentWork().completion };
