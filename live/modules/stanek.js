@@ -27,15 +27,15 @@ export async function main(ns) {
                 if (ns.exec("stanek/_charge.js", details.name, threads, gift.x, gift.y) == 0) { ns.tprint(`Failed to charge gift ID ${gift.id} on ${details.name}`) } // Execute with threads and co-ordinates as arguments
             }
         }
+        let wait = Date.now() - start
+        ns.print(`${ANSI.fg.magenta}Waiting for ${wait / 1000} secs...`)
+        // if (ns.gang.inGang()) { if (ns.gang.getGangInformation().territory >= 1) { wait = wait / 2 } }
+        await ns.asleep(wait)
         if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
             ns.ui.closeTail();
             ns.tprint(`${ANSI.fg.red}Stanek Stopped - Not enough spare RAM on 'home',${ANSI.reset}`);
             ns.toast("Stanek Stopped - Not enough spare RAM on 'home'.", "error");
             return;
         };
-        let wait = Date.now() - start
-        ns.print(`${ANSI.fg.magenta}Waiting for ${wait / 1000} secs...`)
-        // if (ns.gang.inGang()) { if (ns.gang.getGangInformation().territory >= 1) { wait = wait / 2 } }
-        await ns.asleep(wait)
     }
 }
