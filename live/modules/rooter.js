@@ -1,11 +1,11 @@
-import { ANSI } from "imports/ANSI"
-import * as util from "imports/servers"
+import { ANSI } from "imports/ANSI";
+import { AllServers, UtilServer } from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
 
     // ===== MAIN =====
     ns.disableLog("ALL");
-    let servers = new util.AllServers(ns);
+    let servers = new AllServers(ns);
     for (let server of servers.array) {
         if (server.details.openPortCount < 5) { crack_ports(server) }; // Crack ports if any are closed
         if (server.details.purchasedByPlayer || server.details.backdoorInstalled || server.details.hasAdminRights) { continue }; // Skip servers that don't need nuking
@@ -17,7 +17,7 @@ export async function main(ns) {
     // ===== FUNCTIONS =====
 
     /** Tries to crack ports on the target
-     * @param {util.AllServers} servers
+     * @param {AllServers} servers
      */
     function export_mines(servers) {
         let mines = servers.array.filter((a) => a.is_mine);
@@ -31,7 +31,7 @@ export async function main(ns) {
     };
 
     /** Reports the proportions of servers that have been Nukes/Backdoored
-     * @param {util.AllServers} servers
+     * @param {AllServers} servers
      */
     function report(servers) {
         let nuke_able = servers.array.filter((a) => !a.details.purchasedByPlayer);
@@ -48,7 +48,7 @@ export async function main(ns) {
     };
 
     /** Tries to crack ports on the target
-     * @param {util.Server} target 
+     * @param {UtilServer} target 
      */
     function crack_ports(target) {
         if (!target.details.sshPortOpen && ns.fileExists("BruteSSH.exe", "home")) { ns.brutessh(target.name) }; // SSH
@@ -59,7 +59,7 @@ export async function main(ns) {
     };
 
     /** Tries to root the target
-     * @param {util.Server} target 
+     * @param {UtilServer} target 
      */
     function do_root(target) {
         if (target.details.openPortCount < target.details.numOpenPortsRequired) { // Error if not enough ports open

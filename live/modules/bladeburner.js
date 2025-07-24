@@ -1,5 +1,5 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/servers";
+import { Achievements } from "imports/achievements";
 
 /** @param {NS} ns */
 export async function main(ns) {
@@ -213,19 +213,17 @@ export async function main(ns) {
             }
         }
         // Do BlackOp if doable
-        let next_black_op = ns.bladeburner.getNextBlackOp()
+        let next_black_op = ns.bladeburner.getNextBlackOp();
         if (next_black_op == null) {
-            node = ns.getResetInfo().currentNode
-            working_on_achievement = util.node_achievement_check(ns, node, "CHALLENGE_BN12", "Repeating BN12 until 50 SF12 are owned")
-            if (node == 12 && working_on_achievement) {
-                ns.singularity.destroyW0r1dD43m0n(12, "boot.js")
-            } else { ns.tprint(`${ANSI.fg.green}Bladeburner complete - Destroy Node to continue${ANSI.reset}`) }
-        }
-        if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue }
+            let working_on_achievement = new Achievements(ns).node_check(12, "CHALLENGE_BN12");
+            if (working_on_achievement) { ns.singularity.destroyW0r1dD43m0n(12, "boot.js") };
+        } else { ns.tprint(`${ANSI.fg.green}Bladeburner complete - Destroy Node to continue${ANSI.reset}`) };
+
+        if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue };
         // Check accuracy of data and do Field Analysis if not good, otherwise Train
-        if (await improve_accuracy(current_job)) { continue }
+        if (await improve_accuracy(current_job)) { continue };
         // Gain Rep
-        if (await do_job(job_list.rep_job(), current_job)) { continue }
+        if (await do_job(job_list.rep_job(), current_job)) { continue };
         // If taking up too much RAM - stop
         if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {
             ns.ui.closeTail();
@@ -235,13 +233,13 @@ export async function main(ns) {
             return;
         };
         // If stamina penalty too high, Train for a bit
-        if (await stamina_check(0.5, 0.6, current_job)) { continue }
+        if (await stamina_check(0.5, 0.6, current_job)) { continue };
         // Make money
-        if (await do_job(job_list.cash_job(), current_job)) { continue }
+        if (await do_job(job_list.cash_job(), current_job)) { continue };
         // Reduce Chaos
         await chaos_reduction(current_job);
         // Recruit if possible
-        if (await do_job(job_list.recruit_job(), current_job)) { continue }
+        if (await do_job(job_list.recruit_job(), current_job)) { continue };
         // Otherwise just train
         await do_job(new Job(new Action("General", "Training"), new City(ns.bladeburner.getCity())), current_job);
     }

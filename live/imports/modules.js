@@ -43,10 +43,12 @@ export class Module {
      */
     async run_module() {
         if (!this.enabled) { return false }; // Don't run
-        if (this.ns.isRunning(this.#pid)) { return false }; // Already running
-        while (this.ram > this.ns.getServerMaxRam() - this.ns.getServerUsedRam()){await this.ns.asleep(1000)} // If not enough RAM, wait
+        if (this.#pid != null && this.ns.isRunning(this.#pid)) { return false }; // Already running
+        while (this.ram > this.ns.getServerMaxRam("home") - this.ns.getServerUsedRam("home")){
+            this.ns.print(`Waiting for RAM to clear ${this.ns.getServerUsedRam("home")}/${this.ns.getServerMaxRam("home")}`)
+            await this.ns.asleep(1000)} // If not enough RAM, wait
         this.ns.tprint(`${ANSI.fg.magenta}Running ${this.shortname}...${ANSI.reset}`)
-        let result = ns.run(this.filename); // Try to start
+        let result = this.ns.run(this.filename); // Try to start
         if (result == 0) { this.#pid = null;this.ns.tprint(`${ANSI.fg.red}Something went wrong trying to run ${this.shortname}.${ANSI.reset}`); return false }; // Failed to start so remove pid
         this.#pid = result; // update pid
         return true; // success

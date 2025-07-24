@@ -1,5 +1,5 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/servers"
+import { AllServers } from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     // ===== CLASSES =====
@@ -50,7 +50,7 @@ export async function main(ns) {
     }
 
     function server_upgrade() {
-        let servers = new util.AllServers(ns).array.filter((a) => a.details.backdoorInstalled)
+        let servers = new AllServers(ns).array.filter((a) => a.details.backdoorInstalled)
         for (let server of servers.sort((a, b) => b.details.moneyMax - a.details.moneyMax)) {
             if (server.details.minDifficulty > 1) { while (buy_hash_upgrade("Reduce Minimum Security", server.name)) { history.sec_down++ } }; // Downgrade Server Sec
         }

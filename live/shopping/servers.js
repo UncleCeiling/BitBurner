@@ -1,8 +1,8 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/servers";
+import {AllServers,UtilServer} from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
-    let servers = new util.AllServers(ns);
+    let servers = new AllServers(ns);
     upgrade_servers(servers.purchased);
     buy_servers(servers.purchased);
     deploy_foreman(servers.purchased);
@@ -10,7 +10,7 @@ export async function main(ns) {
     // ===== FUNCTIONS =====
 
     /** Upgrades each server based on current and used ram.
-     * @param {Array<util.Server>} servers 
+     * @param {Array<UtilServer>} servers 
     */
     function buy_servers(servers) {
         const RAM = 2
@@ -25,7 +25,7 @@ export async function main(ns) {
     }
 
     /** Upgrades each server based on current and used ram.
-     * @param {Array<util.Server>} servers 
+     * @param {Array<UtilServer>} servers 
     */
     function upgrade_servers(servers) {
         const MAX_POSSIBLE_RAM = ns.getPurchasedServerMaxRam();
@@ -46,7 +46,7 @@ export async function main(ns) {
     }
 
     /** Deploys copies of the scripts in the `scripts/` folder to the servers.
-     * @param {Array<util.Server>} servers 
+     * @param {Array<UtilServer>} servers 
      */
     function deploy_foreman(servers) {
         for (let server of servers) {

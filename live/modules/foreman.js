@@ -1,5 +1,5 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/servers"
+import {AllServers,UtilServer} from "imports/servers"
 /** @param {NS} ns */
 export async function main(ns) {
     // ===== CLASSES =====
@@ -43,7 +43,7 @@ export async function main(ns) {
     ns.clearLog();
     // ns.ui.openTail();
     if (check_host() == false) { return };
-    var servers = new util.AllServers(ns);
+    var servers = new AllServers(ns);
     while (true) {
         let miners = servers.miners;
         let queue = new JobQueue(servers.mines.map((a) => a.name));
@@ -77,7 +77,7 @@ export async function main(ns) {
     /**
      * 
      * @param {MineJob} item 
-     * @param {util.UtilServer} miner 
+     * @param {UtilServer} miner 
      * @param {String} script 
      */
     function do_single_job(item, miner, script) {
@@ -93,7 +93,7 @@ export async function main(ns) {
     /**
      * 
      * @param {MineJob} item 
-     * @param {util.UtilServer} miner 
+     * @param {UtilServer} miner 
      */
     function do_entire_job(item, miner) {
         ns.scp(ns.ls("home", "scripts/"), miner.name, "home");

@@ -1,3 +1,5 @@
+import { ANSI } from "../imports/ANSI";
+
 export class UtilServer {
     /** Creates an object for a given server name
      * @param {NS} ns 

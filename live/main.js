@@ -61,7 +61,7 @@ export async function main(ns) {
         svr.server_stats(ns);
         achieves.update_from_file();
         for (let module of modules.sort(() => Math.random() - 0.5)) { // In a random order
-            if (await module.run_module()) { ns.tprint(`${ANSI.fg.cyan}Running ${module.shortname} module...${ANSI.reset}`) }; // Try to run the module
+            await module.run_module() // Try to run the module
             await ns.asleep(1000); // Pause
         };
         ns.tprint(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`);

@@ -1,11 +1,12 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
     let ram_limit = Infinity;
     let core_limit = Infinity;
-    if (util.node_achievement_check(ns, 1, "CHALLENGE_BN1", "limiting RAM and Cores")) {
+    let working_on_achievement = new Achievements(ns).node_check(1,"CHALLENGE_BN1");
+    if (working_on_achievement){
         ram_limit = 128;
         core_limit = 1;
     };

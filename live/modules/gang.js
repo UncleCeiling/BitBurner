@@ -1,9 +1,7 @@
 import { ANSI } from "imports/ANSI";
-import * as util from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL');
-    if (util.node_achievement_check(ns, 2, "CHALLENGE_BN2", "Preventing Gang")) { return };
     const GANG_FACTION = "Slum Snakes"; // My Chosen Faction
     const ENEMY_FACTIONS = [ // List of enemies
         "Tetrads",
