@@ -11,7 +11,6 @@ export async function main(ns) {
     var karma = player_stats.karma;
     // Do the stuff
     accept_invites();
-    join_bladeburners();
     if (create_programs()) { return };
     if (check_grafting()) { return };
     if (farm_kills()) { return };
@@ -56,27 +55,6 @@ export async function main(ns) {
         };
         return true;
     };
-
-
-    /** Join Bladeburners*/
-    function join_bladeburners() {
-        // Join Division
-        if (
-            ns.bladeburner.inBladeburner() == false &&
-            player_stats.skills.strength >= 100 &&
-            player_stats.skills.defense >= 100 &&
-            player_stats.skills.dexterity >= 100 &&
-            player_stats.skills.agility >= 100
-        ) {
-            if (ns.bladeburner.joinBladeburnerDivision()) {
-                ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Division${ANSI.reset}`);
-            } else {
-                ns.tprint(`${ANSI.fg.red}Failed to join Bladeburner Division${ANSI.reset}`);
-            };
-        };
-        // Join Faction
-        if (player_stats.factions.indexOf("Bladeburners") == -1 && ns.bladeburner.inBladeburner()) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } };
-    }
 
     /** Accept Faction invitations */
     function accept_invites() {

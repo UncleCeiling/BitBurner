@@ -189,7 +189,28 @@ export async function main(ns) {
         }
     }
 
+    /** Join Bladeburners*/
+    function join_bladeburners() {
+        // Join Division
+        if (
+            ns.bladeburner.inBladeburner() == false &&
+            player_stats.skills.strength >= 100 &&
+            player_stats.skills.defense >= 100 &&
+            player_stats.skills.dexterity >= 100 &&
+            player_stats.skills.agility >= 100
+        ) {
+            if (ns.bladeburner.joinBladeburnerDivision()) {
+                ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Division${ANSI.reset}`);
+            } else {
+                ns.tprint(`${ANSI.fg.red}Failed to join Bladeburner Division${ANSI.reset}`);
+            };
+        };
+        // Join Faction
+        if (player_stats.factions.indexOf("Bladeburners") == -1 && ns.bladeburner.inBladeburner()) { if (ns.bladeburner.joinBladeburnerFaction()) { ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`) } };
+    };
+
     // ===== MAIN =====
+    join_bladeburners();
     const MIN_FREE_RAM = ns.ls("home", "modules/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     if (!ns.bladeburner.inBladeburner()) { return }
     ns.disableLog("ALL");
