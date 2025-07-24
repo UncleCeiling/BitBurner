@@ -15,3 +15,8 @@ export async function terminal_command(ns, command) {
         bubbles: true, cancelable: true, keyCode: 13
     }));
 }
+
+// /** @param {NS} ns */
+// export async function main(ns) {
+//     ns.alert(ns.formatRam(ns.getScriptRam("imports/utilities.js")))
+// }
