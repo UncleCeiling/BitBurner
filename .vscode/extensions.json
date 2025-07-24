@@ -5,6 +5,7 @@
         "catppuccin.catppuccin-vsc-icons",
         "streetsidesoftware.code-spell-checker",
         "shinotatwu-ds.file-tree-generator",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "streetsidesoftware.code-spell-checker-british-english"
     ]
 }

@@ -24,7 +24,7 @@ export async function main(ns) {
                 while (ns.hacknet.getNodeStats(node).ramUsed > 0) { await ns.asleep(100) } // Wait for the hacknet server to be freed
                 ns.print(`Charging ${gift.id} (t=${threads}) on ${details.name}.`)
                 ns.scp("stanek/_charge.js", details.name, "home") // Copy charge script to the target server
-                if (ns.exec("stanek/_charge.js", details.name, threads, gift.x, gift.y) == 0) { ns.tprint(`Failed to charge gift ID ${gift.id} on ${details.name}`) } // Execute with threads and co-ords as arguments
+                if (ns.exec("stanek/_charge.js", details.name, threads, gift.x, gift.y) == 0) { ns.tprint(`Failed to charge gift ID ${gift.id} on ${details.name}`) } // Execute with threads and co-ordinates as arguments
             }
         }
         if (ns.getServerMaxRam('home') - ns.getServerUsedRam('home') < MIN_FREE_RAM) {

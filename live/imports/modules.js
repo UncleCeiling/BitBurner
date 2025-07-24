@@ -36,7 +36,7 @@ export class Module {
     disable() { this.#enabled = false };
     /** @returns {Number} */
     get pid() {
-        if (this.#ns.isRunning(this.#pid)) { return this.#pid }
+        if (this.#ns.isRunning(this.filename,"home")) { return this.#pid }
         else { this.#pid = 0; return this.#pid };
     };
     /** Tries to run the module
