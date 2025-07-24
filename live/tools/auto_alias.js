@@ -6,6 +6,8 @@ export async function main(ns) {
         `unalias --all`,
         `alias -g boot="home; run boot.js"`,
         `alias -g dev="home; run tools/devmenu.js"`,
+        `alias -g map="home; cat data/map.txt"`,
+        `alias -g stats="home; cat data/server_stats.txt"`,
         `alias -g darkweb="buy -a"`,
         `alias -g reboot="home; run reboot.js"`,
         `alias -g kill-cycle="home; killall; run boot.js"`,
