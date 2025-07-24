@@ -102,5 +102,5 @@ export function server_stats(ns) {
     }; // Can't map what doesn't exist
     let data = servers.map((a) => `${a.name}: ${ns.formatRam(a.details.maxRam)}`); // Turn servers into string to add to file
     ns.write('data/server_stats.txt', data.join('\n'), 'w'); // Write new file
-    // ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`);
+    ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`);
 };
