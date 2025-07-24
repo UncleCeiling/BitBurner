@@ -52,7 +52,7 @@ export class Module {
             this.#ns.print(`${ANSI.fg.yellow}${this.shortname} waiting for RAM to clear ${this.#ns.getServerUsedRam("home")}/${this.#ns.getServerMaxRam("home")}${ANSI.reset}`);
             await this.#ns.asleep(1000)
         }; // If not enough RAM, wait
-        this.#ns.tprint(`${ANSI.fg.magenta}Running ${this.shortname}...${ANSI.reset}`);
+        // this.#ns.tprint(`${ANSI.fg.magenta}Running ${this.shortname}...${ANSI.reset}`);
         this.#ns.print(`${ANSI.fg.green}Running ${this.shortname}...${ANSI.reset}`);
 
         let result = this.#ns.run(this.filename); // Try to start
