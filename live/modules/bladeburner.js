@@ -216,8 +216,9 @@ export async function main(ns) {
         let next_black_op = ns.bladeburner.getNextBlackOp();
         if (next_black_op == null) {
             let working_on_achievement = new Achievements(ns).node_check(12, "CHALLENGE_BN12");
-            if (working_on_achievement) { ns.singularity.destroyW0r1dD43m0n(12, "boot.js") };
-        } else { ns.tprint(`${ANSI.fg.green}Bladeburner complete - Destroy Node to continue${ANSI.reset}`) };
+            if (working_on_achievement) { ns.singularity.destroyW0r1dD43m0n(12, "boot.js") }
+            else { ns.tprint(`${ANSI.fg.green}Bladeburner complete - Destroy Node to continue${ANSI.reset}`) };
+        }
 
         if (next_black_op?.rank <= ns.bladeburner.getRank() && await do_job(job_list.black_job(), current_job)) { continue };
         // Check accuracy of data and do Field Analysis if not good, otherwise Train

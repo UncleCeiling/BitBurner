@@ -15,7 +15,7 @@ export class AllModules {
 
 export class Module {
     #enabled = true;
-    #pid = null;
+    #pid = 0;
     /** Instances a Module and enables it by default
      * @param {NS} ns 
      * @param {String} filename 
@@ -33,19 +33,19 @@ export class Module {
     enable() { this.#enabled = true };
     /** Disables the module */
     disable() { this.#enabled = false };
-    /** @returns {Number|null} */
+    /** @returns {Number} */
     get pid() {
         if (this.ns.isRunning(this.#pid)) { return this.#pid }
-        else { this.#pid = null; return this.#pid };
+        else { this.#pid = 0; return this.#pid };
     };
     /** Tries to run the module
      * @returns {Promise<Boolean>} `true` if started
      */
     async run_module() {
         if (!this.enabled) { return false }; // Don't run
-        if (this.#pid != null && this.ns.isRunning(this.#pid)) { return false }; // Already running
+        if (this.pid != 0 && this.ns.isRunning(this.filename,"home")) { return false }; // Already running
         while (this.ram > this.ns.getServerMaxRam("home") - this.ns.getServerUsedRam("home")){
-            this.ns.print(`Waiting for RAM to clear ${this.ns.getServerUsedRam("home")}/${this.ns.getServerMaxRam("home")}`)
+            this.ns.print(`${this.shortname} waiting for RAM to clear ${this.ns.getServerUsedRam("home")}/${this.ns.getServerMaxRam("home")}`)
             await this.ns.asleep(1000)} // If not enough RAM, wait
         this.ns.tprint(`${ANSI.fg.magenta}Running ${this.shortname}...${ANSI.reset}`)
         let result = this.ns.run(this.filename); // Try to start

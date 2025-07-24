@@ -1,4 +1,4 @@
-import { ANSI } from "../imports/ANSI";
+import { ANSI } from "imports/ANSI";
 
 export class UtilServer {
     /** Creates an object for a given server name
@@ -77,6 +77,7 @@ export function write_map(ns) {
     ns.rm("data/map.txt", "home"); // Remove old map
     let data = iterate(new UtilServer(ns, "home"));
     ns.write("data/map.txt", data.join("\n"), "w"); // Write the new one
+    ns.tprint(`${ANSI.fg.magenta}Wrote ${data.length} lines to 'map.txt'${ANSI.reset}`)
 
     /** Checks the stats of the children of the specified server in a depth-first manner.
      * @param {UtilServer} server 

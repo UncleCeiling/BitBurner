@@ -35,6 +35,7 @@ export class Achievements {
 	/** @returns {Set<String>} Set of all possible achievements. */
 	get all() {
 		let list = [];
+		this.update_from_file();
 		for (let key in this.json.achievements) { list.push(this.json.achievements[key].ID) };
 		let all = new Set(list.sort((a, b) => a.localeCompare(b)));
 		return all;
