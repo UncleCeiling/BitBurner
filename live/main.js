@@ -1,13 +1,11 @@
 import { ANSI } from "imports/ANSI";
 import { Achievements } from "imports/achievements";
+import { AllModules, disable_module } from "imports/modules";
 import * as util from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
     const DATA_PATH = "data/"
-    const MODULES_PATH = "modules/";
-    const ENABLED_PATH = "enabled/";
-
 
     // Check arg for break-time and apply
     const ARGUMENT = ns.args[0];
@@ -29,29 +27,54 @@ export async function main(ns) {
     for (let file of data_files) { if (ns.rm(file, "home")) { ns.print(`Deleted ${file}`) } };
 
     // Create Achievements data
-    var achieves = new Achievements(ns);
+    let achieves = new Achievements(ns);
     let achieve_update_success = await achieves.update_from_web();
     if (!achieve_update_success) { ns.tprint(`${ANSI.fg.red}Failed to fetch achievements...${ANSI.reset}`) };
 
-    // TODO Implement modules
-    let enabled_modules = ns.ls("home", ENABLED_PATH);
-    for (let enabled of enabled_modules) { ns.rm(enabled,"home") };
-    let modules = ns.ls("home", MODULES_PATH);
-    for (let module of modules) { ns.mv()};
+    // TODO Implement modules properly with achievements
+    let modules = new AllModules(ns).list; // Generate module objects in array
+    /** 
+     * @param {Number} node 
+     * @param {String} achievement 
+     * @param {String} module 
+     * @param {Achievements} achievements 
+     * @param {AllModules} modules 
+     */
+    function module_check(node, achievement, module){
+        if (achieves.node_check(node,achievement)){
+            disable_module(modules,module);
+        };
+    };
+    module_check(2,"CHALLENGE_BN2","gang");
+    module_check(3,"CHALLENGE_BN3","corp.js");
+    module_check(6,"CHALLENGE_BN6","bladeburner.js");
+    module_check(7,"CHALLENGE_BN7","bladeburner.js");
+    module_check(8,"CHALLENGE_BN8","stocks.js");
+    module_check(9,"CHALLENGE_BN9","hacknet.js");
+    module_check(10,"CHALLENGE_BN10","sleeves.js");
+    module_check(13,"CHALLENGE_BN13","stanek.js");
+    module_check(14,"CHALLENGE_BN14","ipvgo.js");
+
+    for (let mod of modules){
+        ns.tprint(mod.filename,mod.enabled)
+    }
+    ns.tprint(ns.getResetInfo().currentNode)
+    return
+
 
     // Forever
     while (true) {
         util.write_map(ns);
         util.server_stats(ns);
-        achieves.update_from_file()
-
-    }
+        achieves.update_from_file();
+        for (let module of modules.sort(Math.random() < 0.5)) { // In a random order
+            if (module.run_module()) { ns.tprint(`${ANSI.fg.cyan}Running ${module.shortname} module...${ANSI.reset}`) }; // Try to run the module
+            await ns.asleep(1000); // Pause
+        };
+    };
 
     // OLD
     while (true) {
-        util.write_map(ns);
-        server_stats();
-        write_achievements();
         await queue(); // Run scripts in `queue/` folder
         ns.print(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`);
         await ns.asleep(break_secs * 1000); // Pause for a bit

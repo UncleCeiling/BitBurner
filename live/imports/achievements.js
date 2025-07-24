@@ -45,7 +45,7 @@ export class Achievements {
 		//! return this.ns.singularity.getUnlockedAchievements()
 		let doc = globalThis["document"]
 		let list = []
-		for (let achieve of doc.achievements) { list.add(achieve) }
+		for (let achieve of doc.achievements) { list.push(achieve) }
 		let unlocked = new Set(list.sort((a, b) => a.localeCompare(b)))
 		return unlocked
 	}
@@ -60,7 +60,7 @@ export class Achievements {
 	 */
 	node_check(node, achievement_name) {
 		let on_correct_node = this.ns.getResetInfo().currentNode == node
-		let achievement_is_locked = !achieves.locked.includes(achievement_name)
+		let achievement_is_locked = !this.locked.has(achievement_name)
 		if (on_correct_node && achievement_is_locked) {
 			this.ns.print(`${ANSI.fg.magenta}Bitnode ${node} detected - ${achievement_name}${ANSI.reset}`);
 			return true;
