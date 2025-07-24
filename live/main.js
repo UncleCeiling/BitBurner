@@ -5,7 +5,7 @@ import * as svr from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
-    const DATA_PATH = "data/"
+    const DATA_PATH = "data/";
 
     // Check arg for break-time and apply
     const ARGUMENT = ns.args[0];
@@ -21,6 +21,9 @@ export async function main(ns) {
             break_secs = Math.round(ARGUMENT);
         };
     };
+
+    // Kill all scripts
+    ns.killall("home", true);
 
     // Clear all data files
     let data_files = ns.ls("home", DATA_PATH);
@@ -40,20 +43,20 @@ export async function main(ns) {
      * @param {Achievements} achievements 
      * @param {AllModules} modules 
      */
-    function module_check(node, achievement, module){
-        if (achieves.node_check(node,achievement)){
-            disable_module(modules,module);
+    function module_check(node, achievement, module) {
+        if (achieves.node_check(node, achievement)) {
+            disable_module(modules, module);
         };
     };
-    module_check(2,"CHALLENGE_BN2","gang");
-    module_check(3,"CHALLENGE_BN3","corp.js");
-    module_check(6,"CHALLENGE_BN6","bladeburner.js");
-    module_check(7,"CHALLENGE_BN7","bladeburner.js");
-    module_check(8,"CHALLENGE_BN8","stocks.js");
-    module_check(9,"CHALLENGE_BN9","hacknet.js");
-    module_check(10,"CHALLENGE_BN10","sleeves.js");
-    module_check(13,"CHALLENGE_BN13","stanek.js");
-    module_check(14,"CHALLENGE_BN14","ipvgo.js");
+    module_check(2, "CHALLENGE_BN2", "gang");
+    module_check(3, "CHALLENGE_BN3", "corp.js");
+    module_check(6, "CHALLENGE_BN6", "bladeburner.js");
+    module_check(7, "CHALLENGE_BN7", "bladeburner.js");
+    module_check(8, "CHALLENGE_BN8", "stocks.js");
+    module_check(9, "CHALLENGE_BN9", "hacknet.js");
+    module_check(10, "CHALLENGE_BN10", "sleeves.js");
+    module_check(13, "CHALLENGE_BN13", "stanek.js");
+    module_check(14, "CHALLENGE_BN14", "ipvgo.js");
 
     // Forever
     while (true) {
@@ -64,7 +67,9 @@ export async function main(ns) {
             await module.run_module() // Try to run the module
             await ns.asleep(1000); // Pause
         };
+        ns.print(`${ANSI.fg.cyan}Taking a break for ${break_secs} seconds.${ANSI.reset}`);
         ns.tprint(`${ANSI.fg.magenta}Taking a break for ${break_secs} seconds.${ANSI.reset}`);
-        await ns.asleep(break_secs + 1000);
+        await ns.asleep(break_secs * 1000);
+        ns.clearLog();
     };
 };

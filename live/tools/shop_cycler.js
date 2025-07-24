@@ -12,7 +12,7 @@ export async function main(ns) {
     ns.tprint(`\n${ANSI.fg.cyan}Starting Shop Cycler\nDuration: ${duration} seconds\n(${cycles} cycles)${ANSI.reset}`)
     // Count cycles
     for (let complete_cycles = 1; complete_cycles <= cycles; complete_cycles++) {
-        ns.run('queue/shopper.js')
+        ns.run('modules/shopper.js')
         // Report every tenth cycle
         if (complete_cycles % 10 == 0) {
             let estimate = Math.floor((cycles - complete_cycles) / 10)

@@ -8,5 +8,5 @@ export async function main(ns) {
         for (let i = 0; i < TESTS; i++) { ns.codingcontract.createDummyContract(type) }
     };
     await ns.asleep(1000);
-    ns.run("queue/contracts.js");
+    ns.run("modules/contracts.js");
 }

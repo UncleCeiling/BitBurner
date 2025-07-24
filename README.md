@@ -24,6 +24,6 @@ This is my BitBurner repo!
 ## ✅ ToDo
 
 🟢 Redo Readme system  
-🟡 `queue/contracts.js`  
+🟡 `modules/contracts.js`  
 🔴 Augments  
 🔴 Fix Backdoor  

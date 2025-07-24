@@ -38,7 +38,7 @@ export async function main(ns) {
         get jobs() { return this.mines.map((a) => new MineJob(a)).sort((a, b) => b.total_RAM() - a.total_RAM()) }
     };
     // ===== MAIN =====
-    const MIN_FREE_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
+    const MIN_FREE_RAM = ns.ls("home", "modules/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     ns.disableLog("ALL");
     ns.clearLog();
     // ns.ui.openTail();
@@ -135,8 +135,8 @@ export async function main(ns) {
     const HOST = 'home';
     const DELAY = 5;
     const PROCESSES = 10;
-    const MIN_FREE_HOME_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js");
-    const MAX_FREE_HOME_RAM = ns.ls("home", "queue/").reduce((a, b) => a + ns.getScriptRam(b), 0) + ns.getScriptRam("main.js");
+    const MIN_FREE_HOME_RAM = ns.ls("home", "modules/").map((a) => ns.getScriptRam(a)).sort((a, b) => b - a)[0] + ns.getScriptRam("main.js");
+    const MAX_FREE_HOME_RAM = ns.ls("home", "modules/").reduce((a, b) => a + ns.getScriptRam(b), 0) + ns.getScriptRam("main.js");
     // Repeat ad-nauseam
     while (true) {
         await ns.asleep(100);

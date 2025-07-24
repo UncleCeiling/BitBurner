@@ -61,7 +61,7 @@ export class Achievements {
 	 */
 	node_check(node, achievement_name) {
 		let on_correct_node = this.ns.getResetInfo().currentNode == node
-		let achievement_is_locked = !this.locked.has(achievement_name)
+		let achievement_is_locked = this.locked.has(achievement_name)
 		if (on_correct_node && achievement_is_locked) {
 			this.ns.print(`${ANSI.fg.magenta}Bitnode ${node} detected - ${achievement_name}${ANSI.reset}`);
 			return true;

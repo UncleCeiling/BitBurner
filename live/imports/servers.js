@@ -25,7 +25,7 @@ export class UtilServer {
     /** @returns {Number} */
     get free_RAM() {
         let free = this.details.maxRam - this.details.ramUsed
-        if (this.name == "home") { free = free - this.ns.getScriptRam("queue/foreman.js") - this.ns.getScriptRam("queue/bladeburner.js") - this.ns.getScriptRam("queue/stanek.js") - this.ns.getScriptRam("main.js") }
+        if (this.name == "home") { free = free - this.ns.getScriptRam("modules/foreman.js") - this.ns.getScriptRam("modules/bladeburner.js") - this.ns.getScriptRam("modules/stanek.js") - this.ns.getScriptRam("main.js") }
         return free
     }
     /** @returns {Boolean} */

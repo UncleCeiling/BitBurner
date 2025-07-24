@@ -190,7 +190,7 @@ export async function main(ns) {
     }
 
     // ===== MAIN =====
-    const MIN_FREE_RAM = ns.ls("home", "queue/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
+    const MIN_FREE_RAM = ns.ls("home", "modules/").map((a) => ns.getScriptRam(a, "home")).sort((a, b) => b - a)[0]
     if (!ns.bladeburner.inBladeburner()) { return }
     ns.disableLog("ALL");
     // ns.ui.openTail();
