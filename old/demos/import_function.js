@@ -23,7 +23,7 @@ export async function main(ns) {
 // ====================================
 //
 // If you just want to import 1 function, you can specify it like this:
-// 
+//
 // 			 Function									 File
 //					\/ 											\/
 // import { an_example } from 'demos/my_function.js'
@@ -31,7 +31,7 @@ export async function main(ns) {
 /** @param {NS} ns */
 // export async function main(ns) {
 // ns.disableLog("ALL"); ns.openTail();
-// 	//             Function      Arguments                           
+// 	//             Function      Arguments
 // 	//                \/            \/
 // 	let message = an_example('Peepee Poopoo')
 // 	ns.print(message)

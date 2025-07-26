@@ -1,5 +1,5 @@
 import { ANSI } from "imports/ANSI";
-import {AllServers,UtilServer} from "imports/servers";
+import { AllServers, UtilServer } from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
     let servers = new AllServers(ns);
