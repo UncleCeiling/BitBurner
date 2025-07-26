@@ -28,21 +28,21 @@
 [ ] ["Total Ways to Sum"](#total-ways-to-sum)  
 [/] ["Total Ways to Sum II"](#total-ways-to-sum-ii)  
 [ ] ["Unique Paths in a Grid I"](#unique-paths-in-a-grid-i)  
-[ ] ["Unique Paths in a Grid II"](#unique-paths-in-a-grid-ii)  
+[ ] ["Unique Paths in a Grid II"](#unique-paths-in-a-grid-ii)
 
 ## API
 
 Namespace: `ns.codingcontract`
 
-| Method | Description |
-|-|-|
-| `attempt(answer, filename, host)` | Attempts a coding contract, returning a reward string on success or empty string on failure. |
-| `createDummyContract(type)` | Generate a dummy contract. |
-| `getContractType(filename, host)` | Get the type of a coding contract. |
-| `getContractTypes()` | List all contract types. |
-| `getData(filename, host)` | Get the input data. |
-| `getDescription(filename, host)` | Get the description. |
-| `getNumTriesRemaining(filename, host)` | Get the number of attempts remaining. |
+| Method                                 | Description                                                                                  |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `attempt(answer, filename, host)`      | Attempts a coding contract, returning a reward string on success or empty string on failure. |
+| `createDummyContract(type)`            | Generate a dummy contract.                                                                   |
+| `getContractType(filename, host)`      | Get the type of a coding contract.                                                           |
+| `getContractTypes()`                   | List all contract types.                                                                     |
+| `getData(filename, host)`              | Get the input data.                                                                          |
+| `getDescription(filename, host)`       | Get the description.                                                                         |
+| `getNumTriesRemaining(filename, host)` | Get the number of attempts remaining.                                                        |
 
 ## Solutions
 
@@ -50,7 +50,7 @@ Namespace: `ns.codingcontract`
 
 A prime factor is a factor that is a prime number. What is the largest prime factor of 897014657?
 
-___
+---
 
 1. Check if each possible factor is a factor.
 2. If it's a factor, check if it (and it's compliment) are primes.
@@ -62,7 +62,7 @@ ___
 Given the following integer array, find the contiguous subarray (containing at least one number) which has the largest sum and return that sum. 'Sum' refers to the sum of all the numbers in the subarray.
 8,-3,-4,-1,7,-4,6,-10,-6,5,0,-1,6,1,2,3,8,-1,8,9,-5,8,-2,8,-7,7,-7,8,4,-6,9,6
 
-___
+---
 
 1. For each possible subarray:
 2. Find the sum
@@ -78,7 +78,7 @@ How many different distinct ways can the number 96 be written as a sum of intege
 
 You may use each integer in the set zero or more times.
 
-___
+---
 
 1. Check each index for possible combinations recursively
 2. Propagate the result up from the last index's call, returning values all the way to the top
@@ -120,7 +120,7 @@ Note that the matrix will not always be square:
 
 Answer: [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7]
 
-___
+---
 
 1. Record the number of rows and columns and make a destructible version of the matrix
 2. Strip the top row, right column, bottom row and left column into an array one by one until matrix is empty
@@ -138,7 +138,7 @@ Assuming you are initially positioned at the start of the array, determine wheth
 
 Your answer should be submitted as 1 or 0, representing true and false respectively.
 
-___
+---
 
 1. For each jump available to the left-most index, check all the jumps therein, starting from the longest jump.
 2. If any chain of jumps reaches the last index, flag and break.
@@ -157,7 +157,7 @@ Assuming you are initially positioned at the start of the array, determine the m
 
 If it's impossible to reach the end, then the answer should be 0.
 
-___
+---
 
 1. Make a jump counter
 2. Starting at index 0, look at all possible jumps and try the largest value (if both are the same, pick the one with the furthest reach).
@@ -178,12 +178,12 @@ would merge into [[1, 6], [8, 16]].
 
 The intervals must be returned in ASCENDING order. You can assume that in an interval, the first number will always be smaller than the second.
 
-___
+---
 
 1. Sort intervals so lowest interval at the start.
 2. Compare each interval with the first.
-    - If the smallest item of the next interval is less than or equal to the largest item in the first interval; Make the first interval's largest value the same as the largest value in both intervals.
-    - Otherwise, add the first interval to a "Results list" and set the next interval as the interval being compared to.
+   - If the smallest item of the next interval is less than or equal to the largest item in the first interval; Make the first interval's largest value the same as the largest value in both intervals.
+   - Otherwise, add the first interval to a "Results list" and set the next interval as the interval being compared to.
 3. When there are no more comparisons, add the final interval to the results.
 4. Output
 
@@ -202,25 +202,25 @@ ___
 Given a triangle, find the minimum path sum from top to bottom. In each step of the path, you may only move to adjacent numbers in the row below. The triangle is represented as a 2D array of numbers:
 
 [
-      [8],
-     [7,9],
-    [3,8,1],
-   [1,1,5,3],
-  [8,5,2,3,2]
+[8],
+[7,9],
+[3,8,1],
+[1,1,5,3],
+[8,5,2,3,2]
 ]
 
 Example: If you are given the following triangle:
 
 [
-     [2],
-    [3,4],
-   [6,5,7],
-  [4,1,8,3]
+[2],
+[3,4],
+[6,5,7],
+[4,1,8,3]
 ]
 
 The minimum path sum is 11 (2 -> 3 -> 5 -> 1).
 
-___
+---
 
 1. Make an empty Triangle
 2. From the bottom row,for each pair in the row, calculate the lowest possible cost by adding the lowest number to the value above it.
@@ -236,7 +236,7 @@ ___
 
 You are located in the top-left corner of the following grid:
 
-  [[0,0,0,0,1,1,1,1],
+[[0,0,0,0,1,1,1,1],
    [0,0,0,0,1,1,1,0],
    [0,0,0,0,0,1,1,0],
    [0,0,0,1,1,0,1,0],
@@ -253,17 +253,17 @@ NOTE: The data returned for this contract is an 2D array of numbers representing
 
 Examples:
 
-  [[0,1,0,0,0],
+[[0,1,0,0,0],
    [0,0,0,1,0]]
 
 Answer: 'DRRURRD'
 
-  [[0,1],
+[[0,1],
    [1,0]]
 
 Answer: ''
 
-___
+---
 
 1. Starting from the finish, check for valid squares around the square of interest.
 2. Add the appropriate direction to each valid square and add that square to a queue.
@@ -284,7 +284,7 @@ IMPORTANT: The string may contain letters, not just parentheses. Examples:
 `"(a)())()" -> ["(a)()()", "(a())()"]`
 `")(" -> [""]`
 
-___
+---
 
 1. Count the number of parentheses.
 2. If there
@@ -311,7 +311,7 @@ Output: [0, 0, 1, 1]
 Input: [3, [[0, 1], [0, 2], [1, 2]]]
 Output: []
 
-___
+---
 
 1. Create an empty results array
 2. Pick an edge
@@ -325,16 +325,16 @@ ___
 Run-length encoding (RLE) is a data compression technique which encodes data as a series of runs of a repeated single character. Runs are encoded as a length, followed by the character itself. Lengths are encoded as a single ASCII digit; runs of 10 characters or more are encoded by splitting them into multiple runs.
 
 You are given the following input string:
-    KKhhhhhr1bbggggggggggg88888888888888bbbbbbbbXuutJJXXXXXXXXX7777777777777jjj44Z
+KKhhhhhr1bbggggggggggg88888888888888bbbbbbbbXuutJJXXXXXXXXX7777777777777jjj44Z
 Encode it using run-length encoding with the minimum possible output length.
 
 Examples:
-    aaaaabccc            ->  5a1b3c
-    aAaAaA               ->  1a1A1a1A1a1A
-    111112333            ->  511233
-    zzzzzzzzzzzzzzzzzzz  ->  9z9z1z  (or 9z8z2z, etc.)
+aaaaabccc -> 5a1b3c
+aAaAaA -> 1a1A1a1A1a1A
+111112333 -> 511233
+zzzzzzzzzzzzzzzzzzz -> 9z9z1z (or 9z8z2z, etc.)
 
-___
+---
 
 1. Until you reach the end of the message, take the first character of a run and set the run length to 1.
 2. Check that the next character after the run is the same, that the run is not longer than 9 and check to see if you've reached the end of the message.
@@ -350,12 +350,12 @@ ___
 Caesar cipher is one of the simplest encryption technique. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet. For example, with a left shift of 3, D would be replaced by A, E would become B, and A would become X (because of rotation).
 
 You are given an array with two elements:
-  ["TABLE DEBUG LOGIN PASTE CLOUD", 1]
+["TABLE DEBUG LOGIN PASTE CLOUD", 1]
 The first element is the plaintext, the second element is the left shift value.
 
 Return the ciphertext as uppercase string. Spaces remains the same.
 
-___
+---
 
 1. Create Arrays for Alphabet, Input message and Output message
 2. For each character in Input message, find index position in Alphabet
@@ -371,43 +371,43 @@ You are attempting to solve a Coding Contract. You have 7 tries remaining, after
 
 Vigenère cipher is a type of polyalphabetic substitution. It uses the Vigenère square to encrypt and decrypt plaintext with a keyword.
 
-  Vigenère square:
-         A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-       +----------------------------------------------------
-     A | A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-     B | B C D E F G H I J K L M N O P Q R S T U V W X Y Z A
-     C | C D E F G H I J K L M N O P Q R S T U V W X Y Z A B
-     D | D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
-     E | E F G H I J K L M N O P Q R S T U V W X Y Z A B C D
-     F | F G H I J K L M N O P Q R S T U V W X Y Z A B C D E
-     G | G H I J K L M N O P Q R S T U V W X Y Z A B C D E F
-     H | H I J K L M N O P Q R S T U V W X Y Z A B C D E F G
-     I | I J K L M N O P Q R S T U V W X Y Z A B C D E F G H
-     J | J K L M N O P Q R S T U V W X Y Z A B C D E F G H I
-     K | K L M N O P Q R S T U V W X Y Z A B C D E F G H I J
-     L | L M N O P Q R S T U V W X Y Z A B C D E F G H I J K
-     M | M N O P Q R S T U V W X Y Z A B C D E F G H I J K L
-     N | N O P Q R S T U V W X Y Z A B C D E F G H I J K L M
-     O | O P Q R S T U V W X Y Z A B C D E F G H I J K L M N
-     P | P Q R S T U V W X Y Z A B C D E F G H I J K L M N O
-     Q | Q R S T U V W X Y Z A B C D E F G H I J K L M N O P
-     R | R S T U V W X Y Z A B C D E F G H I J K L M N O P Q
-     S | S T U V W X Y Z A B C D E F G H I J K L M N O P Q R
-     T | T U V W X Y Z A B C D E F G H I J K L M N O P Q R S
-     U | U V W X Y Z A B C D E F G H I J K L M N O P Q R S T
-     V | V W X Y Z A B C D E F G H I J K L M N O P Q R S T U
-     W | W X Y Z A B C D E F G H I J K L M N O P Q R S T U V
-     X | X Y Z A B C D E F G H I J K L M N O P Q R S T U V W
-     Y | Y Z A B C D E F G H I J K L M N O P Q R S T U V W X
-     Z | Z A B C D E F G H I J K L M N O P Q R S T U V W X Y
+Vigenère square:
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
++----------------------------------------------------
+A | A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+B | B C D E F G H I J K L M N O P Q R S T U V W X Y Z A
+C | C D E F G H I J K L M N O P Q R S T U V W X Y Z A B
+D | D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
+E | E F G H I J K L M N O P Q R S T U V W X Y Z A B C D
+F | F G H I J K L M N O P Q R S T U V W X Y Z A B C D E
+G | G H I J K L M N O P Q R S T U V W X Y Z A B C D E F
+H | H I J K L M N O P Q R S T U V W X Y Z A B C D E F G
+I | I J K L M N O P Q R S T U V W X Y Z A B C D E F G H
+J | J K L M N O P Q R S T U V W X Y Z A B C D E F G H I
+K | K L M N O P Q R S T U V W X Y Z A B C D E F G H I J
+L | L M N O P Q R S T U V W X Y Z A B C D E F G H I J K
+M | M N O P Q R S T U V W X Y Z A B C D E F G H I J K L
+N | N O P Q R S T U V W X Y Z A B C D E F G H I J K L M
+O | O P Q R S T U V W X Y Z A B C D E F G H I J K L M N
+P | P Q R S T U V W X Y Z A B C D E F G H I J K L M N O
+Q | Q R S T U V W X Y Z A B C D E F G H I J K L M N O P
+R | R S T U V W X Y Z A B C D E F G H I J K L M N O P Q
+S | S T U V W X Y Z A B C D E F G H I J K L M N O P Q R
+T | T U V W X Y Z A B C D E F G H I J K L M N O P Q R S
+U | U V W X Y Z A B C D E F G H I J K L M N O P Q R S T
+V | V W X Y Z A B C D E F G H I J K L M N O P Q R S T U
+W | W X Y Z A B C D E F G H I J K L M N O P Q R S T U V
+X | X Y Z A B C D E F G H I J K L M N O P Q R S T U V W
+Y | Y Z A B C D E F G H I J K L M N O P Q R S T U V W X
+Z | Z A B C D E F G H I J K L M N O P Q R S T U V W X Y
 
 For encryption each letter of the plaintext is paired with the corresponding letter of a repeating keyword. For example, the plaintext DASHBOARD is encrypted with the keyword LINUX:
-   Plaintext: DASHBOARD
-   Keyword:   LINUXLINU
+Plaintext: DASHBOARD
+Keyword: LINUXLINU
 So, the first letter D is paired with the first letter of the key L. Therefore, row D and column L of the Vigenère square are used to get the first cipher letter O. This must be repeated for the whole ciphertext.
 
 You are given an array with two elements:
-  ["CACHEFLASHMOUSEMEDIALOGIC", "ENCRYPT"]
+["CACHEFLASHMOUSEMEDIALOGIC", "ENCRYPT"]
 The first element is the plaintext, the second element is the keyword.
 
 Return the ciphertext as uppercase string.

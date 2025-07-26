@@ -1,4 +1,2 @@
 /** @param {NS} ns */
-export function algorithmic_stock_trader_2() {
-
-}
+export function algorithmic_stock_trader_2() {}

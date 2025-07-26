@@ -7,15 +7,16 @@
 //				Namespace							File
 //		All			||								 ||
 //		 |      \/								 \/
-import * as Custom from 'demos/my_function.js'
+import * as Custom from "demos/my_function.js";
 //
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog("ALL"); ns.openTail();
-    //        Namespace   Function   Arguments                           
-    //              \/       \/       \/
-    let message = Custom.an_example('Peepee Poopoo');
-    ns.print(message);
+  ns.disableLog("ALL");
+  ns.openTail();
+  //        Namespace   Function   Arguments
+  //              \/       \/       \/
+  let message = Custom.an_example("Peepee Poopoo");
+  ns.print(message);
 }
 
 // ====================================

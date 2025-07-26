@@ -7,15 +7,16 @@ export { CONSTANT }; // Export
 
 /** Example Class */
 export class FooBar {
-    /** @param {NS} ns Important - don't forget it. */
-    constructor(ns) {
-        this.ns = ns;
-        this.message = "FooBar"
-    };
-    /** @returns {Number} values */
-    get message_length() { return this.message.length };
-};
-
+  /** @param {NS} ns Important - don't forget it. */
+  constructor(ns) {
+    this.ns = ns;
+    this.message = "FooBar";
+  }
+  /** @returns {Number} values */
+  get message_length() {
+    return this.message.length;
+  }
+}
 
 // Functions
 
@@ -25,7 +26,7 @@ export class FooBar {
  * @returns {String} Returns what you want
  */
 export function function_name(ns, foo) {
-    message = `${foo}bar`;
-    ns.print(message);
-    return message;
-};
+  message = `${foo}bar`;
+  ns.print(message);
+  return message;
+}

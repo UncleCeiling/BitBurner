@@ -11,13 +11,13 @@ Messages from Jumper
 > I know you can sense it. I know you're searching for it. It's why you spend night after night at your computer. \n\nIt's real, I've seen it. And I can help you find it. But not right now. You're not ready yet.  
 > Use this program to track your progress  
 > The fl1ght.exe program was added to your home computer  
-> -jump3R  
+> -jump3R
 
 ### j1.msg
 
 > Soon you will be contacted by a hacking group known as CyberSec. They can help you with your search.  
 > You should join them, garner their favor, and exploit them for their Augmentations. But do not trust them. They are not what they seem. No one is.  
-> -jump3R  
+> -jump3R
 
 Faction = CyberSec
 

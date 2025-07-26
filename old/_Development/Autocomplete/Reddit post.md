@@ -11,15 +11,15 @@ Let's start with the basics first:
 5. Edit `.vscode/settings.json` via `Ctrl+Shift+P -> Preferences: Open Workspace Settings (JSON)`
 6. Paste the following snippet and save the file (don't forget to use your key)
 
-    ```json
-    {
-        "bitburner.authToken": "PASTE-YOUR-AUTH-TOKEN-HERE",
-        "bitburner.scriptRoot": ".",
-        "bitburner.fileWatcher.enable": true,
-        "bitburner.showPushSuccessNotification": true,
-        "bitburner.showFileWatcherEnabledNotification": true,
-    }
-    ```
+```json
+{
+  "bitburner.authToken": "PASTE-YOUR-AUTH-TOKEN-HERE",
+  "bitburner.scriptRoot": ".",
+  "bitburner.fileWatcher.enable": true,
+  "bitburner.showPushSuccessNotification": true,
+  "bitburner.showFileWatcherEnabledNotification": true
+}
+```
 
 This should be it! You can change the settings above to your liking. Beware, so far, the file watcher only sync edits and new files. You will need to handle deleting, moving, and renaming files yourself.
 
@@ -27,45 +27,47 @@ If you want to enable autocomplete, keep reading:
 
 1. Download [NetscriptDefinitions.d.ts](https://github.com/bitburner-official/bitburner-src/blob/dev/src/ScriptEditor/NetscriptDefinitions.d.ts) and add the following before the first line
 
-    ```typescript
-    declare global { const NS: NS; }
-    ```
+```typescript
+declare global {
+  const NS: NS;
+}
+```
 
 2. Create a new file named `jsconfig.json` that has this configuration
 
-    ```json
-    {
-        "compilerOptions": {
-            "baseUrl": "."
-        }
-    }
-    ```
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  }
+}
+```
 
 3. Edit `.vscode/settings.json` again and append these options (inside the curly braces)
 
-    ```json
-    {
-        "javascript.preferences.importModuleSpecifier": "non-relative",
-        "files.exclude": {
-            "jsconfig.json": true,
-            "NetscriptDefinitions.d.ts": true,
-        },
-    }
-    ```
+```json
+{
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "files.exclude": {
+    "jsconfig.json": true,
+    "NetscriptDefinitions.d.ts": true
+  }
+}
+```
 
 4. Use [JSDoc](https://code.visualstudio.com/docs/languages/javascript#_jsdoc-support) in your `*.js` scripts as suggested in the [documentation](https://bitburner.readthedocs.io/en/latest/netscript/netscriptjs.html#what-s-with-the-weird-comment)
 
-   ```js
-    /** @param {NS} ns **/
-    export async function main(ns) {
-        ns.tprint("Happy Coding!");
-    }
-   ```
+```js
+/** @param {NS} ns **/
+export async function main(ns) {
+  ns.tprint("Happy Coding!");
+}
+```
 
 5. [Always import](https://www.reddit.com/r/Bitburner/comments/stt9h8/import_with_subfolders/) with absolute paths without the leading `/` (no need for `.js` as well)
 
-   ```js
-   import { whatever } from "utils/tools";
-   ```
+```js
+import { whatever } from "utils/tools";
+```
 
 Now, you are done! Here is an example [screenshot](https://i2.paste.pics/G710V.png) of how it should look like.

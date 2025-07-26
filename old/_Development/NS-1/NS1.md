@@ -202,7 +202,7 @@ hasRootAccess(hostname/ip)
 Returns a boolean (true or false) indicating whether or not the Player has root access to a server. The argument passed in must be a string with either the hostname or IP of the target server.
 Example:
 if (hasRootAccess('foodnstuff') == false) {
-    nuke('foodnstuff');
+nuke('foodnstuff');
 }
 
 getIp()
@@ -423,25 +423,25 @@ Attempts to purchase an additional core for the corresponding Hacknet Node. Retu
 Example: The following is an example of one way a script can be used to automate the purchasing and upgrading of Hacknet Nodes. This script purchases new Hacknet Nodes until the player has four. Then, it iteratively upgrades each of those four Hacknet Nodes to a level of at least 75, RAM to at least 8GB, and number of cores to at least 2.
 
 while(hacknetnodes.length < 4) {
-    purchaseHacknetNode();
+purchaseHacknetNode();
 }
 for (i = 0; i < 4; i = i++) {
-    while (hacknetnodes[i].level <= 75) {
-        hacknetnodes[i].upgradeLevel(5);
-        sleep(10000);
-    }
+while (hacknetnodes[i].level <= 75) {
+hacknetnodes[i].upgradeLevel(5);
+sleep(10000);
+}
 }
 for (i = 0; i < 4; i = i++) {
-    while (hacknetnodes[i].ram < 8) {
-        hacknetnodes[i].upgradeRam();
-        sleep(10000);
-    }
+while (hacknetnodes[i].ram < 8) {
+hacknetnodes[i].upgradeRam();
+sleep(10000);
+}
 }
 for (i = 0; i < 4; i = i++) {
-    while (hacknetnodes[i].cores < 2) {
-        hacknetnodes[i].upgradeCore();
-        sleep(10000);
-    }
+while (hacknetnodes[i].cores < 2) {
+hacknetnodes[i].upgradeCore();
+sleep(10000);
+}
 }
 
 ## Trade Information eXchange (TIX) API
@@ -474,7 +474,7 @@ If the specified number of shares in the function exceeds the amount that the pl
 
 The net profit made from selling stocks with this function is reflected in the script's statistics. This net profit is calculated as:
 
-shares * (sell price - average price of purchased shares)
+shares \* (sell price - average price of purchased shares)
 
 This function will return true if the shares of stock are successfully sold and false otherwise.
 
@@ -483,21 +483,21 @@ This function will return true if the shares of stock are successfully sold and 
 A while loop is a control flow statement that repeatedly executes code as long as a condition is met.
 
 while ([cond]) {
-    [code]
+[code]
 }
 
 As long as [cond] remains true, the code block [code] will continuously execute. Example:
 
 i = 0;
 while (i < 10) {
-    hack('foodnstuff');
-    i = i + 1;
+hack('foodnstuff');
+i = i + 1;
 }
 
 This code above repeats the 'hack('foodnstuff')' command 10 times before it stops and exits.
 
 while(true) {
-     hack('foodnstuff');
+hack('foodnstuff');
 }
 
 This while loop above is an infinite loop (continuously runs until the script is manually stopped) that repeatedly runs the 'hack('foodnstuff')' command. Note that a semicolon is needed at closing bracket of the while loop, UNLESS it is at the end of the code
@@ -507,13 +507,13 @@ This while loop above is an infinite loop (continuously runs until the script is
 A for loop is another control flow statement that allows code to be repeated by iterations. The structure is:
 
 for ([init]; [cond]; [post]) {
-    code
+code
 }
 
 The [init] expression evaluates before the for loop begins. The for loop will continue to execute as long as [cond] is met. The [post] expression will evaluate at the end of every iteration of the for loop. The following example shows code that will run the 'hack('foodnstuff');' command 10 times using a for loop:
 
 for (i = 0; i < 10; i = i++) {
-    hack('foodnstuff');
+hack('foodnstuff');
 }
 
 ## If statements
@@ -521,11 +521,11 @@ for (i = 0; i < 10; i = i++) {
 If/Else if/Else statements are conditional statements used to perform different actions based on different conditions:
 
 if (condition1) {
-    code1
+code1
 } else if (condition2) {
-    code2
+code2
 } else {
-    code3
+code3
 }
 
 In the code above, first condition1 will be checked. If this condition is true, then code1 will execute and the rest of the if/else if/else statement will be skipped. If condition1 is NOT true, then the code will then go on to check condition2. If condition2 is true, then code2 will be executed, and the rest of the if/else if/else statement will be skipped. If none of the conditions are true, then the code within the else block (code3) will be executed. Note that a conditional statement can have any number of 'else if' statements.
@@ -533,9 +533,9 @@ In the code above, first condition1 will be checked. If this condition is true, 
 Example:
 
 if(getServerMoneyAvailable('foodnstuff') > 200000) {
-    hack('foodnstuff');
+hack('foodnstuff');
 } else {
-    grow('foodnstuff');
+grow('foodnstuff');
 }
 
 The code above will use the getServerMoneyAvailable() function to check how much money there is on the 'foodnstuff' server. If there is more than $200,000, then it will try to hack that server. If there is $200,000 or less on the server, then the code will call grow('foodnstuff') instead and add more money to the server.

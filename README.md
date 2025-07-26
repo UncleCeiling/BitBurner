@@ -5,28 +5,28 @@ This is my BitBurner repo!
 ## 🗺️ Map
 
 📦BitBurner
- ┣ 📂.vscode
- ┣ 📂live
- ┃ ┣ 📂contracts
- ┃ ┣ 📂data
- ┃ ┣ 📂imports
- ┃ ┣ 📂modules
- ┃ ┣ 📂scripts
- ┃ ┣ 📂shopping
- ┃ ┣ 📂stanek
- ┃ ┣ 📂tools
- ┃ ┣ 📜boot.js
- ┃ ┣ 📜main.js
- ┃ ┗ 📜reboot.js
- ┣ 📂old
- ┣ 📜.gitignore
- ┣ 📜AchievementData.json
- ┣ 📜commands.md
- ┣ 📜cspell.json
- ┣ 📜jsconfig.json
- ┣ 📜NetscriptDefinitions.d.ts
- ┣ 📜README.md
- ┗ 📜template.js
+┣ 📂.vscode
+┣ 📂live
+┃ ┣ 📂contracts
+┃ ┣ 📂data
+┃ ┣ 📂imports
+┃ ┣ 📂modules
+┃ ┣ 📂scripts
+┃ ┣ 📂shopping
+┃ ┣ 📂stanek
+┃ ┣ 📂tools
+┃ ┣ 📜boot.js
+┃ ┣ 📜main.js
+┃ ┗ 📜reboot.js
+┣ 📂old
+┣ 📜.gitignore
+┣ 📜AchievementData.json
+┣ 📜commands.md
+┣ 📜cspell.json
+┣ 📜jsconfig.json
+┣ 📜NetscriptDefinitions.d.ts
+┣ 📜README.md
+┗ 📜template.js
 
 ## 🔍Breakdown
 
