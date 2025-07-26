@@ -6,6 +6,8 @@
         "streetsidesoftware.code-spell-checker",
         "shinotatwu-ds.file-tree-generator",
         "davidanson.vscode-markdownlint",
-        "streetsidesoftware.code-spell-checker-british-english"
+        "streetsidesoftware.code-spell-checker-british-english",
+        "franneck94.workspace-formatter",
+        "esbenp.prettier-vscode"
     ]
 }
