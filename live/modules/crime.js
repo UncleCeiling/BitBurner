@@ -1,7 +1,5 @@
 import { ANSI } from "imports/ANSI";
-import * as servers from "imports/servers";
 import * as exes from "imports/exes";
-import { Achievements } from "imports/achievements";
 /** @param {NS} ns */
 export async function main(ns) {
     // Initialise variables
