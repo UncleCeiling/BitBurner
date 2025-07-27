@@ -14,7 +14,7 @@ export async function main(ns) {
       return ns.getHackTime(this.name);
     }
     get hack_delay() {
-      return this.weaken_time - this.hack_time - 100;
+      return this.weaken_time - this.hack_time + 100;
     }
     get hack_threads() {
       let threads = Math.floor(
@@ -48,7 +48,7 @@ export async function main(ns) {
       return ns.getGrowTime(this.name);
     }
     get grow_delay() {
-      return this.weaken_time - this.grow_time + 100;
+      return this.weaken_time - this.grow_time - 100;
     }
     grow_threads(cores = 1) {
       return Math.ceil(ns.growthAnalyze(this.name, 2.1, cores));
@@ -152,8 +152,8 @@ export async function main(ns) {
         ) {
           if (sec_queue.length > 0) {
             do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js");
-          } else if (grow_queue.length > 0) {
-            do_single_job(grow_queue.shift(), miner, "scripts/_grow.js");
+            // } else if (grow_queue.length > 0) {
+            //   do_single_job(grow_queue.shift(), miner, "scripts/_grow.js");
           }
         }
       }
