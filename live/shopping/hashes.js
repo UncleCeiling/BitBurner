@@ -1,3 +1,4 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 import { AllServers } from "imports/servers";
 /** @param {NS} ns */
@@ -61,8 +62,11 @@ export async function main(ns) {
     1_000_000; // Check if it"s worth buying cash
   let cash_on_hand = ns.getServerMoneyAvailable("home");
   if (cash_buy > cash_on_hand / 2) {
-    while (buy_hash_upgrade("Sell for Money")) {
-      history.money++;
+    let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
+    if (!working_on_achievement) {
+      while (buy_hash_upgrade("Sell for Money")) {
+        history.money++;
+      }
     }
   } // Attempt to buy cash
   history.report(); // Check the history and report what we spent

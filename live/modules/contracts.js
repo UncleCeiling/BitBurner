@@ -16,6 +16,7 @@ import spiralize_matrix from "contracts/complete/spiralize_matrix";
 import subarray_with_maximum_sum from "contracts/complete/subarray_with_maximum_sum";
 import total_ways_to_sum_1 from "contracts/complete/total_ways_to_sum_1";
 import total_ways_to_sum_2 from "contracts/complete/total_ways_to_sum_2";
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 
 //#endregion
@@ -58,6 +59,14 @@ export { SOLUTIONS };
 export async function main(ns) {
   // Disable logs
   ns.disableLog("ALL");
+  let working_on_achievement = false;
+  if (new Achievements(ns).locked.has("MONEY_M1B")) {
+    working_on_achievement = true;
+  }
+  if (working_on_achievement) {
+    ns.tprint(`${ANSI.fg.red}Skipping Contracts for achievement.${ANSI.reset}`);
+    return;
+  }
   let history = { success: 0, fail: 0 };
   let contracts = get_contracts();
   ns.print(contracts);
