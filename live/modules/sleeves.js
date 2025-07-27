@@ -1,3 +1,4 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
@@ -18,16 +19,16 @@ export async function main(ns) {
     if (ns.singularity.getCurrentWork()?.cyclesWorked === 0) {
       await ns.singularity.getCurrentWork().completion;
     }
+    if (farm_hacking(sleeve)) {
+      ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`);
+      continue;
+    }
     if (farm_karma(sleeve)) {
       ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`);
       continue;
     }
     if (calm_sleeve(sleeve, 99)) {
       ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`);
-      continue;
-    }
-    if (farm_hacking(sleeve)) {
-      ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`);
       continue;
     }
     if (farm_rep(sleeve)) {
@@ -120,6 +121,37 @@ export async function main(ns) {
    * @returns {Boolean} `true` when karma farmed, `false` if not.
    */
   function farm_hacking(sleeve_num) {
+    let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
+    if (working_on_achievement) {
+      ns.tprint(`${ANSI.fg.cyan}Working up a debt${ANSI.reset}`)
+      if (
+        ns.sleeve.setToUniversityCourse(
+          sleeve_num,
+          "ZB Institute of Technology",
+          "Algorithms"
+        )
+      ) {
+        return true;
+      }
+      if (
+        ns.sleeve.setToUniversityCourse(
+          sleeve_num,
+          "Summit University",
+          "Algorithms"
+        )
+      ) {
+        return true;
+      }
+      if (
+        ns.sleeve.setToUniversityCourse(
+          sleeve_num,
+          "Rothman University",
+          "Algorithms"
+        )
+      ) {
+        return true;
+      }
+    }
     if (ns.getPlayer().skills.hacking < 80) {
       let task = ns.sleeve.getTask(sleeve_num);
       if (ns.getServerMoneyAvailable("home") <= 960 * 8 * 60) {
