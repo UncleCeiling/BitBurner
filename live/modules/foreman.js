@@ -1,3 +1,4 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 import { AllServers, UtilServer } from "imports/servers";
 /** @param {NS} ns */
@@ -137,8 +138,13 @@ export async function main(ns) {
           miner.free_RAM > item.total_RAM(miner.details.cpuCores) &&
           !ns.getRunningScript("scripts/_weaken.js", miner.name, item.name, 200)
         ) {
-          do_entire_job(item, miner);
-          continue;
+          let working_on_achievement = new Achievements(ns).locked.has(
+            "MONEY_M1B"
+          );
+          if (!working_on_achievement) {
+            do_entire_job(item, miner);
+            continue;
+          }
         }
         if (
           miner.details.maxRam <

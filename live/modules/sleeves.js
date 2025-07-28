@@ -123,7 +123,7 @@ export async function main(ns) {
   function farm_hacking(sleeve_num) {
     let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
     if (working_on_achievement) {
-      ns.print(`${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`)
+      ns.print(`${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`);
       if (
         ns.sleeve.setToUniversityCourse(
           sleeve_num,
