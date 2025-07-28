@@ -177,20 +177,21 @@ export async function main(ns) {
   // Variables
   let history = { nodes: 0, levels: 0, ram: 0, cores: 0, cache: 0, spent: 0 };
 
-  // Get num of nodes
+  // If no nodes, buy node
   let num_nodes = get_num_nodes();
-  if (new Achievements(ns).locked.has("MAX_HACKNET_SERVER")) {
+  if (num_nodes <= 0) {
+    buy_node();
+    num_nodes = get_num_nodes();
+  }
+
+  // Get num of nodes
+  if (new Achievements(ns).locked.has("MAX_HACKNET_SERVER")&&num_nodes>0) {
     ns.tprint(
       `${ANSI.fg.red}Focusing on one Hacknet Node for Achievement.${ANSI.reset}`
     );
     num_nodes = 1;
   }
 
-  // If no nodes, buy node
-  if (num_nodes <= 0) {
-    buy_node();
-    num_nodes = get_num_nodes();
-  }
 
   // For each node
   if (Math.random() >= 0.5) {
