@@ -224,6 +224,7 @@ export async function main(ns) {
     let joined_factions = ns.getPlayer().factions;
     let faction_details = [];
     for (let faction of joined_factions) {
+      if (faction == "Slum Snakes"){continue}
       let work = ns.singularity.getFactionWorkTypes(faction);
       if (work.length == 0) {
         continue;
