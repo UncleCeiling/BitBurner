@@ -2,15 +2,15 @@
 
 ## File-System
 
-### `cat [file]`  
+### `cat [file]`
 
-Display a .msg, .lit, or .txt file  
+Display a .msg, .lit, or .txt file
 
-### `cd [dir]`  
+### `cd [dir]`
 
-Change to a new directory  
+Change to a new directory
 
-### `grep [opts]... pattern [file]... [-O] [target file]`  
+### `grep [opts]... pattern [file]... [-O] [target file]`
 
 Search for PATTERN (string/regular expression) in each FILE and print results to terminal
 
@@ -32,21 +32,21 @@ Delete a file from the server
 
 ## Command-line management
 
-### `alias [-g] [name="value"]`  
+### `alias [-g] [name="value"]`
 
-Create or display Terminal aliases  
+Create or display Terminal aliases
 
-### `clear` / `cls`  
+### `clear` / `cls`
 
-Clear all text on the terminal  
+Clear all text on the terminal
 
-### `expr [math expression]`  
+### `expr [math expression]`
 
-Evaluate a mathematical expression  
+Evaluate a mathematical expression
 
-### `free`  
+### `free`
 
-Check the machine's memory (RAM) usage  
+Check the machine's memory (RAM) usage
 
 ### `history [-c]`
 
@@ -98,17 +98,17 @@ Text editor - Open up and edit one or more scripts or text files in vim mode
 
 ## Hacking
 
-### `analyze`  
+### `analyze`
 
-Get information about the current machine  
+Get information about the current machine
 
-### `backdoor`  
+### `backdoor`
 
-Install a backdoor on the current machine  
+Install a backdoor on the current machine
 
-### `buy [-l/-a/program]`  
+### `buy [-l/-a/program]`
 
-Purchase a program through the Dark Web  
+Purchase a program through the Dark Web
 
 ### `grow`
 
@@ -124,13 +124,13 @@ Reduce the security of the current machine
 
 ## Network
 
-### `connect [hostname]`  
+### `connect [hostname]`
 
-Connects to a remote server`cp [src] [dest]`Copy a file  
+Connects to a remote server`cp [src] [dest]`Copy a file
 
-### `download [script/text file]`  
+### `download [script/text file]`
 
-Downloads scripts or text files to your computer  
+Downloads scripts or text files to your computer
 
 ### `home`
 
@@ -158,13 +158,13 @@ Retrieves code/text from a web server
 
 ## Meta
 
-### `changelog`  
+### `changelog`
 
-Display changelog  
+Display changelog
 
-### `check [script] [args...]`  
+### `check [script] [args...]`
 
-Print a script's logs to Terminal  
+Print a script's logs to Terminal
 
 ### `help [command]`
 

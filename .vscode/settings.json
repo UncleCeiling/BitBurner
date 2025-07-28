@@ -1,0 +1,10 @@
+{
+    "bitburner.scriptRoot": "./live/",
+    "bitburner.fileWatcher.enable": true,
+    "bitburner.showFileWatcherEnabledNotification": true,
+    "bitburner.showPushSuccessNotification": false,
+    "files.associations": {
+        "*.json": "jsonc"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+}
