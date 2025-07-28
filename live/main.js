@@ -50,7 +50,7 @@ export async function main(ns) {
    * @param {String} module
    */
   function module_check(node, achievement, module) {
-    if (new Achievements.node_check(node, achievement)) {
+    if (new Achievements(ns).node_check(node, achievement)) {
       disable_module(ns, module);
     }
   }
