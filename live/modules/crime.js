@@ -1,6 +1,6 @@
 import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
-import * as exes from "imports/exes";
+import { all_exes } from "imports/exes";
 /** @param {NS} ns */
 export async function main(ns) {
   // Initialise variables
@@ -17,6 +17,11 @@ export async function main(ns) {
   var karma = player_stats.karma;
   // Do the stuff
   accept_invites();
+  // Search for more factions to get invites from?
+  next_city();
+  if (farm_karma(karma)) {
+    return;
+  }
   if (study()) {
     return;
   }
@@ -29,12 +34,7 @@ export async function main(ns) {
   if (farm_kills()) {
     return;
   }
-  if (farm_karma(karma)) {
-    return;
-  }
   work_for_factions();
-  // Search for more factions to get invites from?
-  next_city();
 
   //#region ===== FUNCTIONS =====
 
@@ -145,7 +145,7 @@ export async function main(ns) {
   }
 
   function create_programs() {
-    let exe_set = new exes.AllExes(ns).set;
+    let exe_set = all_exes(ns);
     for (let exe of exe_set) {
       if (exe.exists) {
         continue;
@@ -176,9 +176,6 @@ export async function main(ns) {
 
   /** Farm Karma */
   function farm_karma(karma) {
-    if (!ns.fileExists("enabled/gang.js", "home")) {
-      return false;
-    } // gang is not enabled
     if (karma <= -54000) {
       return false;
     } // Enough Karma
@@ -224,7 +221,9 @@ export async function main(ns) {
     let joined_factions = ns.getPlayer().factions;
     let faction_details = [];
     for (let faction of joined_factions) {
-      if (faction == "Slum Snakes"){continue}
+      if (faction == "Slum Snakes") {
+        continue;
+      }
       let work = ns.singularity.getFactionWorkTypes(faction);
       if (work.length == 0) {
         continue;

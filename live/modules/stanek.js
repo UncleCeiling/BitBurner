@@ -41,6 +41,9 @@ export async function main(ns) {
           continue;
         } // Nope out if _charge.js costs more than the amount of ram on the server
         let threads = Math.floor(details.ram / script_ram); // Calculate threads
+        if (threads == 0) {
+          continue;
+        }
         while (ns.hacknet.getNodeStats(node).ramUsed > 0) {
           await ns.asleep(100);
         } // Wait for the hacknet server to be freed

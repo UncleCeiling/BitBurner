@@ -1,6 +1,6 @@
 import { ANSI } from "imports/ANSI";
 import { Achievements } from "imports/achievements";
-import { AllModules, disable_module } from "imports/modules";
+import { all_modules, disable_module } from "imports/modules";
 import * as svr from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
@@ -43,17 +43,15 @@ export async function main(ns) {
   }
 
   // Disable appropriate achievements
-  let modules = new AllModules(ns).list; // Generate module objects in array
+  let modules = all_modules(ns); // Generate module objects in array
   /**
    * @param {Number} node
    * @param {String} achievement
    * @param {String} module
-   * @param {Achievements} achievements
-   * @param {AllModules} modules
    */
   function module_check(node, achievement, module) {
-    if (achieves.node_check(node, achievement)) {
-      disable_module(modules, module);
+    if (new Achievements.node_check(node, achievement)) {
+      disable_module(ns, module);
     }
   }
   module_check(2, "CHALLENGE_BN2", "gang");

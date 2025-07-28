@@ -19,16 +19,16 @@ export async function main(ns) {
     if (ns.singularity.getCurrentWork()?.cyclesWorked === 0) {
       await ns.singularity.getCurrentWork().completion;
     }
-    if (farm_hacking(sleeve)) {
-      ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`);
+    if (calm_sleeve(sleeve, 95)) {
+      ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`);
       continue;
     }
     if (farm_karma(sleeve)) {
       ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`);
       continue;
     }
-    if (calm_sleeve(sleeve, 99)) {
-      ns.print(`${ANSI.fg.cyan}${sleeve} Calming to 99% shock${ANSI.reset}`);
+    if (farm_hacking(sleeve)) {
+      ns.print(`${ANSI.fg.cyan}${sleeve} Farming Hacking${ANSI.reset}`);
       continue;
     }
     if (farm_rep(sleeve)) {

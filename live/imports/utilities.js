@@ -1,4 +1,7 @@
-/** @param {NS} ns  */
+/** Runs whatever string is provided as a command in the terminal.
+ * @param {NS} ns
+ * @param {String} command
+ */
 export async function terminal_command(ns, command) {
   const doc = eval("document");
   let selector = "#terminal-input";
@@ -29,5 +32,4 @@ export async function terminal_command(ns, command) {
 
 // /** @param {NS} ns */
 // export async function main(ns) {
-//     ns.alert(ns.formatRam(ns.getScriptRam("imports/utilities.js")))
 // }

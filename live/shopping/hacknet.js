@@ -1,3 +1,4 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 
 /** @param {NS} ns */
@@ -40,9 +41,8 @@ export async function main(ns) {
   // Buy level or return `false`
   function buy_level(node) {
     let budget = get_budget();
-    let levels = ns.hacknet.getNodeStats(node).level;
     let cost = ns.hacknet.getLevelUpgradeCost(node, 1);
-    if (levels >= max_levels) {
+    if (cost == Infinity) {
       return false;
     }
     if (budget > cost) {
@@ -75,9 +75,8 @@ export async function main(ns) {
   // Buy ram or return `false`
   function buy_ram(node) {
     let budget = get_budget();
-    let ram = ns.hacknet.getNodeStats(node).ram;
     let cost = ns.hacknet.getRamUpgradeCost(node, 1);
-    if (ram >= max_ram) {
+    if (cost == Infinity) {
       return false;
     }
     if (budget > cost) {
@@ -110,9 +109,8 @@ export async function main(ns) {
   // Buy core or return `false`
   function buy_core(node) {
     let budget = get_budget();
-    let cores = ns.hacknet.getNodeStats(node).cores;
     let cost = ns.hacknet.getCoreUpgradeCost(node, 1);
-    if (cores >= max_cores) {
+    if (cost == Infinity) {
       return false;
     }
     if (budget > cost) {
@@ -145,9 +143,8 @@ export async function main(ns) {
   // Buy cache or return `false`
   function buy_cache(node) {
     let budget = get_budget();
-    let cache = ns.hacknet.getNodeStats(node).cache;
     let cost = ns.hacknet.getCacheUpgradeCost(node, 1);
-    if (cache >= max_cache) {
+    if (cost == Infinity) {
       return false;
     }
     if (budget > cost) {
@@ -177,22 +174,17 @@ export async function main(ns) {
     }
   }
 
-  // function check_last_node_is_full() {
-  //     let last_node = get_num_nodes() - 1
-  //     let node_stats = ns.hacknet.getNodeStats(last_node)
-  //     if (node_stats.level == max_levels && node_stats.ram == max_ram && node_stats.cores == max_cores) { return true }
-  //     else { return false }
-  // }
-
   // Variables
   let history = { nodes: 0, levels: 0, ram: 0, cores: 0, cache: 0, spent: 0 };
-  const max_levels = 300;
-  const max_ram = 8192;
-  const max_cores = 128;
-  const max_cache = 15;
 
   // Get num of nodes
   let num_nodes = get_num_nodes();
+  if (new Achievements(ns).locked.has("MAX_HACKNET_SERVER")) {
+    ns.tprint(
+      `${ANSI.fg.red}Focusing on one Hacknet Node for Achievement.${ANSI.reset}`
+    );
+    num_nodes = 1;
+  }
 
   // If no nodes, buy node
   if (num_nodes <= 0) {

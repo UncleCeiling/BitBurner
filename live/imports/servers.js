@@ -1,6 +1,7 @@
 import { ANSI } from "imports/ANSI";
 
 export class UtilServer {
+  #ns;
   /** Creates an object for a given server name
    * @param {NS} ns
    * @param {String} name Name of server
@@ -8,24 +9,25 @@ export class UtilServer {
    * @param {Number} depth Depth of parent
    */
   constructor(ns, name, parent = null, depth = 0) {
-    this.ns = ns;
+    this.#ns = ns;
     this.name = name;
     this.parent = this.name == "home" ? null : parent;
     this.depth = depth;
   }
   get details() {
-    return this.ns.getServer(this.name);
+    return this.#ns.getServer(this.name);
   }
   /** @returns {Array<UtilServer>} */
   get children() {
-    return this.ns
+    return this.#ns
       .scan(this.name)
       .filter((a) => a != this.parent)
-      .map((a) => new UtilServer(this.ns, a, this.name, this.depth + 1));
+      .map((a) => new UtilServer(this.#ns, a, this.name, this.depth + 1));
   }
-  /** @returns {Number} */
+  /** `-1` if not applicable
+   *  @returns {Number} */
   get upgrade_cost() {
-    return this.ns.getPurchasedServerUpgradeCost(
+    return this.#ns.getPurchasedServerUpgradeCost(
       this.name,
       this.details.maxRam * 2
     );
@@ -50,10 +52,10 @@ export class UtilServer {
     if (this.name == "home") {
       free =
         free -
-        this.ns.getScriptRam("modules/foreman.js") -
-        this.ns.getScriptRam("modules/bladeburner.js") -
-        this.ns.getScriptRam("modules/stanek.js") -
-        this.ns.getScriptRam("main.js");
+        this.#ns.getScriptRam("modules/foreman.js") -
+        this.#ns.getScriptRam("modules/bladeburner.js") -
+        this.#ns.getScriptRam("modules/stanek.js") -
+        this.#ns.getScriptRam("main.js");
     }
     return free;
   }
@@ -61,7 +63,7 @@ export class UtilServer {
   get can_backdoor() {
     if (
       this.details.openPortCount >= 5 &&
-      this.details.requiredHackingSkill <= this.ns.getPlayer().skills.hacking
+      this.details.requiredHackingSkill <= this.#ns.getPlayer().skills.hacking
     ) {
       return true;
     } else {
@@ -74,17 +76,18 @@ export class UtilServer {
   }
 }
 export class AllServers {
+  #ns;
   /** Creates a dynamic object containing all servers
    * @param {NS} ns
    */
   constructor(ns) {
-    this.ns = ns;
+    this.#ns = ns;
   }
   /** Returns a set containing all servers
    * @returns {Set<UtilServer>}
    */
   get set() {
-    let set = new Set([new UtilServer(this.ns, "home")]);
+    let set = new Set([new UtilServer(this.#ns, "home")]);
     for (let item of set) {
       for (let child of item.children) {
         set.add(child);
@@ -102,7 +105,9 @@ export class AllServers {
    * @returns {Array<UtilServer>}
    */
   get purchased() {
-    return this.ns.getPurchasedServers().map((a) => new UtilServer(this.ns, a));
+    return this.#ns
+      .getPurchasedServers()
+      .map((a) => new UtilServer(this.#ns, a));
   }
   /** Returns an Array containing all mines
    * @returns {Array<UtilServer>}
@@ -167,4 +172,14 @@ export function server_stats(ns) {
   ns.tprint(
     `${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`
   );
+}
+
+/** @param {NS} ns  */
+export async function main(ns) {
+  let servers = new AllServers(ns);
+  let message = `Servers: ${servers.array.length}\n=========\n`;
+  for (let server of servers.array){
+    message += `${server.can_backdoor?"R":"X"}${server.backdoored?"B":"X"}| ${ns.formatRam(server.free_RAM)} | ${server.name}\n`
+  }
+  ns.alert(message)
 }
