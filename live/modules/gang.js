@@ -105,9 +105,7 @@ export async function main(ns) {
     else if (respect_gain != -1 && respect_gain <= 0) {
       let member_factor = ns.gang.getMemberNames().length / 6; // doubles odds at full members, even odds at 6 members, 0.15x odds at 1 member.
       let wanted_factor = respect / (10 * wanted_level); // If wanted penalty is 10%, even odds, if less than 10% then odds go up and vice versa.
-      if (Math.random() * member_factor * wanted_factor > 0.5) {
-        ns.gang.setMemberTask(member, "Train Combat");
-      } else if (
+      if (
         ns.fileExists("Formulas.exe", "home") &&
         ns.formulas.gang.respectGain(
           gang_info,
@@ -115,12 +113,17 @@ export async function main(ns) {
           ns.gang.getTaskStats("Mug People")
         ) > 0
       ) {
-        ns.gang.setMemberTask(member, "Mug People");
+        if (Math.random() * member_factor * wanted_factor > 0.5) {
+          ns.gang.setMemberTask(member, "Mug People");
+        } else {
+          ns.gang.setMemberTask(member, "Train Combat");
+        }
       } else {
-        ns.gang.setMemberTask(member, "Train Combat");
+        ns.gang.setMemberTask(member, "Mug People");
       }
-    } // If we could calculate the respect gain and the respect gain is less than 0, Mug People
-    else if (
+    } else if (
+      // If we could calculate the respect gain and the respect gain is less than 0, Mug People
+      respect_gain != -1 &&
       ns.gang.respectForNextRecruit() != Infinity &&
       gang_info.respect < ns.gang.respectForNextRecruit()
     ) {
