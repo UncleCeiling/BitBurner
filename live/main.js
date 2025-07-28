@@ -51,7 +51,7 @@ export async function main(ns) {
    */
   function module_check(node, achievement, module) {
     if (new Achievements(ns).node_check(node, achievement)) {
-      disable_module(ns, module);
+      disable_module(modules, module);
     }
   }
   module_check(2, "CHALLENGE_BN2", "gang");

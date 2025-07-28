@@ -275,6 +275,7 @@ export async function main(ns) {
 
   /** Join Bladeburners*/
   function join_bladeburners() {
+    let player_stats = ns.getPlayer()
     // Join Division
     if (
       ns.bladeburner.inBladeburner() == false &&

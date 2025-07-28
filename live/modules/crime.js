@@ -19,13 +19,13 @@ export async function main(ns) {
   accept_invites();
   // Search for more factions to get invites from?
   next_city();
+  if (create_programs()) {
+    return;
+  }
   if (farm_karma(karma)) {
     return;
   }
   if (study()) {
-    return;
-  }
-  if (create_programs()) {
     return;
   }
   if (check_grafting()) {

@@ -106,12 +106,12 @@ export function all_modules(ns) {
 }
 
 /** Disables the given module
- * @param {NS} ns
+ * @param {Array<Module>} all_modules
  * @param {String} module Short name of module e.g. "gang.js"
  * @returns {Boolean}
  */
-export function disable_module(ns, module) {
-  for (let mod of all_modules(ns)) {
+export function disable_module(all_modules, module) {
+  for (let mod of all_modules) {
     if (mod.shortname == module) {
       mod.disable();
     }

@@ -113,6 +113,7 @@ export async function main(ns) {
       );
       return;
     } else {
+      if (!ns.fileExists("NUKE.exe","home")){return}
       // Otherwise Nuke the target
       if (ns.nuke(target.name)) {
         ns.tprint(`${ANSI.fg.green}Nuked ${target.name}.${ANSI.reset}`);
