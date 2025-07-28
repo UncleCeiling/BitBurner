@@ -154,7 +154,7 @@ export async function main(ns) {
     }
     if (ns.getPlayer().skills.hacking < 80) {
       let task = ns.sleeve.getTask(sleeve_num);
-      if (ns.getServerMoneyAvailable("home") <= 960 * 8 * 60) {
+      if (ns.getServerMoneyAvailable("home") <= 960 * 9 * 60) {
         if (
           task == null ||
           task.classType == null ||

@@ -1,3 +1,4 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 import * as exes from "imports/exes";
 /** @param {NS} ns */
@@ -16,6 +17,9 @@ export async function main(ns) {
   var karma = player_stats.karma;
   // Do the stuff
   accept_invites();
+  if (study()) {
+    return;
+  }
   if (create_programs()) {
     return;
   }
@@ -33,6 +37,112 @@ export async function main(ns) {
   next_city();
 
   //#region ===== FUNCTIONS =====
+
+  function study() {
+    let focus = ns.singularity.isFocused();
+    let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
+    if (working_on_achievement) {
+      ns.tprint(
+        `${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`
+      );
+      if (ns.singularity.getCurrentWork()?.classType == "Algorithms") {
+        return true;
+      }
+      if (
+        ns.singularity.universityCourse(
+          "ZB Institute of Technology",
+          "Algorithms",
+          focus
+        )
+      ) {
+        return true;
+      }
+      if (
+        ns.singularity.universityCourse(
+          "Summit University",
+          "Algorithms",
+          focus
+        )
+      ) {
+        return true;
+      }
+      if (
+        ns.singularity.universityCourse(
+          "Rothman University",
+          "Algorithms",
+          focus
+        )
+      ) {
+        return true;
+      }
+    }
+    if (ns.getPlayer().skills.hacking < 80) {
+      if (ns.getServerMoneyAvailable("home") <= 960 * 9 * 60) {
+        if (ns.singularity.getCurrentWork()?.classType == "Computer Science") {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "ZB Institute of Technology",
+            "Computer Science",
+            focus
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "Summit University",
+            "Computer Science",
+            focus
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "Rothman University",
+            "Computer Science",
+            focus
+          )
+        ) {
+          return true;
+        }
+      } else {
+        if (ns.singularity.getCurrentWork()?.classType == "Algorithms") {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "ZB Institute of Technology",
+            "Algorithms",
+            focus
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "Summit University",
+            "Algorithms",
+            focus
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "Rothman University",
+            "Algorithms",
+            focus
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   function create_programs() {
     let exe_set = new exes.AllExes(ns).set;
