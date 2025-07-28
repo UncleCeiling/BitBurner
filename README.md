@@ -157,7 +157,7 @@ This is my BitBurner repo!
 ##### 📜utilities.js
 
 > **Main:**  
-> *Unused*
+> _Unused_
 >
 > **Functions:**  
 > `terminal_command(ns,command)` - Runs the given command via the terminal.
@@ -183,20 +183,25 @@ This is my BitBurner repo!
 ---
 
 #### 📂tools
+
 ---
+
 #### 📜boot.js
+
 > **Main:**  
 > **Variables:**  
 > **Functions:**  
 > **Classes:**
 
 #### 📜main.js
+
 > **Main:**  
 > **Variables:**  
 > **Functions:**  
 > **Classes:**
 
 #### 📜reboot.js
+
 > **Main:**  
 > **Variables:**  
 > **Functions:**  
