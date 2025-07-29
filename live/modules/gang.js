@@ -114,9 +114,9 @@ export async function main(ns) {
         ) > 0
       ) {
         if (Math.random() * member_factor * wanted_factor > 0.5) {
-          ns.gang.setMemberTask(member, "Mug People");
-        } else {
           ns.gang.setMemberTask(member, "Train Combat");
+        } else {
+          ns.gang.setMemberTask(member, "Mug People");
         }
       } else {
         ns.gang.setMemberTask(member, "Mug People");
