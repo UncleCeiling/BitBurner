@@ -14,7 +14,7 @@ export async function main(ns) {
   ];
   const ASCENSION_MULTIPLIER = 1.6487212707; // Minimum increase in stats for ascension
   const MAX_MEMBERS = 12; // Max num of gang members
-  const MIN_WIN_PERCENT = 0.55; // Min win-rate for territory warfare
+  const MIN_WIN_PERCENT = 0.5; // Min win-rate for territory warfare
   const CRIMES = [
     "Mug People",
     "Deal Drugs",
