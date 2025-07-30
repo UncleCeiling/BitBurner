@@ -1,3 +1,4 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 
 /** @param {NS} ns */
@@ -13,8 +14,15 @@ export async function main(ns) {
       if (candidate.hostname == "home" || candidate.purchasedByPlayer) {
         continue;
       }
-      // if (candidate.hostname == "w0r1d_d43m0n") { continue }
-      else if (
+      let achieves = new Achievements(ns).locked;
+      let working_on_achievement = false;
+      working_on_achievement = achieves.has("MAX_HACKNET_SERVER")
+        ? true
+        : false;
+      if (candidate.hostname == "w0r1d_d43m0n" && !working_on_achievement) {
+        continue;
+      }
+      if (
         !candidate.backdoorInstalled &&
         candidate.hasAdminRights &&
         candidate.hostname != "home" &&
