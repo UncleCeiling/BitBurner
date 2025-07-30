@@ -122,37 +122,37 @@ export async function main(ns) {
    */
   function farm_hacking(sleeve_num) {
     let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
-    if (working_on_achievement) {
-      ns.print(`${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`);
-      if (
-        ns.sleeve.setToUniversityCourse(
-          sleeve_num,
-          "ZB Institute of Technology",
-          "Algorithms"
-        )
-      ) {
-        return true;
-      }
-      if (
-        ns.sleeve.setToUniversityCourse(
-          sleeve_num,
-          "Summit University",
-          "Algorithms"
-        )
-      ) {
-        return true;
-      }
-      if (
-        ns.sleeve.setToUniversityCourse(
-          sleeve_num,
-          "Rothman University",
-          "Algorithms"
-        )
-      ) {
-        return true;
-      }
-    }
     if (ns.getPlayer().skills.hacking < 80) {
+      if (working_on_achievement) {
+        ns.print(`${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`);
+        if (
+          ns.sleeve.setToUniversityCourse(
+            sleeve_num,
+            "ZB Institute of Technology",
+            "Algorithms"
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.sleeve.setToUniversityCourse(
+            sleeve_num,
+            "Summit University",
+            "Algorithms"
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.sleeve.setToUniversityCourse(
+            sleeve_num,
+            "Rothman University",
+            "Algorithms"
+          )
+        ) {
+          return true;
+        }
+      }
       let task = ns.sleeve.getTask(sleeve_num);
       if (ns.getServerMoneyAvailable("home") <= 960 * 9 * 60) {
         if (

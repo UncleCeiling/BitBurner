@@ -145,6 +145,7 @@ export async function main(ns) {
   }
 
   function create_programs() {
+    if (ns.gang.inGang()){return false}
     let exe_set = all_exes(ns);
     for (let exe of exe_set) {
       if (exe.exists) {
