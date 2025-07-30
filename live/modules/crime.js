@@ -41,42 +41,42 @@ export async function main(ns) {
   function study() {
     let focus = ns.singularity.isFocused();
     let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
-    if (working_on_achievement) {
-      ns.tprint(
-        `${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`
-      );
-      if (ns.singularity.getCurrentWork()?.classType == "Algorithms") {
-        return true;
-      }
-      if (
-        ns.singularity.universityCourse(
-          "ZB Institute of Technology",
-          "Algorithms",
-          focus
-        )
-      ) {
-        return true;
-      }
-      if (
-        ns.singularity.universityCourse(
-          "Summit University",
-          "Algorithms",
-          focus
-        )
-      ) {
-        return true;
-      }
-      if (
-        ns.singularity.universityCourse(
-          "Rothman University",
-          "Algorithms",
-          focus
-        )
-      ) {
-        return true;
-      }
-    }
     if (ns.getPlayer().skills.hacking < 80) {
+      if (working_on_achievement) {
+        ns.tprint(
+          `${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`
+        );
+        if (ns.singularity.getCurrentWork()?.classType == "Algorithms") {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "ZB Institute of Technology",
+            "Algorithms",
+            focus
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "Summit University",
+            "Algorithms",
+            focus
+          )
+        ) {
+          return true;
+        }
+        if (
+          ns.singularity.universityCourse(
+            "Rothman University",
+            "Algorithms",
+            focus
+          )
+        ) {
+          return true;
+        }
+      }
       if (ns.getServerMoneyAvailable("home") <= 960 * 9 * 60) {
         if (ns.singularity.getCurrentWork()?.classType == "Computer Science") {
           return true;
@@ -145,7 +145,9 @@ export async function main(ns) {
   }
 
   function create_programs() {
-    if (ns.gang.inGang()){return false}
+    if (ns.gang.inGang()) {
+      return false;
+    }
     let exe_set = all_exes(ns);
     for (let exe of exe_set) {
       if (exe.exists) {
