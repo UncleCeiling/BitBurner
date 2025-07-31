@@ -241,12 +241,14 @@ export async function main(ns) {
           rep: ns.singularity.getAugmentationRepReq(aug),
         });
       }
-      if (augments_to_buy <= 0) {
+      let is_illuminati = faction == "Illuminati";
+      if (augments_to_buy.length <= 0 && !is_illuminati) {
         continue;
       }
       if (
         augments_to_buy.sort((a, b) => b.rep - a.rep)[0].rep <
-        ns.singularity.getFactionRep(faction)
+          ns.singularity.getFactionRep(faction) &&
+        !is_illuminati
       ) {
         continue;
       }
@@ -257,10 +259,22 @@ export async function main(ns) {
       });
     }
     if (faction_details.length > 0) {
-      faction_details = faction_details.sort(
-        (a, b) => a.augments_to_buy[0].rep - b.augments_to_buy[0].rep
-      );
+      if (faction_details.length != 1) {
+        faction_details = faction_details.sort(
+          (a, b) => a.augments_to_buy[0].rep - b.augments_to_buy[0].rep
+        );
+      }
       let faction_choice = faction_details[0];
+      ns.print(faction_choice.augments_to_buy);
+      ns.print(ns.singularity.getFactionRep(faction_choice.name));
+      if (
+        faction_choice.augments_to_buy.length == 0 ||
+        faction_choice.augments_to_buy[0].rep <=
+          ns.singularity.getFactionRep(faction_choice.name)
+      ) {
+        do_heist();
+        return false;
+      }
       let focus = ns.singularity.isFocused();
       if (ns.singularity.workForFaction(faction_choice.name, "field", focus)) {
         ns.tprint(
@@ -320,6 +334,16 @@ export async function main(ns) {
 
   /** Do Homicide */
   function do_homicide() {
-    ns.singularity.commitCrime("Homicide", false);
+    let focus = ns.singularity.isFocused();
+    if (ns.singularity.getCurrentWork()?.crimeType != "Homicide") {
+      ns.singularity.commitCrime("Homicide", focus);
+    }
+  }
+
+  function do_heist() {
+    let focus = ns.singularity.isFocused();
+    if (ns.singularity.getCurrentWork()?.crimeType != "Heist") {
+      ns.singularity.commitCrime("Heist", focus);
+    }
   }
 }
