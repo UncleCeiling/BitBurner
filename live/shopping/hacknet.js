@@ -183,6 +183,9 @@ export async function main(ns) {
     buy_node();
     num_nodes = get_num_nodes();
   }
+  if (num_nodes == 0) {
+    return;
+  }
 
   // Get num of nodes
   let working_on_achievement = new Achievements(ns).locked.has(
@@ -195,7 +198,7 @@ export async function main(ns) {
   }
 
   // For each node
-  if (Math.random() >= 0.5 || working_on_achievement) {
+  if (working_on_achievement || Math.random() >= 0.5) {
     for (let node = 0; node < num_nodes; node++) {
       while (buy_ram(node)) {
         continue;
@@ -203,7 +206,7 @@ export async function main(ns) {
       while (buy_core(node)) {
         continue;
       }
-      if (!working_on_achievement) {
+      if (!working_on_achievement || node == 0) {
         while (buy_level(node)) {
           continue;
         }

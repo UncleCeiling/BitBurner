@@ -8,8 +8,8 @@ export async function main(ns) {
     "darkweb.js",
     "housekeeping.js",
     "player_augments.js",
-    "servers.js",
     "hacknet.js",
+    "servers.js",
     "sleeve_augments.js",
     "gang_equipment.js",
   ];
