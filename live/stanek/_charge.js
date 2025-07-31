@@ -1,5 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
+  ns.disableLog("ALL");
   const LOOPS = 10;
   let x = ns.args[0];
   let y = ns.args[1];

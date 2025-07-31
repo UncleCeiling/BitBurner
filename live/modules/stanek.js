@@ -46,7 +46,7 @@ export async function main(ns) {
           continue;
         }
         while (ns.hacknet.getNodeStats(node).ramUsed > 0) {
-          await ns.asleep(100);
+          await ns.asleep(1000);
         } // Wait for the hacknet server to be freed
         ns.print(`Charging ${gift.id} (t=${threads}) on ${details.name}.`);
         ns.scp("stanek/_charge.js", details.name, "home"); // Copy charge script to the target server
@@ -64,7 +64,10 @@ export async function main(ns) {
     let working_on_achievement = new Achievements(ns).locked.has(
       "MAX_HACKNET_SERVER"
     );
-    if (working_on_achievement){await ns.asleep(100);continue}
+    if (working_on_achievement) {
+      await ns.asleep(5000);
+      continue;
+    }
     await ns.asleep(wait);
     if (
       ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
