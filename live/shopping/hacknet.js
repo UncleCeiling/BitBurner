@@ -185,16 +185,17 @@ export async function main(ns) {
   }
 
   // Get num of nodes
-  if (new Achievements(ns).locked.has("MAX_HACKNET_SERVER")&&num_nodes>0) {
+  let working_on_achievement = new Achievements(ns).locked.has(
+    "MAX_HACKNET_SERVER"
+  );
+  if (working_on_achievement && num_nodes > 0) {
     ns.tprint(
       `${ANSI.fg.red}Focusing on one Hacknet Node for Achievement.${ANSI.reset}`
     );
-    num_nodes = 1;
   }
 
-
   // For each node
-  if (Math.random() >= 0.5) {
+  if (Math.random() >= 0.5 || working_on_achievement) {
     for (let node = 0; node < num_nodes; node++) {
       while (buy_ram(node)) {
         continue;
@@ -202,11 +203,13 @@ export async function main(ns) {
       while (buy_core(node)) {
         continue;
       }
-      while (buy_level(node)) {
-        continue;
-      }
-      while (buy_cache(node)) {
-        continue;
+      if (!working_on_achievement) {
+        while (buy_level(node)) {
+          continue;
+        }
+        while (buy_cache(node)) {
+          continue;
+        }
       }
     }
   } else {
