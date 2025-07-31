@@ -191,7 +191,7 @@ export async function main(ns) {
       );
     } else {
       // Otherwise, start
-      do_homicide();
+      do_crime("Homicide");
       ns.tprint(
         `${ANSI.fg.cyan}Committing Homicide to decrease Karma${ANSI.reset}`
       );
@@ -272,7 +272,7 @@ export async function main(ns) {
         faction_choice.augments_to_buy[0].rep <=
           ns.singularity.getFactionRep(faction_choice.name)
       ) {
-        do_heist();
+        do_crime("Heist");
         return false;
       }
       let focus = ns.singularity.isFocused();
@@ -322,7 +322,7 @@ export async function main(ns) {
   /** Make sure enough people have been killed */
   function farm_kills() {
     if (player_stats.numPeopleKilled < 30) {
-      do_homicide();
+      do_crime("Homicide");
       ns.tprint(
         `${ANSI.fg.cyan}Committing Homicide to increase body-count (${player_stats.numPeopleKilled}/30).${ANSI.reset}`
       );
@@ -332,18 +332,13 @@ export async function main(ns) {
     }
   }
 
-  /** Do Homicide */
-  function do_homicide() {
+  /** Do Homicide
+   * @param {String} crime 
+   */
+  function do_crime(crime) {
     let focus = ns.singularity.isFocused();
-    if (ns.singularity.getCurrentWork()?.crimeType != "Homicide") {
-      ns.singularity.commitCrime("Homicide", focus);
-    }
-  }
-
-  function do_heist() {
-    let focus = ns.singularity.isFocused();
-    if (ns.singularity.getCurrentWork()?.crimeType != "Heist") {
-      ns.singularity.commitCrime("Heist", focus);
+    if (ns.singularity.getCurrentWork()?.crimeType != crime) {
+      ns.singularity.commitCrime(crime, focus);
     }
   }
 }

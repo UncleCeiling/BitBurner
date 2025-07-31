@@ -15,7 +15,7 @@ export async function main(ns) {
       return ns.getHackTime(this.name);
     }
     get hack_delay() {
-      return this.weaken_time - this.hack_time + 100;
+      return this.weaken_time - this.hack_time - 1000;
     }
     get hack_threads() {
       let threads = Math.floor(
@@ -33,7 +33,7 @@ export async function main(ns) {
       return 0;
     }
     get weaken_grow_delay() {
-      return 200;
+      return 2000;
     }
     weaken_threads(cores = 1, decrease) {
       let threads = 1;
@@ -49,7 +49,7 @@ export async function main(ns) {
       return ns.getGrowTime(this.name);
     }
     get grow_delay() {
-      return this.weaken_time - this.grow_time - 100;
+      return this.weaken_time - this.grow_time + 1000;
     }
     grow_threads(cores = 1) {
       return Math.ceil(ns.growthAnalyze(this.name, 2.1, cores));

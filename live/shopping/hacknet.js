@@ -200,13 +200,13 @@ export async function main(ns) {
   // For each node
   if (working_on_achievement || Math.random() >= 0.5) {
     for (let node = 0; node < num_nodes; node++) {
-      while (buy_ram(node)) {
-        continue;
-      }
-      while (buy_core(node)) {
-        continue;
-      }
       if (!working_on_achievement || node == 0) {
+        while (buy_ram(node)) {
+          continue;
+        }
+        while (buy_core(node)) {
+          continue;
+        }
         while (buy_level(node)) {
           continue;
         }
