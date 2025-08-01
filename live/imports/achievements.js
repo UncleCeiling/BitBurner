@@ -27,8 +27,10 @@ export class Achievements {
       let data = JSON.stringify(out.achievements);
       this.#ns.rm("data/achievements.txt", "home");
       this.#ns.write("data/achievements.txt", data, "w");
+      this.#ns.tprint(`${ANSI.fg.green}Fetched!${ANSI.reset}`)
       return true;
     } catch (err) {
+      this.#ns.tprint(`${ANSI.fg.red}Failed to fetch:\n${err}${ANSI.reset}`)
       this.#ns.alert(`ERROR: ${err}`);
       return false;
     }
