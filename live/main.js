@@ -40,6 +40,7 @@ export async function main(ns) {
   let achieve_update_success = await achieves.update_from_web();
   if (!achieve_update_success) {
     ns.tprint(`${ANSI.fg.red}Failed to fetch achievements...${ANSI.reset}`);
+    return;
   }
 
   // Disable appropriate achievements
@@ -50,7 +51,7 @@ export async function main(ns) {
    * @param {String} module
    */
   function module_check(node, achievement, module) {
-    if (new Achievements(ns).node_check(node, achievement)) {
+    if (achieves.node_check(node, achievement)) {
       disable_module(modules, module);
     }
   }
