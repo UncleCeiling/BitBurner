@@ -59,7 +59,6 @@ export async function main(ns) {
   module_check(6, "CHALLENGE_BN6", "bladeburner.js");
   module_check(7, "CHALLENGE_BN7", "bladeburner.js");
   module_check(8, "CHALLENGE_BN8", "stocks.js");
-  module_check(9, "CHALLENGE_BN9", "hacknet.js");
   module_check(10, "CHALLENGE_BN10", "sleeves.js");
   module_check(13, "CHALLENGE_BN13", "stanek.js");
   module_check(14, "CHALLENGE_BN14", "ipvgo.js");

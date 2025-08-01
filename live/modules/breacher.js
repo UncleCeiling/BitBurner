@@ -14,12 +14,16 @@ export async function main(ns) {
       if (candidate.hostname == "home" || candidate.purchasedByPlayer) {
         continue;
       }
-      let achieves = new Achievements(ns).locked;
       let working_on_achievement = false;
-      working_on_achievement = achieves.has("MAX_HACKNET_SERVER")
+      working_on_achievement = new Achievements(ns).locked.has(
+        "MAX_HACKNET_SERVER"
+      )
         ? true
         : false;
-      if (candidate.hostname == "w0r1d_d43m0n" && !working_on_achievement) {
+      if (candidate.hostname == "w0r1d_d43m0n" && working_on_achievement) {
+        ns.tprint(
+          `${ANSI.fg.red}Skipping w0r1d_d43m0n for achievement${ANSI.reset}`
+        );
         continue;
       }
       if (
