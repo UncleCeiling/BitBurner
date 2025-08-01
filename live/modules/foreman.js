@@ -125,11 +125,11 @@ export async function main(ns) {
         .filter((a) => a.details.hackDifficulty > a.details.minDifficulty)
         .sort((a, b) => b.details.moneyMax - a.details.moneyMax)
     );
-    // let grow_queue = Array.from(
-    //   queue.jobs
-    //     .filter((a) => a.details.moneyAvailable < a.details.moneyMax)
-    //     .sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable)
-    // );
+    let grow_queue = Array.from(
+      queue.jobs
+        .filter((a) => a.details.moneyAvailable < a.details.moneyMax)
+        .sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable)
+    );
     let items = Array.from(queue.jobs);
     while (items.length > 0) {
       let item = items.shift();
@@ -157,24 +157,28 @@ export async function main(ns) {
             .total_RAM(miner.details.cpuCores)
         ) {
           if (sec_queue.length > 0) {
-            do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js");
-            // } else if (grow_queue.length > 0 && grow_queue) {
-            //   do_single_job(groFw_queue.shift(), miner, "scripts/_grow.js");
+            if (do_single_job(sec_queue[0], miner, "scripts/_weaken.js")) {
+              sec_queue.shift();
+            }
+          } else if (grow_queue.length > 0 && grow_queue) {
+            if (do_single_job(grow_queue[0], miner, "scripts/_grow.js")) {
+              grow_queue.shift();
+            }
           }
         }
       }
-      if (
-        ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
-        MIN_FREE_RAM
-      ) {
-        // ns.ui.closeTail();
-        ns.tprint(
-          `${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`
-        );
-        ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
-        return;
-      }
       await ns.asleep(1000);
+    }
+    if (
+      ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
+      MIN_FREE_RAM
+    ) {
+      // ns.ui.closeTail();
+      ns.tprint(
+        `${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`
+      );
+      ns.toast("Foreman Stopped - Not enough spare RAM on 'home'.", "error");
+      return;
     }
     await ns.asleep(1000);
   }
@@ -189,10 +193,10 @@ export async function main(ns) {
   function do_single_job(item, miner, script) {
     let threads = Math.floor(miner.free_RAM / ns.getScriptRam(script, "home"));
     if (threads <= 0) {
-      return;
+      return false;
     }
     if (ns.getRunningScript(script, miner.name, item.name, 0)) {
-      return;
+      return true;
     }
     ns.scp(script, miner.name, "home");
     if (ns.exec(script, miner.name, threads, item.name, 0) > 0) {
@@ -202,6 +206,7 @@ export async function main(ns) {
         )}|${ANSI.fg.cyan}${miner.name} >> ${item.name}${ANSI.reset}`
       );
     }
+    return true;
   }
 
   /**
