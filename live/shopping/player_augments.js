@@ -142,8 +142,11 @@ export async function main(ns) {
   ns.disableLog("ALL");
   // ns.ui.openTail();
   if (
+    ns.grafting
+      .getGraftableAugmentations()
+      .includes("violet Congruity Implant") &&
     ns.grafting.getAugmentationGraftPrice("violet Congruity Implant") <
-    ns.getPlayer().money
+      ns.getPlayer().money
   ) {
     // Install vCI if available
     ns.singularity.travelToCity("New Tokyo");
