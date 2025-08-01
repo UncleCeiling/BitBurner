@@ -125,11 +125,11 @@ export async function main(ns) {
         .filter((a) => a.details.hackDifficulty > a.details.minDifficulty)
         .sort((a, b) => b.details.moneyMax - a.details.moneyMax)
     );
-    let grow_queue = Array.from(
-      queue.jobs
-        .filter((a) => a.details.moneyAvailable < a.details.moneyMax)
-        .sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable)
-    );
+    // let grow_queue = Array.from(
+    //   queue.jobs
+    //     .filter((a) => a.details.moneyAvailable < a.details.moneyMax)
+    //     .sort((a, b) => a.details.moneyAvailable - b.details.moneyAvailable)
+    // );
     let items = Array.from(queue.jobs);
     while (items.length > 0) {
       let item = items.shift();
@@ -157,9 +157,9 @@ export async function main(ns) {
             .total_RAM(miner.details.cpuCores)
         ) {
           if (sec_queue.length > 0) {
-          do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js");
-          // } else if (grow_queue.length > 0 && grow_queue) {
-          //   do_single_job(grow_queue.shift(), miner, "scripts/_grow.js");
+            do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js");
+            // } else if (grow_queue.length > 0 && grow_queue) {
+            //   do_single_job(groFw_queue.shift(), miner, "scripts/_grow.js");
           }
         }
       }
@@ -167,7 +167,7 @@ export async function main(ns) {
         ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
         MIN_FREE_RAM
       ) {
-        ns.ui.closeTail();
+        // ns.ui.closeTail();
         ns.tprint(
           `${ANSI.fg.red}Foreman Stopped - Not enough spare RAM on 'home',${ANSI.reset}`
         );
