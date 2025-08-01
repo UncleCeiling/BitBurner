@@ -292,7 +292,10 @@ export async function main(ns) {
           );
         }
       } else {
-        ns.tprint(`${ANSI.fg.red}Stats not high enough to join Bladeburner Division.${ANSI.reset}`);
+        ns.tprint(
+          `${ANSI.fg.red}Stats not high enough to join Bladeburner Division.${ANSI.reset}`
+        );
+        return;
       }
     }
     // Join Faction
