@@ -158,8 +158,8 @@ export async function main(ns) {
         ) {
           if (sec_queue.length > 0) {
           do_single_job(sec_queue.shift(), miner, "scripts/_weaken.js");
-          } else if (grow_queue.length > 0) {
-            do_single_job(grow_queue.shift(), miner, "scripts/_grow.js");
+          // } else if (grow_queue.length > 0 && grow_queue) {
+          //   do_single_job(grow_queue.shift(), miner, "scripts/_grow.js");
           }
         }
       }
