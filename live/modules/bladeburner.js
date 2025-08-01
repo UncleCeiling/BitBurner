@@ -275,32 +275,33 @@ export async function main(ns) {
 
   /** Join Bladeburners*/
   function join_bladeburners() {
-    let player_stats = ns.getPlayer()
-    // Join Division
-    if (
-      ns.bladeburner.inBladeburner() == false &&
-      player_stats.skills.strength >= 100 &&
-      player_stats.skills.defense >= 100 &&
-      player_stats.skills.dexterity >= 100 &&
-      player_stats.skills.agility >= 100
-    ) {
-      if (ns.bladeburner.joinBladeburnerDivision()) {
-        ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Division${ANSI.reset}`);
+    if (!ns.bladeburner.inBladeburner()) {
+      // Join Division
+      let player_stats = ns.getPlayer();
+      if (
+        player_stats.skills.strength >= 100 &&
+        player_stats.skills.defense >= 100 &&
+        player_stats.skills.dexterity >= 100 &&
+        player_stats.skills.agility >= 100
+      ) {
+        if (ns.bladeburner.joinBladeburnerDivision()) {
+          ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Division.${ANSI.reset}`);
+        } else {
+          ns.tprint(
+            `${ANSI.fg.red}Failed to join Bladeburner Division.${ANSI.reset}`
+          );
+        }
       } else {
-        ns.tprint(
-          `${ANSI.fg.red}Failed to join Bladeburner Division${ANSI.reset}`
-        );
+        ns.tprint(`${ANSI.fg.red}Stats not high enough to join Bladeburner Division.${ANSI.reset}`);
       }
     }
     // Join Faction
-    if (
-      player_stats.factions.indexOf("Bladeburners") == -1 &&
-      ns.bladeburner.inBladeburner()
-    ) {
+    if (ns.bladeburner.inBladeburner()) {
       if (ns.bladeburner.joinBladeburnerFaction()) {
         ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Faction${ANSI.reset}`);
       }
     }
+    return;
   }
 
   // ===== MAIN =====
