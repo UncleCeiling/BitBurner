@@ -36,15 +36,17 @@ export async function main(ns) {
   }
 
   // Create Achievements data
-  let achieves = new Achievements(ns);
+  var achieves = new Achievements(ns);
   let achieve_update_success = await achieves.update_from_web();
   if (!achieve_update_success) {
     ns.tprint(`${ANSI.fg.red}Failed to fetch achievements...${ANSI.reset}`);
     return;
   }
+  await ns.asleep(1000);
+  achieves.update_from_file();
 
   // Disable appropriate achievements
-  let modules = all_modules(ns); // Generate module objects in array
+  var modules = all_modules(ns); // Generate module objects in array
   /**
    * @param {Number} node
    * @param {String} achievement
@@ -66,9 +68,9 @@ export async function main(ns) {
 
   // Forever
   while (true) {
+    achieves.update_from_file();
     svr.write_map(ns);
     svr.server_stats(ns);
-    achieves.update_from_file();
     for (let module of modules.sort(() => Math.random() - 0.5)) {
       // In a random order
       await module.run_module(); // Try to run the module

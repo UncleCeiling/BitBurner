@@ -40,7 +40,9 @@ export async function main(ns) {
 
   function study() {
     let focus = ns.singularity.isFocused();
-    let working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
+    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B")
+      ? true
+      : false;
     if (ns.getPlayer().skills.hacking < 80) {
       if (working_on_achievement) {
         ns.tprint(
@@ -333,7 +335,7 @@ export async function main(ns) {
   }
 
   /** Do Homicide
-   * @param {String} crime 
+   * @param {String} crime
    */
   function do_crime(crime) {
     let focus = ns.singularity.isFocused();

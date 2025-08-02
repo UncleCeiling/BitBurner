@@ -178,8 +178,10 @@ export function server_stats(ns) {
 export async function main(ns) {
   let servers = new AllServers(ns);
   let message = `Servers: ${servers.array.length}\n=========\n`;
-  for (let server of servers.array){
-    message += `${server.can_backdoor?"R":"X"}${server.backdoored?"B":"X"}| ${ns.formatRam(server.free_RAM)} | ${server.name}\n`
+  for (let server of servers.array) {
+    message += `${server.can_backdoor ? "R" : "X"}${
+      server.backdoored ? "B" : "X"
+    }| ${ns.formatRam(server.free_RAM)} | ${server.name}\n`;
   }
-  ns.alert(message)
+  ns.alert(message);
 }

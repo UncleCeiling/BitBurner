@@ -59,19 +59,17 @@ export { SOLUTIONS };
 export async function main(ns) {
   // Disable logs
   ns.disableLog("ALL");
-  let working_on_achievement = false;
-  if (new Achievements(ns).locked.has("MONEY_M1B")) {
-    working_on_achievement = true;
-  }
-  if (working_on_achievement) {
-    ns.tprint(`${ANSI.fg.red}Skipping Contracts for achievement.${ANSI.reset}`);
-    return;
-  }
+  let achieves = new Achievements(ns);
   let history = { success: 0, fail: 0 };
   let contracts = get_contracts();
   ns.print(contracts);
   if (contracts.length <= 0) {
     ns.tprint(`${ANSI.fg.cyan}No contracts found.${ANSI.reset}`);
+    return;
+  }
+  var working_on_achievement = achieves.locked.has("MONEY_M1B") ? true : false;
+  if (working_on_achievement) {
+    ns.tprint(`${ANSI.fg.red}Skipping Contracts for achievement.${ANSI.reset}`);
     return;
   }
   for (let server of Object.keys(contracts)) {

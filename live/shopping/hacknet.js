@@ -188,7 +188,7 @@ export async function main(ns) {
   }
 
   // Get num of nodes
-  let working_on_achievement = new Achievements(ns).locked.has(
+  var working_on_achievement = new Achievements(ns).locked.has(
     "MAX_HACKNET_SERVER"
   );
   if (working_on_achievement && num_nodes > 0) {

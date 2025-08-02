@@ -60,9 +60,11 @@ export async function main(ns) {
     let wait = Date.now() - start;
     ns.print(`${ANSI.fg.magenta}Waiting for ${wait / 1000} secs...`);
     // if (ns.gang.inGang()) { if (ns.gang.getGangInformation().territory >= 1) { wait = wait / 2 } }
-    let working_on_achievement = new Achievements(ns).locked.has(
+    var working_on_achievement = new Achievements(ns).locked.has(
       "MAX_HACKNET_SERVER"
-    );
+    )
+      ? true
+      : false;
     if (working_on_achievement) {
       await ns.asleep(5000);
       continue;

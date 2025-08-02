@@ -21,16 +21,15 @@ export class Achievements {
       if (!response.ok) {
         this.#ns.alert(`${response.status}: ${response.statusText}`);
       }
-
       let out = await response.json();
       this.#json = out.achievements;
       let data = JSON.stringify(out.achievements);
       this.#ns.rm("data/achievements.txt", "home");
       this.#ns.write("data/achievements.txt", data, "w");
-      this.#ns.tprint(`${ANSI.fg.green}Fetched!${ANSI.reset}`)
+      this.#ns.tprint(`${ANSI.fg.green}Fetched!${ANSI.reset}`);
       return true;
     } catch (err) {
-      this.#ns.tprint(`${ANSI.fg.red}Failed to fetch:\n${err}${ANSI.reset}`)
+      this.#ns.tprint(`${ANSI.fg.red}Failed to fetch:\n${err}${ANSI.reset}`);
       this.#ns.alert(`ERROR: ${err}`);
       return false;
     }

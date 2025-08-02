@@ -5,6 +5,11 @@ import { ANSI } from "imports/ANSI";
 export async function main(ns) {
   ns.disableLog("ALL");
   ns.clearLog();
+  var working_on_achievement = new Achievements(ns).locked.has(
+    "MAX_HACKNET_SERVER"
+  )
+    ? true
+    : false;
   let servers = new Set(["home"]);
   // ns.ui.openTail();
   for (let server of servers) {
@@ -14,12 +19,6 @@ export async function main(ns) {
       if (candidate.hostname == "home" || candidate.purchasedByPlayer) {
         continue;
       }
-      let working_on_achievement = false;
-      working_on_achievement = new Achievements(ns).locked.has(
-        "MAX_HACKNET_SERVER"
-      )
-        ? true
-        : false;
       if (candidate.hostname == "w0r1d_d43m0n" && working_on_achievement) {
         ns.tprint(
           `${ANSI.fg.red}Skipping w0r1d_d43m0n for achievement${ANSI.reset}`
