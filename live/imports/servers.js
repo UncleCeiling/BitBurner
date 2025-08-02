@@ -55,7 +55,8 @@ export class UtilServer {
         this.#ns.getScriptRam("modules/foreman.js") -
         this.#ns.getScriptRam("modules/bladeburner.js") -
         this.#ns.getScriptRam("modules/stanek.js") -
-        this.#ns.getScriptRam("main.js");
+        this.#ns.getScriptRam("main.js") -
+        64;
     }
     return free;
   }
