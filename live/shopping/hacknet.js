@@ -192,7 +192,7 @@ export async function main(ns) {
     "MAX_HACKNET_SERVER"
   );
   if (working_on_achievement && num_nodes > 0) {
-    ns.tprint(
+    ns.print(
       `${ANSI.fg.red}Focusing on one Hacknet Node for Achievement.${ANSI.reset}`
     );
   }

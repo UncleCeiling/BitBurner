@@ -62,9 +62,7 @@ export async function main(ns) {
     1_000_000; // Check if it"s worth buying cash
   let cash_on_hand = ns.getServerMoneyAvailable("home");
   if (cash_buy > cash_on_hand / 2) {
-    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B")
-      ? true
-      : false;
+    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
     if (!working_on_achievement) {
       while (buy_hash_upgrade("Sell for Money")) {
         history.money++;

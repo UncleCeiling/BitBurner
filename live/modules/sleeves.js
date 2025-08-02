@@ -121,9 +121,7 @@ export async function main(ns) {
    * @returns {Boolean} `true` when karma farmed, `false` if not.
    */
   function farm_hacking(sleeve_num) {
-    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B")
-      ? true
-      : false;
+    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
     if (ns.getPlayer().skills.hacking < 80) {
       if (working_on_achievement) {
         ns.print(

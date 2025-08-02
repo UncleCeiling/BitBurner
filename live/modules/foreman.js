@@ -140,9 +140,7 @@ export async function main(ns) {
         ) {
           var working_on_achievement = new Achievements(ns).locked.has(
             "MONEY_M1B"
-          )
-            ? true
-            : false;
+          );
           if (!working_on_achievement) {
             do_entire_job(item, miner);
             continue;

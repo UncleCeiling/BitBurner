@@ -62,9 +62,7 @@ export async function main(ns) {
     // if (ns.gang.inGang()) { if (ns.gang.getGangInformation().territory >= 1) { wait = wait / 2 } }
     var working_on_achievement = new Achievements(ns).locked.has(
       "MAX_HACKNET_SERVER"
-    )
-      ? true
-      : false;
+    );
     if (working_on_achievement) {
       await ns.asleep(5000);
       continue;

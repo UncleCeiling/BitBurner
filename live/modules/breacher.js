@@ -7,9 +7,7 @@ export async function main(ns) {
   ns.clearLog();
   var working_on_achievement = new Achievements(ns).locked.has(
     "MAX_HACKNET_SERVER"
-  )
-    ? true
-    : false;
+  );
   let servers = new Set(["home"]);
   // ns.ui.openTail();
   for (let server of servers) {
@@ -20,7 +18,7 @@ export async function main(ns) {
         continue;
       }
       if (candidate.hostname == "w0r1d_d43m0n" && working_on_achievement) {
-        ns.tprint(
+        ns.print(
           `${ANSI.fg.red}Skipping w0r1d_d43m0n for achievement${ANSI.reset}`
         );
         continue;

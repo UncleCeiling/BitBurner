@@ -40,12 +40,10 @@ export async function main(ns) {
 
   function study() {
     let focus = ns.singularity.isFocused();
-    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B")
-      ? true
-      : false;
+    var working_on_achievement = new Achievements(ns).locked.has("MONEY_M1B");
     if (ns.getPlayer().skills.hacking < 80) {
       if (working_on_achievement) {
-        ns.tprint(
+        ns.print(
           `${ANSI.fg.red}Working up a debt for achievement.${ANSI.reset}`
         );
         if (ns.singularity.getCurrentWork()?.classType == "Algorithms") {
