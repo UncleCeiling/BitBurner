@@ -58,6 +58,13 @@ export class Module {
     if (!this.enabled) {
       return false;
     } // Don't run
+    if (
+      this.ram >
+      this.#ns.getServerMaxRam("home") -
+        this.#ns.getScriptRam("main.js", "home")
+    ) {
+      return false;
+    }
     if (this.pid != 0 && this.#ns.isRunning(this.#filename, "home")) {
       this.#ns.print(
         `${ANSI.fg.cyan}Skipping ${this.#shortname}...${ANSI.reset}`

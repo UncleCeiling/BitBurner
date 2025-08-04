@@ -187,11 +187,15 @@ export async function main(ns) {
     return;
   }
 
-  // Get num of nodes
-  var working_on_achievement = new Achievements(ns).locked.has(
-    "MAX_HACKNET_SERVER"
-  );
-  if (working_on_achievement && num_nodes > 0) {
+  // Check for achievements
+  var achieves = new Achievements(ns);
+  var working_on_max_hacknet = achieves.locked.has("MAX_HACKNET_SERVER");
+  var working_on_bn9 = achieves.locked.has("CHALLENGE_BN9");
+  if (working_on_bn9) {
+    ns.tprint(`${ANSI.fg.red}Skipping Hacknet for achievement.${ANSI.reset}`);
+    return;
+  }
+  if (working_on_max_hacknet && num_nodes > 0) {
     ns.print(
       `${ANSI.fg.red}Focusing on one Hacknet Node for Achievement.${ANSI.reset}`
     );
