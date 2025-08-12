@@ -189,8 +189,11 @@ export async function main(ns) {
 
   // Check for achievements
   var achieves = new Achievements(ns);
-  var working_on_max_hacknet = achieves.locked.has("MAX_HACKNET_SERVER");
-  var working_on_bn9 = achieves.locked.has("CHALLENGE_BN9");
+  var working_on_max_hacknet = true
+  working_on_max_hacknet = !achieves.unlocked.has("MAX_HACKNET_SERVER");
+  var working_on_bn9 = true
+  working_on_bn9 = !achieves.unlocked.has("CHALLENGE_BN9");
+  var working_on_achievement = working_on_bn9 || working_on_max_hacknet
   if (working_on_bn9) {
     ns.tprint(`${ANSI.fg.red}Skipping Hacknet for achievement.${ANSI.reset}`);
     return;

@@ -8,9 +8,9 @@ export async function main(ns) {
     "darkweb.js",
     "housekeeping.js",
     "player_augments.js",
-    "hacknet.js",
-    "servers.js",
     "sleeve_augments.js",
+    "servers.js",
+    "hacknet.js",
     "gang_equipment.js",
   ];
   const SCRIPT_LOC = "shopping/";
