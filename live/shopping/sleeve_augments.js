@@ -1,6 +1,15 @@
+import { Achievements } from "imports/achievements";
 import { ANSI } from "imports/ANSI";
 /** @param {NS} ns */
 export async function main(ns) {
+  var working_on_achievement = new Achievements(ns).node_check(
+    10,
+    "CHALLENGE_BN10"
+  );
+  if (working_on_achievement) {
+    ns.tprint(`${ANSI.fg.red}Skipping Sleeves for achievement${ANSI.reset}`);
+    return;
+  }
   var history = { augments: 0, money: 0 };
   let num_sleeves = ns.sleeve.getNumSleeves();
   if (num_sleeves < 1) {
