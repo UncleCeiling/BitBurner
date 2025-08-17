@@ -202,6 +202,7 @@ export async function main(ns) {
             `${ANSI.fg.green}Bought ${augment.name} from ${augment.factions[0]}.${ANSI.reset}`
           );
           install = false;
+          await ns.asleep(100);
         } else {
           ns.tprint(
             `${ANSI.fg.red}Error buying ${augment.name} from ${
@@ -217,20 +218,21 @@ export async function main(ns) {
     }
     if (augments.only_purchased.length > 0 && install) {
       if (augments.neuroflux_governor.purchasable) {
-        if (
-          ns.singularity.purchaseAugmentation(
-            augments.neuroflux_governor.factions[0],
-            augments.neuroflux_governor.name
-          )
-        ) {
-          ns.tprint(
-            `${ANSI.fg.green}Bought ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`
-          );
-          install = false;
-        } else {
-          ns.tprint(
-            `${ANSI.fg.red}Error buying ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`
-          );
+        while (true) {
+          if (
+            ns.singularity.purchaseAugmentation(
+              augments.neuroflux_governor.factions[0],
+              augments.neuroflux_governor.name
+            )
+          ) {
+            ns.tprint(
+              `${ANSI.fg.green}Bought ${augments.neuroflux_governor.name} from ${augments.neuroflux_governor.factions[0]}.${ANSI.reset}`
+            );
+            install = false;
+          } else {
+            break;
+          }
+          await ns.asleep(100);
         }
       }
     }
