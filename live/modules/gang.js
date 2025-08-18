@@ -119,7 +119,7 @@ export async function main(ns) {
           ns.gang.setMemberTask(member, "Mug People");
         }
       } else {
-        ns.gang.setMemberTask(member, "Mug People");
+        ns.gang.setMemberTask(member, "Train Combat");
       }
     } else if (
       // If we could calculate the respect gain and the respect gain is less than 0, Mug People
