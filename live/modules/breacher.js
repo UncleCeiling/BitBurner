@@ -5,8 +5,12 @@ import { ANSI } from "imports/ANSI";
 export async function main(ns) {
   ns.disableLog("ALL");
   ns.clearLog();
-  var working_on_achievement = new Achievements(ns).locked.has(
+  var working_on_hacknet_achievement = new Achievements(ns).locked.has(
     "MAX_HACKNET_SERVER"
+  );
+  var working_on_bn12_achievement = new Achievements(ns).node_check(
+    12,
+    "CHALLENGE_BN12"
   );
   let servers = new Set(["home"]);
   // ns.ui.openTail();
@@ -17,11 +21,16 @@ export async function main(ns) {
       if (candidate.hostname == "home" || candidate.purchasedByPlayer) {
         continue;
       }
-      if (candidate.hostname == "w0r1d_d43m0n" && working_on_achievement) {
-        ns.print(
-          `${ANSI.fg.red}Skipping w0r1d_d43m0n for achievement${ANSI.reset}`
-        );
-        continue;
+      if (candidate.hostname == "w0r1d_d43m0n") {
+        if (working_on_bn12_achievement) {
+          ns.singularity.destroyW0r1dD43m0n(12, "boot.js");
+        }
+        if (working_on_hacknet_achievement) {
+          ns.print(
+            `${ANSI.fg.red}Skipping w0r1d_d43m0n for achievement${ANSI.reset}`
+          );
+          continue;
+        }
       }
       if (
         !candidate.backdoorInstalled &&
