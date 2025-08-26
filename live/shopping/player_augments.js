@@ -218,7 +218,7 @@ export async function main(ns) {
     }
     if (augments.only_purchased.length > 0 && install) {
       if (augments.neuroflux_governor.purchasable) {
-        while (true) {
+        while (augments.neuroflux_governor.factions.length > 0) {
           if (
             ns.singularity.purchaseAugmentation(
               augments.neuroflux_governor.factions[0],
