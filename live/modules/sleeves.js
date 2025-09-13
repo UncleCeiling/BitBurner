@@ -335,7 +335,7 @@ export async function main(ns) {
   /**
    * Decides if a sleeve should assist in Bladeburner Actions, then makes them if they should
    * @param {Number} sleeve_num Number of the sleeve
-   * @returns {Boolean} `true` when sleeve is being calmed, `false` if not.
+   * @returns {Boolean} `true` when sleeve is doing bladeburner actions, `false` if not.
    */
   function bladeburn(sleeve_num) {
     if (!ns.bladeburner.inBladeburner()) {
@@ -353,21 +353,21 @@ export async function main(ns) {
       }
       return true;
     } else if (current_action != null) {
-      let op_count =
-        ns.bladeburner
-          .getOperationNames()
-          .reduce(
-            (a, c) =>
-              a + ns.bladeburner.getActionCountRemaining("Operations", c),
-            0
-          ) - ns.bladeburner.getActionCountRemaining("Operations", "Raid");
+      let stealth_op_count = ns.bladeburner.getActionCountRemaining("Operations","Stealth Retirement Operation")
+        // ns.bladeburner
+        //   .getOperationNames()
+        //   .reduce(
+        //     (a, c) =>
+        //       a + ns.bladeburner.getActionCountRemaining("Operations", c),
+        //     0
+        //   ) - ns.bladeburner.getActionCountRemaining("Operations", "Raid");
       let contract_count = ns.bladeburner
         .getContractNames()
         .reduce(
           (a, c) => a + ns.bladeburner.getActionCountRemaining("Contracts", c),
           0
         );
-      if (op_count <= 100 || contract_count <= 100) {
+      if (stealth_op_count <= 100 || contract_count <= 100) {
         ns.print(`${sleeve_num} Infiltrating Synthoids`);
         if (ns.sleeve.getTask(sleeve_num)?.type != "INFILTRATE") {
           ns.sleeve.setToBladeburnerAction(sleeve_num, "Infiltrate Synthoids");
