@@ -7,6 +7,17 @@ export async function main(ns) {
     .ls("home", "modules/")
     .map((a) => ns.getScriptRam(a, "home"))
     .sort((a, b) => b - a)[0];
+  if (
+    ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
+    MIN_FREE_RAM
+  ) {
+    ns.ui.closeTail();
+    ns.tprint(
+      `${ANSI.fg.red}Stanek Stopped - Not enough spare RAM on 'home',${ANSI.reset}`
+    );
+    ns.toast("Stanek Stopped - Not enough spare RAM on 'home'.", "error");
+    return;
+  }
   if (ns.hacknet.numNodes() == 0 || ns.hacknet.hashCapacity() <= 0) {
     ns.tprint(`${ANSI.fg.red}No Hacknet nodes.${ANSI.reset}`);
     return;
@@ -68,16 +79,5 @@ export async function main(ns) {
       continue;
     }
     await ns.asleep(wait);
-    if (
-      ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
-      MIN_FREE_RAM
-    ) {
-      ns.ui.closeTail();
-      ns.tprint(
-        `${ANSI.fg.red}Stanek Stopped - Not enough spare RAM on 'home',${ANSI.reset}`
-      );
-      ns.toast("Stanek Stopped - Not enough spare RAM on 'home'.", "error");
-      return;
-    }
   }
 }
