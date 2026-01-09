@@ -141,7 +141,9 @@ export async function main(ns) {
   // ===== MAIN =====
   ns.disableLog("ALL");
   // ns.ui.openTail();
-  if (!in_stanek()){return}
+  if (!in_stanek()) {
+    return;
+  }
   if (
     ns.grafting
       .getGraftableAugmentations()
@@ -165,8 +167,12 @@ export async function main(ns) {
 
   // ===== FUNCTIONS =====
 
-  function in_stanek(){
-    return ns.stanek.activeFragments().length > 0;
+  function in_stanek() {
+    try {
+      return ns.stanek.activeFragments().length > 0;
+    } catch {
+      return false;
+    }
   }
 
   /** Attempts to graft each item possible */
