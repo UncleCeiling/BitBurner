@@ -7,10 +7,7 @@ export async function main(ns) {
     .ls("home", "modules/")
     .map((a) => ns.getScriptRam(a, "home"))
     .sort((a, b) => b - a)[0];
-  if (
-    ns.getServerMaxRam("home") - ns.getServerUsedRam("home") <
-    MIN_FREE_RAM
-  ) {
+  if (ns.getServerMaxRam("home") - ns.getServerUsedRam("home") < MIN_FREE_RAM) {
     ns.ui.closeTail();
     ns.tprint(
       `${ANSI.fg.red}Stanek Stopped - Not enough spare RAM on 'home',${ANSI.reset}`
@@ -27,18 +24,20 @@ export async function main(ns) {
     return;
   } // Nope out if gift is too small
   if (!ns.stanek.acceptGift()) {
-    // ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's gift${ANSI.reset}`);
+    ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's gift${ANSI.reset}`);
     return;
   } // Accept the gift, otherwise nope out.
   while (true) {
     let start = Date.now();
     let gifts = ns.stanek.activeFragments();
     if (gifts == null || gifts.length == 0) {
-      ns.tprint(
-        `${ANSI.fg.red}No fragments active - Add some to Stanek's gift.${ANSI.reset}`
-      );
-      return;
-    } // Remind player to assign gifts.
+      // ns.tprint(
+      //   `${ANSI.fg.red}No fragments active - Add some to Stanek's gift.${ANSI.reset}`
+      // );
+      // return;
+      await import_gifts();
+    }
+    gifts = ns.stanek.activeFragments();
     for (let gift of gifts) {
       // For each gift
       if (gift.id >= 100) {
@@ -79,5 +78,71 @@ export async function main(ns) {
       continue;
     }
     await ns.asleep(wait);
+  }
+
+  async function import_gifts() {
+    let dimensions = `${ns.stanek.giftWidth()}.${ns.stanek.giftHeight()}`; // Get dimensions
+    let options = ns.ls("home", "stanek/");
+    let choice_list = options.filter((a) => a.includes(".txt"));
+    let choices = choice_list.filter((a) => a.includes(dimensions));
+    let choice = choices.filter((a) => a.includes("all"));
+    let file = "";
+    if (choice.length != 1) {
+      file = await ns.prompt(
+        `Choose a grid to import. (Current Dimensions: ${dimensions})`,
+        { type: "select", choices: choice_list }
+      );
+    } else {
+      file = choice[0];
+    }
+    ns.ui.openTail();
+    let lines = ns.read(file).split("\n");
+    if (lines.length <= 0) {
+      ns.print(`${ANSI.fg.red}Empty File${ANSI.reset}`);
+      return;
+    }
+    let fragments = [];
+    for (let line of lines) {
+      let items = line.split(",");
+      if (items.length > 4) {
+        ns.print(
+          `${ANSI.fg.red}Line "${line}" has too many items${ANSI.reset}`
+        );
+        continue;
+      }
+      if (items.length < 4) {
+        ns.print(`${ANSI.fg.red}Line "${line}" has too few items${ANSI.reset}`);
+        continue;
+      }
+      let id = items[0];
+      let x = items[1];
+      let y = items[2];
+      let rot = items[3];
+      fragments.push({ id: id, x: x, y: y, rot: rot });
+      ns.print(`Found Fragment => ID ${id} | ${x},${y},${rot}`);
+    }
+    if (fragments.length <= 0) {
+      ns.print(`${ANSI.fg.red}No valid lines found${ANSI.reset}`);
+      return;
+    }
+    ns.stanek.clearGift();
+    for (let fragment of fragments) {
+      if (
+        !ns.stanek.placeFragment(
+          fragment.x,
+          fragment.y,
+          fragment.rot,
+          fragment.id
+        )
+      ) {
+        ns.print(
+          `${ANSI.fg.red}Cannot place fragment => ID: ${fragment.id} | ${fragment.x},${fragment.y},${fragment.rot}${ANSI.reset}`
+        );
+      } else {
+        ns.print(
+          `${ANSI.fg.green}Added fragment => ID: ${fragment.id} | ${fragment.x},${fragment.y},${fragment.rot}${ANSI.reset}`
+        );
+      }
+    }
   }
 }

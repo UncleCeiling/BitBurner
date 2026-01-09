@@ -141,6 +141,7 @@ export async function main(ns) {
   // ===== MAIN =====
   ns.disableLog("ALL");
   // ns.ui.openTail();
+  if (!in_stanek()){return}
   if (
     ns.grafting
       .getGraftableAugmentations()
@@ -163,6 +164,10 @@ export async function main(ns) {
   } // Else buy faction augments
 
   // ===== FUNCTIONS =====
+
+  function in_stanek(){
+    return ns.stanek.activeFragments().length > 0;
+  }
 
   /** Attempts to graft each item possible */
   async function do_grafting() {
