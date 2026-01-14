@@ -275,6 +275,15 @@ export async function main(ns) {
 
   /** Join Bladeburners*/
   function join_bladeburners() {
+    // Join Stanek if haven't already
+    try {
+      ns.stanek.activeFragments();
+    } catch {
+      if (!ns.stanek.acceptGift()) {
+        ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's Gift.${ANSI.reset}`);
+        return;
+      }
+    }
     if (!ns.bladeburner.inBladeburner()) {
       // Join Division
       let player_stats = ns.getPlayer();
