@@ -275,15 +275,6 @@ export async function main(ns) {
 
   /** Join Bladeburners*/
   function join_bladeburners() {
-    // Join Stanek if haven't already
-    try {
-      ns.stanek.activeFragments();
-    } catch {
-      if (!ns.stanek.acceptGift()) {
-        ns.tprint(`${ANSI.fg.red}Failed to accept Stanek's Gift.${ANSI.reset}`);
-        return;
-      }
-    }
     if (!ns.bladeburner.inBladeburner()) {
       // Join Division
       let player_stats = ns.getPlayer();
@@ -293,6 +284,17 @@ export async function main(ns) {
         player_stats.skills.dexterity >= 100 &&
         player_stats.skills.agility >= 100
       ) {
+        // Join Stanek if haven't already
+        try {
+          ns.stanek.activeFragments();
+        } catch {
+          if (!ns.stanek.acceptGift()) {
+            ns.tprint(
+              `${ANSI.fg.red}Failed to accept Stanek's Gift.${ANSI.reset}`
+            );
+            return;
+          }
+        }
         if (ns.bladeburner.joinBladeburnerDivision()) {
           ns.tprint(`${ANSI.fg.cyan}Joined Bladeburner Division.${ANSI.reset}`);
         } else {

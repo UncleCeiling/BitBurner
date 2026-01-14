@@ -19,7 +19,7 @@ export async function main(ns) {
     "13",
   ];
   let arg = ns.args[0];
-  if (options.includes(arg) && arg != "Cancel") {
+  if (options.includes(String(arg)) && String(arg) != "Cancel") {
     ns.singularity.b1tflum3(arg, "boot.js");
     return;
   }
