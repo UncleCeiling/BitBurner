@@ -3,6 +3,9 @@ import { AllServers, UtilServer } from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
   let servers = new AllServers(ns);
+  if (!ns.scriptRunning("modules/foreman.js", "home")) {
+    return;
+  }
   upgrade_servers(servers.purchased);
   buy_servers(servers.purchased);
   deploy_foreman(servers.purchased);
