@@ -12,12 +12,12 @@ export async function main(ns) {
     weapons: [
       "Baseball Bat",
       "Katana",
-      "Glock 18C",
-      "P90C",
-      "Steyr AUG",
-      "AK-47",
-      "M15A10 Assault Rifle",
-      "AWM Sniper Rifle",
+      "Malorian-3516",
+      "Hansen-HA7",
+      "Arasaka-HJSH18",
+      "Militech-M251s",
+      "Nokota-D5",
+      "Techtronika-SPT32",
     ],
     armour: [
       "Bulletproof Vest",
@@ -26,10 +26,10 @@ export async function main(ns) {
       "Graphene Plating Armor",
     ],
     vehicles: [
-      "Ford Flex V20",
-      "ATX1070 Superbike",
-      "Mercedes-Benz S9001",
-      "White Ferrari",
+      "Herrera Outlaw GTS",
+      "Yaiba ASM-R250 Muramasa",
+      "Rayfield Caliburn",
+      "Quadra Sport R-7",
     ],
     root_kits: [
       "NUKE Rootkit",

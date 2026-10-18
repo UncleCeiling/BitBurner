@@ -17,7 +17,7 @@ export async function main(ns) {
   // For each sleeve
   for (let sleeve in sleeves) {
     if (ns.singularity.getCurrentWork()?.cyclesWorked === 0) {
-      await ns.singularity.getCurrentWork().completion;
+      await ns.singularity.getCurrentWork().nextCompletion;
     }
     if (farm_karma(sleeve)) {
       ns.print(`${ANSI.fg.cyan}${sleeve} Farming Karma${ANSI.reset}`);

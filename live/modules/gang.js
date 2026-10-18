@@ -175,7 +175,7 @@ export async function main(ns) {
       let current_win_chance = ns.gang.getChanceToWinClash(faction);
       if (
         worst_win_chance > current_win_chance &&
-        ns.gang.getOtherGangInformation()[faction].territory > 0
+        ns.gang.getAllGangInformation()[faction].territory > 0
       ) {
         worst_win_chance = current_win_chance;
       }

@@ -17,20 +17,20 @@ export async function main(ns) {
    */
   function buy_servers(servers) {
     const RAM = 2;
-    if (servers.length >= ns.getPurchasedServerLimit()) {
+    if (servers.length >= ns.cloud.getServerLimit()) {
       return;
     } // If already reached limit, dip out
     let server_num = servers.length;
     while (
-      ns.getPlayer().money >= ns.getPurchasedServerCost(RAM) &&
-      server_num < ns.getPurchasedServerLimit()
+      ns.getPlayer().money >= ns.cloud.getServerCost(RAM) &&
+      server_num < ns.cloud.getServerLimit()
     ) {
       let server_name = `miner-${String(server_num).padStart(2, "0")}`;
-      ns.purchaseServer(server_name, RAM);
+      ns.cloud.purchaseServer(server_name, RAM);
       ns.tprint(
         `${
           ANSI.fg.green
-        }Bought ${RAM}GB server: ${server_name} ($${ns.getPurchasedServerCost(
+        }Bought ${RAM}GB server: ${server_name} ($${ns.cloud.getServerCost(
           RAM
         )})${ANSI.reset}`
       );
@@ -42,7 +42,7 @@ export async function main(ns) {
    * @param {Array<UtilServer>} servers
    */
   function upgrade_servers(servers) {
-    const MAX_POSSIBLE_RAM = ns.getPurchasedServerMaxRam();
+    const MAX_POSSIBLE_RAM = ns.cloud.getRamLimit();
     if (servers.length == 0) {
       return;
     }
@@ -57,13 +57,13 @@ export async function main(ns) {
           continue;
         } // Skip if too expensive
         while (
-          ns.upgradePurchasedServer(server.name, server.details.maxRam * 2)
+          ns.cloud.upgradeServer(server.name, server.details.maxRam * 2)
         ) {
           exit = false;
           ns.tprint(
-            `${ANSI.fg.green}Upgraded ${server.name} from ${ns.formatRam(
+            `${ANSI.fg.green}Upgraded ${server.name} from ${ns.format.ram(
               server.details.maxRam / 2
-            )} to ${ns.formatRam(server.details.maxRam)}.${ANSI.reset}`
+            )} to ${ns.format.ram(server.details.maxRam)}.${ANSI.reset}`
           );
         }
       }

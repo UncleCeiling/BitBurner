@@ -3,6 +3,7 @@ import { ANSI } from "imports/ANSI";
 import { AllServers, UtilServer } from "imports/servers";
 /** @param {NS} ns */
 export async function main(ns) {
+  return
   // ===== CLASSES =====
   class MineJob {
     constructor(name) {
@@ -201,7 +202,7 @@ export async function main(ns) {
     ns.scp(script, miner.name, "home");
     if (ns.exec(script, miner.name, threads, item.name, 0) > 0) {
       ns.print(
-        `${ANSI.fg.green}'${script.replace("scripts/", "")}'|${ns.formatRam(
+        `${ANSI.fg.green}'${script.replace("scripts/", "")}'|${ns.format.ram(
           threads * ns.getScriptRam(script, "home")
         )}|${ANSI.fg.cyan}${miner.name} >> ${item.name}${ANSI.reset}`
       );
@@ -291,7 +292,7 @@ export async function main(ns) {
     }
     if (!failure) {
       ns.print(
-        `${ANSI.fg.magenta}RAM=${ns.formatRam(
+        `${ANSI.fg.magenta}RAM=${ns.format.ram(
           item.total_RAM(miner.details.cpuCores)
         )}|${ANSI.fg.cyan}${miner.name} >> ${item.name}${ANSI.reset}`
       );
@@ -511,7 +512,7 @@ export async function main(ns) {
     // Make list of miners (smallest to largest)
     let miners = ns.read("miners.txt").split("\n");
     // Get list of purchased servers
-    let custom = ns.getPurchasedServers();
+    let custom = ns.cloud.getServerNames();
     // Add each purchased server if any
     if (custom.length > 0) {
       for (let resource of custom) {

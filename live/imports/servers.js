@@ -27,7 +27,7 @@ export class UtilServer {
   /** `-1` if not applicable
    *  @returns {Number} */
   get upgrade_cost() {
-    return this.#ns.getPurchasedServerUpgradeCost(
+    return this.#ns.cloud.getServerUpgradeCost(
       this.name,
       this.details.maxRam * 2
     );
@@ -168,7 +168,7 @@ export function server_stats(ns) {
     ns.tprint(`${ANSI.fg.red}No Purchased Servers${ANSI.reset}`);
     return;
   } // Can't map what doesn't exist
-  let data = servers.map((a) => `${a.name}: ${ns.formatRam(a.details.maxRam)}`); // Turn servers into string to add to file
+  let data = servers.map((a) => `${a.name}: ${ns.format.ram(a.details.maxRam)}`); // Turn servers into string to add to file
   ns.write("data/server_stats.txt", data.join("\n"), "w"); // Write new file
   ns.tprint(
     `${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`
@@ -182,7 +182,7 @@ export async function main(ns) {
   for (let server of servers.array) {
     message += `${server.can_backdoor ? "R" : "X"}${
       server.backdoored ? "B" : "X"
-    }| ${ns.formatRam(server.free_RAM)} | ${server.name}\n`;
+    }| ${ns.format.ram(server.free_RAM)} | ${server.name}\n`;
   }
   ns.alert(message);
 }

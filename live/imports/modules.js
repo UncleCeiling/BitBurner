@@ -130,7 +130,7 @@ export async function main(ns) {
   let modules = all_modules(ns);
   let message = "";
   for (let module of modules) {
-    message += `${module.enabled ? "⭕" : "❌"} | ${ns.formatRam(
+    message += `${module.enabled ? "⭕" : "❌"} | ${ns.format.ram(
       module.ram,
       1
     )} | ${module.shortname}\n`;

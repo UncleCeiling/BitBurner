@@ -15,7 +15,7 @@ export async function main(ns) {
   const TESTS = parseInt(input);
   for (let type of Object.keys(SOLUTIONS)) {
     for (let i = 0; i < TESTS; i++) {
-      ns.codingcontract.createDummyContract(type);
+      ns.codingcontract.createDummyContract(type, "home");
     }
   }
   await ns.asleep(1000);

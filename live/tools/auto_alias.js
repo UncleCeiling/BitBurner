@@ -18,6 +18,6 @@ export async function main(ns) {
     `alias`,
   ];
   for (let alias of ALIASES) {
-    terminal_command(ns, alias);
+    await terminal_command(ns, alias);
   }
 }
