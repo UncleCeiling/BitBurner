@@ -1,13 +1,14 @@
 {
   "recommendations": [
     "aaron-bond.better-comments",
-    "bitburner.bitburner-vscode-integration",
     "catppuccin.catppuccin-vsc-icons",
     "streetsidesoftware.code-spell-checker",
     "shinotatwu-ds.file-tree-generator",
     "davidanson.vscode-markdownlint",
     "streetsidesoftware.code-spell-checker-british-english",
     "franneck94.workspace-formatter",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "oderwat.indent-rainbow",
+    "ficocelliguy.bitburner-file-sync-plugin"
   ]
 }
