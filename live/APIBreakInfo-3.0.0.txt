@@ -1,0 +1,343 @@
+API BREAK INFO FOR 3.0.0
+
+You cannot use the deprecated VSCode extension to connect to the Steam app via API server now. You have to use Remote API to connect your external editors to Bitburner.
+For more information, please check the Remote API page in the Documentation tab. If you have a question, please ask us on #external-editors on Discord (https://discord.gg/TFc3hKD).
+
+
+
+The formatting functions have been moved to their own interface, ns.format.
+Each function has been replaced with their corresponding interface variant.
+Additionally, the naming of ns.tFormat has been changed to ns.format.time.
+
+Usage of the following functions may have been affected:
+ns.formatNumber
+ns.formatRam
+ns.formatPercent
+ns.tFormat
+
+Potentially affected files on server home (with line numbers):
+imports/modules.js: (Line number: 133)
+imports/servers.js: (Line numbers: 171, 185)
+shopping/servers.js: (Line numbers: 64, 66)
+modules/foreman.js: (Line numbers: 205, 295)
+
+
+
+With some APIs, when you passed values to their params, you could pass a value that was not an exact match. For example, with ns.singularity.commitCrime, you could pass "Rob Store", "rob store", "RobStore", "robstore", "robStore", etc. This is called "fuzzy matching". Now, you must pass an exact value (i.e., Rob Store). This change affects:
+- Bladeburner action and type: BladeburnerActionType, BladeburnerGeneralActionName, BladeburnerContractName, BladeburnerOperationName, BladeburnerBlackOpName, SpecialBladeburnerActionTypeForSleeve, BladeburnerActionTypeForSleeve.
+- Crime: CrimeType
+- Faction work: FactionWorkType
+- University class: UniversityClassType
+- Gym stat: GymType
+- Job field: JobField
+- Stock position: PositionType
+- Stock order: OrderType
+You can access these values via ns.enums and Bladeburner APIs.
+
+
+
+ns.nuke, ns.brutessh, ns.ftpcrack, ns.relaysmtp, ns.httpworm, and ns.sqlinject now do not throw an error when you do not have the required .exe file or enough opened ports.
+This should not be a problem with most scripts. However, if you were catching errors and branching on the result of success/failure, you will need to use the return value instead.
+
+Usage of the following functions may have been affected:
+ns.nuke
+ns.brutessh
+ns.ftpcrack
+ns.relaysmtp
+ns.httpworm
+ns.sqlinject
+
+Potentially affected files on server home (with line numbers):
+modules/rooter.js: (Line numbers: 76, 79, 82, 85, 91, 120)
+
+
+
+ns.bladeburner.getActionRepGain returned the average rank gain instead of the average reputation gain.
+This bug was fixed. Please check your code to see if it still works as you expect.
+
+Usage of the following functions may have been affected:
+getActionRepGain
+
+Potentially affected files on server home (with line numbers):
+modules/bladeburner.js: (Line numbers: 69, 82, 156)
+
+
+
+Some APIs returned a default value when you passed the hostname of a non-hackable server (e.g., hacknet server) to them.
+These APIs now throw an error. The affected APIs are:
+- ns.hackAnalyzeThreads
+- ns.hackAnalyze
+- ns.hackAnalyzeSecurity
+- ns.hackAnalyzeChance
+- ns.growthAnalyze
+- ns.growthAnalyzeSecurity
+- ns.nuke
+- ns.brutessh
+- ns.ftpcrack
+- ns.relaysmtp
+- ns.httpworm
+- ns.sqlinject
+- ns.getServerMoneyAvailable
+- ns.getServerSecurityLevel
+- ns.getServerBaseSecurityLevel
+- ns.getServerMinSecurityLevel
+- ns.getServerRequiredHackingLevel
+- ns.getServerMaxMoney
+- ns.getServerGrowth
+- ns.getServerNumPortsRequired
+- ns.cloud.deleteServer
+- ns.getHackTime
+- ns.getGrowTime
+- ns.getWeakenTime
+
+
+Usage of the following functions may have been affected:
+ns.hackAnalyzeThreads
+ns.hackAnalyze
+ns.hackAnalyzeSecurity
+ns.hackAnalyzeChance
+ns.growthAnalyze
+ns.growthAnalyzeSecurity
+ns.nuke
+ns.brutessh
+ns.ftpcrack
+ns.relaysmtp
+ns.httpworm
+ns.sqlinject
+ns.getServerMoneyAvailable
+ns.getServerSecurityLevel
+ns.getServerBaseSecurityLevel
+ns.getServerMinSecurityLevel
+ns.getServerRequiredHackingLevel
+ns.getServerMaxMoney
+ns.getServerGrowth
+ns.getServerNumPortsRequired
+ns.deleteServer
+ns.getHackTime
+ns.getGrowTime
+ns.getWeakenTime
+
+Potentially affected files on server home (with line numbers):
+modules/crime.js: (Line number: 80)
+modules/rooter.js: (Line numbers: 76, 79, 82, 85, 91, 120)
+modules/sleeves.js: (Line number: 159)
+modules/breacher.js: (Line number: 41)
+shopping/darkweb.js: (Line numbers: 16, 34)
+shopping/hacknet.js: (Line number: 8)
+shopping/hashes.js: (Line number: 63)
+shopping/sleeve_augments.js: (Line numbers: 58, 70)
+tools/delete_all_servers.js: (Line number: 6)
+tools/blind_rooter.js: (Line number: 38)
+tools/drain.js: (Line number: 4)
+modules/foreman.js: (Line numbers: 16, 23, 23, 28, 28, 31, 50, 56, 59, 59, 469, 474, 474, 493, 498, 503)
+
+
+
+Some gang equipments were renamed.
+- "Glock 18C" was renamed to "Malorian-3516".
+- "P90C" was renamed to "Hansen-HA7".
+- "Steyr AUG" was renamed to "Arasaka-HJSH18".
+- "AK-47" was renamed to "Militech-M251s".
+- "M15A10 Assault Rifle" was renamed to "Nokota-D5".
+- "AWM Sniper Rifle" was renamed to "Techtronika-SPT32".
+- "Ford Flex V20" was renamed to "Herrera Outlaw GTS".
+- "ATX1070 Superbike" was renamed to "Yaiba ASM-R250 Muramasa".
+- "Mercedes-Benz S9001" was renamed to "Rayfield Caliburn".
+- "White Ferrari" was renamed to "Quadra Sport R-7".
+
+
+Usage of the following functions may have been affected:
+Glock 18C
+P90C
+Steyr AUG
+AK-47
+M15A10 Assault Rifle
+AWM Sniper Rifle
+Ford Flex V20
+ATX1070 Superbike
+Mercedes-Benz S9001
+White Ferrari
+
+Potentially affected files on server home (with line numbers):
+shopping/gang_equipment.js: (Line numbers: 15, 16, 17, 18, 19, 20, 29, 30, 31, 32)
+
+
+
+The cloud server (purchased server) functions have been moved to their own interface, ns.cloud.
+"ns.getPurchasedServerCost()" was removed.
+It has been automatically replaced with "ns.cloud.getServerCost()"
+
+"ns.purchaseServer()" was removed.
+It has been automatically replaced with "ns.cloud.purchaseServer()"
+
+"ns.getPurchasedServerUpgradeCost()" was removed.
+It has been automatically replaced with "ns.cloud.getServerUpgradeCost()"
+
+"ns.upgradePurchasedServer()" was removed.
+It has been automatically replaced with "ns.cloud.upgradeServer()"
+
+"ns.renamePurchasedServer()" was removed.
+It has been automatically replaced with "ns.cloud.renameServer()"
+
+"ns.deleteServer()" was removed.
+It has been automatically replaced with "ns.cloud.deleteServer()"
+
+"ns.getPurchasedServers()" was removed.
+It has been automatically replaced with "ns.cloud.getServerNames()"
+
+"ns.getPurchasedServerLimit()" was removed.
+It has been automatically replaced with "ns.cloud.getServerLimit()"
+
+"ns.getPurchasedServerMaxRam()" was removed.
+It has been automatically replaced with "ns.cloud.getRamLimit()"
+
+Usage of the following functions may have been affected:
+ns.getPurchasedServerCost
+ns.purchaseServer
+ns.getPurchasedServerUpgradeCost
+ns.upgradePurchasedServer
+ns.renamePurchasedServer
+ns.deleteServer
+ns.getPurchasedServers
+ns.getPurchasedServerLimit
+ns.getPurchasedServerMaxRam
+
+Potentially affected files on server home (with line numbers):
+imports/servers.js: (Line number: 30)
+shopping/servers.js: (Line numbers: 20, 25, 26, 29, 33, 45, 60)
+tools/delete_all_servers.js: (Line numbers: 3, 6)
+modules/foreman.js: (Line number: 515)
+
+
+
+ns.codingcontract.createDummyContract might generate a contract with the same name of another contract.
+This bug was fixed. Now this function will return null and not generate a contract if the randomized contract name is the same as another contract's name.
+
+ns.codingcontract.createDummyContract generated a dummy contract on home. Now you can specify the host that 
+gets the generated contract with a new optional parameter. Your code was migrated to specify "home" as the host.
+
+Usage of the following functions may have been affected:
+createDummyContract
+
+Potentially affected files on server home (with line numbers):
+contracts/stress_tester.js: (Line number: 18)
+
+
+
+We added a new feature called Dark Net. The "darkweb" server is a darknet server now.
+Some APIs that require the target host to be a normal server do not work with darkweb. This should not be a 
+problem with most scripts. The most potentially affected API is "ns.scan()". Darkweb does not appear in the 
+result of this API anymore. If you want to find darknet servers, you need to use "ns.dnet.probe()".
+
+
+
+Accessing the hacknet namespace incurred a one-time cost of 4 GB of RAM, and each hacknet API did not incur 
+RAM cost. Now the hacknet namespace does not incur RAM cost, but each hacknet API incurs a 0.5GB RAM cost.
+
+Usage of the following functions may have been affected:
+ns.hacknet.numNodes
+ns.hacknet.purchaseNode
+ns.hacknet.getPurchaseNodeCost
+ns.hacknet.getNodeStats
+ns.hacknet.upgradeLevel
+ns.hacknet.upgradeRam
+ns.hacknet.upgradeCore
+ns.hacknet.upgradeCache
+ns.hacknet.getLevelUpgradeCost
+ns.hacknet.getRamUpgradeCost
+ns.hacknet.getCoreUpgradeCost
+ns.hacknet.getCacheUpgradeCost
+ns.hacknet.numHashes
+ns.hacknet.hashCost
+ns.hacknet.spendHashes
+ns.hacknet.maxNumNodes
+ns.hacknet.hashCapacity
+ns.hacknet.getHashUpgrades
+ns.hacknet.getHashUpgradeLevel
+ns.hacknet.getStudyMult
+ns.hacknet.getTrainingMult
+
+Potentially affected files on server home (with line numbers):
+modules/stanek.js: (Line numbers: 18, 18, 46, 48, 57)
+shopping/hacknet.js: (Line numbers: 13, 18, 26, 44, 49, 78, 83, 112, 117, 146, 151)
+shopping/hashes.js: (Line numbers: 61, 61, 76, 77, 81, 83)
+
+
+
+ns.cloud.purchaseServer() and ns.cloud.deleteServer() previously removed whitespace from the provided hostname inconsistently.
+They now use the hostname as provided.
+
+Usage of the following functions may have been affected:
+ns.cloud.purchaseServer
+ns.cloud.deleteServer
+
+Potentially affected files on server home (with line numbers):
+shopping/servers.js: (Line number: 29)
+tools/delete_all_servers.js: (Line number: 6)
+
+
+
+If you pass a string to ns.codingcontract.attempt() for contracts that require a non-string answer, the
+game will convert that string to the expected format. This string conversion was inconsistent and had many
+undocumented behaviors. Now the rules are consistent and well-documented. Please check the "Coding Contracts"
+page for more information.
+There are 7 contracts that are affected by this change:
+- Find All Valid Math Expressions
+- Generate IP Addresses
+- Largest Rectangle in a Matrix
+- Merge Overlapping Intervals
+- Proper 2-Coloring of a Graph
+- Sanitize Parentheses in Expression
+- Spiralize Matrix
+Note that this change only affects the string conversion. The solution format of these contracts is an array,
+so if you pass the solution, which is an array, as is, you will not have any problems.
+If your code converts the array to a string, you should check these contracts, especially the "Sanitize
+Parentheses in Expression" contract and others that require a string array.
+- Sanitize Parentheses in Expression: Previously, if you passed an empty string to this contract, it was
+converted to an array containing an empty string. Now, it's converted to an empty array.
+- Read the "General rules", "String conversion", and "Tips" sections on the "Coding Contracts" page carefully.
+
+Usage of the following functions may have been affected:
+ns.codingcontract.attempt
+FindAllValidMathExpressions
+GenerateIPAddresses
+LargestRectangleInAMatrix
+MergeOverlappingIntervals
+Proper2ColoringOfAGraph
+SanitizeParenthesesInExpression
+SpiralizeMatrix
+Find All Valid Math Expressions
+Generate IP Addresses
+Largest Rectangle in a Matrix
+Merge Overlapping Intervals
+Proper 2-Coloring of a Graph
+Sanitize Parentheses in Expression
+Spiralize Matrix
+
+Potentially affected files on server home (with line numbers):
+modules/contracts.js: (Line numbers: 38, 40, 43, 45, 46, 48, 86)
+
+
+
+ns.gang.getOtherGangInformation() was renamed to ns.gang.getAllGangInformation().
+The function was renamed because it returns information about all gangs, including the player's own gang.
+
+Usage of the following functions may have been affected:
+ns.gang.getOtherGangInformation
+
+Potentially affected files on server home (with line numbers):
+modules/gang.js: (Line number: 178)
+
+
+
+Task objects returned from ns.singularity.getCurrentWork() and ns.sleeve.getTask() previously had an optional
+promise property named either "completion" or "nextCompletion", depending on the task.
+Now, these task objects always include this property, and it is consistently named "nextCompletion".
+
+Usage of the following functions may have been affected:
+ns.singularity.getCurrentWork
+ns.sleeve.getTask
+
+Potentially affected files on server home (with line numbers):
+modules/crime.js: (Line numbers: 49, 81, 112, 172, 186, 340)
+modules/sleeves.js: (Line numbers: 19, 20, 67, 72, 102, 158, 319, 351, 372, 379, 394)
