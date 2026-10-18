@@ -1,3 +1,4 @@
+/** @param {NS} ns */
 import { ANSI } from "imports/ANSI";
 
 export class UtilServer {
@@ -29,7 +30,7 @@ export class UtilServer {
   get upgrade_cost() {
     return this.#ns.cloud.getServerUpgradeCost(
       this.name,
-      this.details.maxRam * 2
+      this.details.maxRam * 2,
     );
   }
   /** @returns {Boolean} */
@@ -132,7 +133,7 @@ export function write_map(ns) {
   let data = iterate(new UtilServer(ns, "home"));
   ns.write("data/map.txt", data.join("\n"), "w"); // Write the new one
   ns.tprint(
-    `${ANSI.fg.magenta}Wrote ${data.length} lines to 'map.txt'${ANSI.reset}`
+    `${ANSI.fg.magenta}Wrote ${data.length} lines to 'map.txt'${ANSI.reset}`,
   );
 
   /** Checks the stats of the children of the specified server in a depth-first manner.
@@ -168,10 +169,12 @@ export function server_stats(ns) {
     ns.tprint(`${ANSI.fg.red}No Purchased Servers${ANSI.reset}`);
     return;
   } // Can't map what doesn't exist
-  let data = servers.map((a) => `${a.name}: ${ns.format.ram(a.details.maxRam)}`); // Turn servers into string to add to file
+  let data = servers.map(
+    (a) => `${a.name}: ${ns.format.ram(a.details.maxRam)}`,
+  ); // Turn servers into string to add to file
   ns.write("data/server_stats.txt", data.join("\n"), "w"); // Write new file
   ns.tprint(
-    `${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`
+    `${ANSI.fg.magenta}Wrote ${data.length} lines to 'server_stats.txt'${ANSI.reset}`,
   );
 }
 

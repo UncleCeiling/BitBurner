@@ -16,10 +16,10 @@ ns.formatPercent
 ns.tFormat
 
 Potentially affected files on server home (with line numbers):
-imports/modules.js: (Line number: 133)
-imports/servers.js: (Line numbers: 171, 185)
-shopping/servers.js: (Line numbers: 64, 66)
-modules/foreman.js: (Line numbers: 205, 295)
+imports/modules.js: (Line number: 133) Checked
+imports/servers.js: (Line numbers: 171, 185) Checked
+shopping/servers.js: (Line numbers: 64, 66) Checked
+modules/foreman.js: (Line numbers: 205, 295) WIP
 
 
 
